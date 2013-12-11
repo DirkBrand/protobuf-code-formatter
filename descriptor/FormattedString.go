@@ -43,13 +43,17 @@ func (this *FileDescriptorProto) FormattedGoString(depth int) string {
 
 	var s string
 
+	counter := 0
+
 	// the package
 	if len(this.GetPackage()) > 0 {
 		s += `package ` + this.GetPackage() + "\n"
+
+		counter += 1
 	}
 
 	// For each import
-	if len(this.GetDependency()) > 0 && len(this.GetPackage()) > 0 {
+	if len(this.GetDependency()) > 0 && counter > 0 {
 		s += "\n"
 	}
 	if len(this.GetDependency()) > 0 {
@@ -63,6 +67,8 @@ func (this *FileDescriptorProto) FormattedGoString(depth int) string {
 
 			s += `import "` + imp + `";` + "\n"
 		}
+
+		counter += 1
 	}
 
 	// For each extend
@@ -71,7 +77,7 @@ func (this *FileDescriptorProto) FormattedGoString(depth int) string {
 		extendGroups[ext.GetExtendee()] = extendGroups[ext.GetExtendee()] + ext.FormattedGoString(depth+1) + ";\n"
 
 	}
-	if len(extendGroups) > 0 {
+	if len(extendGroups) > 0 && counter > 0 {
 		s += "\n"
 	}
 	for i := range extendGroups {
@@ -79,45 +85,54 @@ func (this *FileDescriptorProto) FormattedGoString(depth int) string {
 		s += getIndentation(depth) + `extend ` + strings.Replace(i, ".", "", 1) + " {\n"
 		s += group
 		s += getIndentation(depth) + "}\n"
+
+		counter += 1
 	}
 
-	// Field Options
+	// File Options
 	options := this.GetOptions()
 	if options != nil && len(options.ExtensionMap()) > 0 {
 		s += "\n"
 
 		s += getFormattedOptionsFromExtensionMap(options.ExtensionMap(), -1, false)
+
+		counter += 1
 	}
 
 	// Enums
-	if len(this.GetEnumType()) > 0 {
+	if len(this.GetEnumType()) > 0 && counter > 0 {
 		s += "\n"
 	}
 	for _, enum := range this.GetEnumType() {
 		s += enum.FormattedGoString(depth)
 		s += "\n"
+
+		counter += 1
 	}
 
 	// Messages
-	if len(this.GetMessageType()) > 0 {
+	if len(this.GetMessageType()) > 0 && counter > 0 {
 		s += "\n"
 	}
 	for _, message := range this.GetMessageType() {
 		s += message.FormattedGoString(depth, false)
 		s += "\n"
+
+		counter += 1
 	}
 
+	// Services
+	if len(this.GetService()) > 0 && counter > 0 {
+		s += "\n"
+	}
 	for _, service := range this.GetService() {
 		s += service.FormattedGoString(depth)
 		s += "\n"
+
+		counter += 1
 	}
 
 	// SourceCodeInfo
-	source := this.GetSourceCodeInfo()
-	for _, sourceLoc := range source.GetLocation() {
-		s += sourceLoc.String()
-		// TODO comments
-	}
 
 	return s
 }
@@ -135,9 +150,9 @@ func (this *DescriptorProto) FormattedGoString(depth int, isGroup bool) string {
 
 	// Message Header
 	if isGroup {
-		s += getIndentation(depth) + `group ` + fmt.Sprintf("%v", this.GetName()) + ` {`
+		s += getIndentation(depth) + `group ` + this.GetName() + ` {`
 	} else {
-		s += getIndentation(depth) + `message ` + fmt.Sprintf("%v", this.GetName()) + ` {`
+		s += getIndentation(depth) + `message ` + this.GetName() + ` {`
 	}
 
 	// Extension Range
@@ -239,14 +254,14 @@ func (this *FieldDescriptorProto) FormattedGoString(depth int) string {
 		return "nil"
 	}
 	var s string
-	s += getIndentation(depth) + fmt.Sprintf("%v", fieldDescriptorProtoLabel_StringValue(*this.Label))
+	s += getIndentation(depth) + fieldDescriptorProtoLabel_StringValue(*this.Label)
 	// If referencing a message
 	if *this.Type == FieldDescriptorProto_TYPE_MESSAGE || *this.Type == FieldDescriptorProto_TYPE_ENUM {
 		s += ` ` + strings.Replace(this.GetTypeName(), ".", "", 1)
 	} else {
-		s += ` ` + fmt.Sprintf("%v", fieldDescriptorProtoType_StringValue(*this.Type))
+		s += ` ` + fieldDescriptorProtoType_StringValue(*this.Type)
 	}
-	s += ` ` + fmt.Sprintf("%v", this.GetName()) + ` = ` + fmt.Sprintf("%v", this.GetNumber())
+	s += ` ` + this.GetName() + ` = ` + fmt.Sprintf("%v", this.GetNumber())
 
 	// OPTIONS
 	options := this.GetOptions()
@@ -301,7 +316,7 @@ func (this *EnumDescriptorProto) FormattedGoString(depth int) string {
 		return "nil"
 	}
 	var s string
-	s += getIndentation(depth) + `enum ` + fmt.Sprintf("%v", this.GetName()) + ` {`
+	s += getIndentation(depth) + `enum ` + this.GetName() + ` {`
 
 	// Options
 	options := this.GetOptions()

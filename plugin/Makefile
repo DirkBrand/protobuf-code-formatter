@@ -29,10 +29,14 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-all: install
+# Not stored here, but plugin.proto is in http://code.google.com/p/protobuf
+# at protobuf-2.3.0/src/google/protobuf/compiler/plugin.proto
+# Also we need to fix an import.
+regenerate:
+	(cd ../../../../../ && protoc --gogo_out=. ./code.google.com/p/gogoprotobuf/protoc-gen-gogo/plugin/plugin.proto)
 
-test:
-	go build && ./protoc-gen-PBCF < ./test_protocol_buffer/sample.proto
+restore:
+	cp plugin.pb.golden plugin.pb.go
 
-install:
-	go install
+preserve:
+	cp plugin.pb.go plugin.pb.golden

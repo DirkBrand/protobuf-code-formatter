@@ -2,11 +2,12 @@ package main
 
 import (
 	proto "code.google.com/p/gogoprotobuf/proto"
-	"fmt"
 	parser "github.com/DirkBrand/protoc-gen-PBCF/parser"
 	plugin "github.com/DirkBrand/protoc-gen-PBCF/plugin"
 	"io/ioutil"
 	"os"
+	"path"
+	//"strings"
 )
 
 func main() {
@@ -17,6 +18,7 @@ func main() {
 	Request := new(plugin.CodeGeneratorRequest)   // The input.
 	Response := new(plugin.CodeGeneratorResponse) // The output.
 
+	os.Stdout.Write(data)
 	if err != nil {
 		Response.Error = proto.String("reading input")
 	} else {
@@ -24,11 +26,11 @@ func main() {
 		if err = proto.Unmarshal(data, Request); err != nil {
 			Response.Error = proto.String("parsing input proto")
 		}
-		if len(Request.FileToGenerate) == 0 {
+		if len(Request.GetFileToGenerate()) == 0 {
 			Response.Error = proto.String("No files to generate")
 		}
 
-		formattedFiles := make(map[string]string, len(Request.GetFileToGenerate()))
+		formattedFiles := make(map[string]string)
 
 		for _, fileToGen := range Request.GetFileToGenerate() {
 			for _, protoFile := range Request.GetProtoFile() {
@@ -54,11 +56,22 @@ func main() {
 			if err2 != nil {
 				Response.Error = proto.String(err2.Error())
 			} else {
-
 				Response.File[i] = new(plugin.CodeGeneratorResponse_File)
 
-				Response.File[i].Name = proto.String(`fixed_` + fileName)
+				// Adds `_fixed`
+				//fileName = strings.Split(fileName, ".")[0] + "_fixed." + strings.Split(fileName, ".")[1]
+
+				ext := path.Ext(fileName)
+				if ext == ".proto" || ext == ".protodevel" {
+					fileName = path.Base(fileName)
+				}
+				fileName += ".pb.go"
+
+				Response.File[i].Name = proto.String(fileName)
 				Response.File[i].Content = proto.String(formatFile)
+
+				//os.Stderr.Write([]byte(Response.File[i].GetName()))
+				//os.Stderr.Write([]byte(Response.File[i].GetContent()))
 				i += 1
 
 			}
@@ -67,11 +80,11 @@ func main() {
 		// Send back the results.
 		data, err = proto.Marshal(Response)
 		if err != nil {
-			fmt.Println("failed to marshal output proto")
+			os.Stderr.Write([]byte("failed to marshal output proto"))
 		}
 		_, err = os.Stdout.Write(data)
 		if err != nil {
-			fmt.Println("failed to write output proto")
+			os.Stderr.Write([]byte("failed to write output proto"))
 		}
 
 	}

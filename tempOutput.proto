@@ -1,8 +1,6 @@
-
 message Person2 {
   required string name = 1;
   required int32 id = 2;
   optional string email = 3;
 }
 
-span:0 span:0 span:4 span:1 path:4 path:0 span:0 span:0 span:4 span:1 path:4 path:0 path:1 span:0 span:8 span:15 path:4 path:0 path:2 path:0 span:1 span:2 span:27 path:4 path:0 path:2 path:0 path:4 span:1 span:2 span:10 path:4 path:0 path:2 path:0 path:5 span:1 span:11 span:17 path:4 path:0 path:2 path:0 path:1 span:1 span:18 span:22 path:4 path:0 path:2 path:0 path:3 span:1 span:25 span:26 path:4 path:0 path:2 path:1 span:2 span:2 span:24 path:4 path:0 path:2 path:1 path:4 span:2 span:2 span:10 path:4 path:0 path:2 path:1 path:5 span:2 span:11 span:16 path:4 path:0 path:2 path:1 path:1 span:2 span:17 span:19 path:4 path:0 path:2 path:1 path:3 span:2 span:22 span:23 path:4 path:0 path:2 path:2 span:3 span:2 span:28 path:4 path:0 path:2 path:2 path:4 span:3 span:2 span:10 path:4 path:0 path:2 path:2 path:5 span:3 span:11 span:17 path:4 path:0 path:2 path:2 path:1 span:3 span:18 span:23 path:4 path:0 path:2 path:2 path:3 span:3 span:26 span:27 
