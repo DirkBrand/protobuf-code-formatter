@@ -53,6 +53,7 @@ func main() {
 
 			//fmt.Println(fileName)
 			_, err2 := parser.ParseFile("tempOutput.proto", "./", "../../../")
+			os.Remove("tempOutput.proto")
 			if err2 != nil {
 				Response.Error = proto.String(err2.Error())
 			} else {
