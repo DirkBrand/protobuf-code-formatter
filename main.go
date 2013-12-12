@@ -2,11 +2,11 @@ package main
 
 import (
 	proto "code.google.com/p/gogoprotobuf/proto"
-	parser "github.com/DirkBrand/protoc-gen-PBCF/parser"
-	plugin "github.com/DirkBrand/protoc-gen-PBCF/plugin"
+	parser "github.com/DirkBrand/protoc-gen-CF/parser"
+	plugin "github.com/DirkBrand/protoc-gen-CF/plugin"
 	"io/ioutil"
 	"os"
-	"path"
+	//"path"
 	//"strings"
 )
 
@@ -18,7 +18,6 @@ func main() {
 	Request := new(plugin.CodeGeneratorRequest)   // The input.
 	Response := new(plugin.CodeGeneratorResponse) // The output.
 
-	os.Stdout.Write(data)
 	if err != nil {
 		Response.Error = proto.String("reading input")
 	} else {
@@ -60,19 +59,14 @@ func main() {
 				Response.File[i] = new(plugin.CodeGeneratorResponse_File)
 
 				// Adds `_fixed`
+				//fileName = path.Base(fileName)
 				//fileName = strings.Split(fileName, ".")[0] + "_fixed." + strings.Split(fileName, ".")[1]
-
-				ext := path.Ext(fileName)
-				if ext == ".proto" || ext == ".protodevel" {
-					fileName = path.Base(fileName)
-				}
-				fileName += ".pb.go"
 
 				Response.File[i].Name = proto.String(fileName)
 				Response.File[i].Content = proto.String(formatFile)
 
-				//os.Stderr.Write([]byte(Response.File[i].GetName()))
-				//os.Stderr.Write([]byte(Response.File[i].GetContent()))
+				//os.Stderr.Write([]byte(Response.File[i].GetName() + "\n"))
+				//os.Stderr.Write([]byte(Response.File[i].GetContent() + "\n"))
 				i += 1
 
 			}

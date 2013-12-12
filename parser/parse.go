@@ -32,7 +32,7 @@ import (
 	"os/exec"
 	"strings"
 )
-import "github.com/DirkBrand/protoc-gen-PBCF/descriptor"
+import "github.com/DirkBrand/protoc-gen-CF/descriptor"
 import "code.google.com/p/gogoprotobuf/proto"
 
 type errCmd struct {
