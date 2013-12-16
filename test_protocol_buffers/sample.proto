@@ -1,7 +1,7 @@
 // The sample message
 message Person {
   /* Three fields
-     1 int, 2 strings */
+     		1 int, 2 strings */
   required int32 id = 1;
   required string name = 2;
   optional string email = 3;
