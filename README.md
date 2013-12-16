@@ -16,3 +16,5 @@ Limitations
 2. For comments, outer `extend' groups are logically grouped together, so inner comments are lost
 
 3. For comments, trailing comments are not stored for group/nested message/message, so those are lost in formatting.
+
+4. Style of comments are not preserved (/* */ vs. //), so single-line comments are shown with `//` and multi-line comments with `/* */`.
