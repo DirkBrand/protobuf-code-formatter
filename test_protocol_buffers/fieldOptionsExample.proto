@@ -159,7 +159,7 @@ message MyExtendable {
 }
 
 message NestedDefinition {
-        optional int64 Field1 = 1;
+        optional int64 Field1 = 1 [(gogoproto.nullable) = false,deprecated=true];
         message NestedMessage {
                 optional fixed64 NestedField1 = 1 [(gogoproto.nullable) = false,deprecated=true];
                 optional NestedNestedMsg NNM = 2;

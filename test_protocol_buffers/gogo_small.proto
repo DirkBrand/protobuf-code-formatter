@@ -16,6 +16,7 @@ extend google.protobuf.MethodOptions {
 
 extend google.protobuf.ServiceOptions {
   optional MyEnum my_service_option = 50005;
+  optional MyEnum my_service_option2 = 50105;
 }
 
 enum MyEnum {

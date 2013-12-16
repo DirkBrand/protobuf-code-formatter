@@ -8,8 +8,6 @@ service MyService {
 	option (my_service_option) = FOO;
   
   rpc MyMethod(RequestType) returns(ResponseType) {
-    // Note:  my_method_option has type MyMessage.  We can set each field
-    //   within it using a separate "option" line.
     option (my_method_option).foo = 567;
     option (my_method_option).bar = "Some string";
   }
