@@ -2,9 +2,9 @@ package main
 
 import (
 	proto "code.google.com/p/gogoprotobuf/proto"
-	descriptor "github.com/DirkBrand/protoc-gen-CF/descriptor"
-	parser "github.com/DirkBrand/protoc-gen-CF/parser"
-	plugin "github.com/DirkBrand/protoc-gen-CF/plugin"
+	descriptor "github.com/DirkBrand/protobuf-code-formatter/protoc-gen-pretty/descriptor"
+	parser "github.com/DirkBrand/protobuf-code-formatter/protoc-gen-pretty/parser"
+	plugin "github.com/DirkBrand/protobuf-code-formatter/protoc-gen-pretty/plugin"
 	"io/ioutil"
 	"os"
 	//"path"

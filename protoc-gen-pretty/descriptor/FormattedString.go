@@ -333,12 +333,27 @@ func (this *FieldDescriptor) FormattedGoString(depth int) string {
 	//s = append(s, PrintLeadingComments(this.path))
 	s = append(s, getIndentation(depth))
 	s = append(s, fieldDescriptorProtoLabel_StringValue(*this.Label))
+	s = append(s, ` `)
 	// If referencing a message
 	if *this.Type == FieldDescriptorProto_TYPE_MESSAGE || *this.Type == FieldDescriptorProto_TYPE_ENUM {
-		s = append(s, ` `)
-		s = append(s, strings.Replace(this.GetTypeName(), ".", "", 1))
+		var found bool
+		typeName := getLastWordFromPath(this.GetTypeName(), ".")
+		for _, mes := range currentFile.GetMessageType() {
+			if mes.GetName() == typeName {
+				found = true
+			}
+		}
+		if found {
+			s = append(s, typeName)
+		} else {
+			typeName = this.GetTypeName()
+			if strings.HasPrefix(typeName, ".") {
+				typeName = typeName[1:]
+			}
+			s = append(s, typeName)
+		}
+
 	} else {
-		s = append(s, ` `)
 		s = append(s, fieldDescriptorProtoType_StringValue(*this.Type))
 	}
 	s = append(s, ` `)

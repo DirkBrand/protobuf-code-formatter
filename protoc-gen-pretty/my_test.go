@@ -1,4 +1,4 @@
-package test
+package main
 
 import (
 	"fmt"
@@ -9,18 +9,18 @@ import (
 )
 
 func TestFileParsing(t *testing.T) {
-	testFile := "../test_protocol_buffers/group_comments.proto"
+	testFile := "testdata/walter_test1.proto"
 
-	d, err := parser.ParseFile(testFile, "./", "../../../")
+	d, err := parser.ParseFile(testFile, "./")
 	if err != nil {
-		fmt.Println(err)
-		t.Fail()
+		t.Errorf("%v", err)
 	} else {
 		fo, _ := os.Create("tempOutput.proto")
 
-		formattedFile := d.FormattedGoString(testFile)
+		var formattedFile string
+		formattedFile = d.FormattedGoString(testFile)
 
-		fmt.Print(formattedFile)
+		//fmt.Print(formattedFile)
 
 		fo.WriteString(formattedFile)
 		fo.Close()

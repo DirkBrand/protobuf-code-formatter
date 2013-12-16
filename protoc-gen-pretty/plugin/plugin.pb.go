@@ -7,7 +7,7 @@ package plugin
 import proto "code.google.com/p/gogoprotobuf/proto"
 import json "encoding/json"
 import math "math"
-import google_protobuf "github.com/DirkBrand/protoc-gen-CF/descriptor"
+import google_protobuf "github.com/DirkBrand/protobuf-code-formatter/protoc-gen-pretty/descriptor"
 
 // Reference proto, json, and math imports to suppress error if they are not otherwise used.
 var _ = proto.Marshal
