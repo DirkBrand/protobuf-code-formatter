@@ -2,6 +2,7 @@ package main
 
 import (
 	proto "code.google.com/p/gogoprotobuf/proto"
+	descriptor "github.com/DirkBrand/protoc-gen-CF/descriptor"
 	parser "github.com/DirkBrand/protoc-gen-CF/parser"
 	plugin "github.com/DirkBrand/protoc-gen-CF/plugin"
 	"io/ioutil"
@@ -34,7 +35,8 @@ func main() {
 		for _, fileToGen := range Request.GetFileToGenerate() {
 			for _, protoFile := range Request.GetProtoFile() {
 				if protoFile.GetName() == fileToGen {
-					formattedFiles[fileToGen] = protoFile.FormattedGoString(0)
+					fileSet := descriptor.FileDescriptorSet{[]*descriptor.FileDescriptorProto{protoFile}, nil}
+					formattedFiles[fileToGen] = fileSet.FormattedGoString(fileToGen)
 				}
 			}
 		}
@@ -46,11 +48,9 @@ func main() {
 		for fileName, formatFile := range formattedFiles {
 
 			fo, _ := os.Create("tempOutput.proto")
-			//fmt.Print(formattedFile)
 			fo.WriteString(formatFile)
 			fo.Close()
 
-			//fmt.Println(fileName)
 			_, err2 := parser.ParseFile("tempOutput.proto", "./", "../../../")
 			os.Remove("tempOutput.proto")
 			if err2 != nil {
