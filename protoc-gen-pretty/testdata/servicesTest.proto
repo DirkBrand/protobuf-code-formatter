@@ -1,0 +1,14 @@
+import "protos/gogo_small.proto";
+
+message RequestType {}
+message ResponseType {}
+
+service MyService {
+	
+	option (my_service_option) = FOO;
+  
+  rpc MyMethod(RequestType) returns(ResponseType) {
+    option (my_method_option).foo = 567;
+    option (my_method_option).bar = "Some string";
+  }
+}

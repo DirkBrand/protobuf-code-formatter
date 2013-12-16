@@ -1,0 +1,3 @@
+message Person2 {
+  required string name = 1;
+}
