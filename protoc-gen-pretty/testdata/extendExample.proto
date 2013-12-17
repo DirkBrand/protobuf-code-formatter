@@ -1,4 +1,4 @@
-import "code.google.com/p/gogoprotobuf/protoc-gen-gogo/descriptor/descriptor.proto";
+import "testdata/descriptor.proto";
 
 extend google.protobuf.FileOptions {
     optional bool goproto_enum_prefix_all = 63002;

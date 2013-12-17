@@ -478,7 +478,7 @@ func (this *DescriptorProto_ExtensionRange) FormattedGoString(depth int) string 
 	if this.GetEnd() >= 1<<29-1 {
 		s = append(s, "max;\n")
 	} else {
-		s = append(s, fmt.Sprintf("%v", this.GetEnd()))
+		s = append(s, fmt.Sprintf("%v", this.GetEnd()-1))
 		s = append(s, ";\n")
 	}
 

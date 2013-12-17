@@ -1,11 +1,11 @@
-import "code.google.com/p/gogoprotobuf/protoc-gen-gogo/descriptor/descriptor.proto";
-
-extend google.protobuf.FileOptions {
-    optional bool goproto_enum_prefix_all = 63002;
-    optional string goproto_stringer_all = 5003;
-}
+import "testdata/descriptor.proto";
 
 // Comment before extension
+extend google.protobuf.FileOptions {
+  	optional bool goproto_enum_prefix_all = 63002;
+  optional string goproto_stringer_all = 5003;
+}
+
 extend google.protobuf.MethodOptions {
   optional Baz option1 = 1000000;
   optional Foo option2 = 1000;
@@ -13,33 +13,33 @@ extend google.protobuf.MethodOptions {
 
 // Comment before message
 message Baz {
-
-// Comment before intra message extend
+  // Comment before intra message extend
   extend Foo {
-  	//Extend inside comment
+    // Extend inside comment
     optional Baz foo_ext = 127;
-  	//Extend trailing comment
-  }   
+    // Extend trailing comment
+  }
 
- // field comment
-   optional int32 bar = 126;
+  // Intra second comment
+  extend Bar {
+    optional Baz bar_ext = 1543;
+  }
 
-// Intra second comment
-extend Bar {
-	optional Baz bar_ext = 1543;
-}
-
+  // field comment
+  optional int32 bar = 126;
 }
 
 message Bar {
-	extensions 100 to 5000;
+  extensions 100 to 5001;
 }
 
 message Foo {
-	// comment before extension range
-  extensions 100 to 200;
-//extension trailing comment
+  // comment before extension range
+  extensions 100 to 201;
+  // extension trailing comment
 
-	// comment before second extension range
+  // comment before second extension range
   extensions 300 to max;
+
 }
+

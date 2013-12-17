@@ -2,9 +2,9 @@ package sample;
 // This is the trailing package comment
 
 // Important import
-import "code.google.com/p/gogoprotobuf/protoc-gen-gogo/descriptor/descriptor.proto";
+import "testdata/descriptor.proto";
 // But also kinda important
-import "protos/gogo_small.proto";
+import "testdata/gogo_small.proto";
 
 
 // Option comment

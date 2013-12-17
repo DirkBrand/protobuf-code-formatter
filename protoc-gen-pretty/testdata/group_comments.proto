@@ -1,6 +1,6 @@
 package unrecognizedgroup;
 
-import "code.google.com/p/gogoprotobuf/gogoproto/gogo.proto";
+import "testdata/gogo.proto";
 
 // Outer message comment
 message OldWithGroup {

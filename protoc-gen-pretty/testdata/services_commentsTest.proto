@@ -1,6 +1,6 @@
 package gogoproto;
 
-import "protos/gogo_small.proto";
+import "testdata/gogo_small.proto";
 
 message RequestType {}
 message ResponseType {}

@@ -26,7 +26,8 @@
 
 package test;
 
-import "code.google.com/p/gogoprotobuf/gogoproto/gogo.proto";
+//import comment
+import "testdata/gogo.proto";
 
 option (gogoproto.goproto_stringer_all) = false;
 option (gogoproto.goproto_enum_prefix_all) = false;
@@ -398,7 +399,7 @@ extend MyExtendable {
         optional NinEmbeddedStruct FieldC = 102;
 }
 
-message OtherExtenable {
+message OtherExtendable {
         option (gogoproto.face) = false;
         optional int64 Field2 = 2;
         extensions 14 to 16;

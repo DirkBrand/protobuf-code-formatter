@@ -1,4 +1,4 @@
-import "protos/gogo_small.proto";
+import "testdata/gogo_small.proto";
 
 option (gogoproto.goproto_enum_prefix_all) = true;
 option (gogoproto.goproto_stringer_all) = "aw yeah";

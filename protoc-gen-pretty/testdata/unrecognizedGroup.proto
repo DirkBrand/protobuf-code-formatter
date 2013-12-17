@@ -26,7 +26,7 @@
 
 package unrecognizedgroup;
 
-import "code.google.com/p/gogoprotobuf/gogoproto/gogo.proto";
+import "testdata/gogo.proto";
 
 option (gogoproto.goproto_stringer_all) = false;
 option (gogoproto.goproto_enum_prefix_all) = false;

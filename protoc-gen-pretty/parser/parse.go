@@ -45,7 +45,7 @@ func (this *errCmd) Error() string {
 }
 
 func ParseFile(filename string, paths ...string) (*descriptor.FileDescriptorSet, error) {
-	return parseFile(filename, false, true, paths...)
+	return parseFile(filename, true, true, paths...)
 }
 
 func parseFile(filename string, includeSourceInfo bool, includeImports bool, paths ...string) (*descriptor.FileDescriptorSet, error) {

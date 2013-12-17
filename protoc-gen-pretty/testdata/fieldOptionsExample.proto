@@ -26,7 +26,7 @@
 
 package test;
 
-import "code.google.com/p/gogoprotobuf/gogoproto/gogo.proto";
+import "testdata/gogo.proto";
 
 message someCustomFieldOptions {
         repeated double Field1 = 1 [(gogoproto.nullable) = true];

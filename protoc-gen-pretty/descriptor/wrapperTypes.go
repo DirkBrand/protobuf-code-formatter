@@ -272,24 +272,36 @@ func PrintLeadingComments(path string, depth int) string {
 		var s []string
 		strCol := strings.Split(text, "\n")
 		if len(strCol) == 1 {
+			// Single line comments
 			s = append(s, getIndentation(depth))
 			s = append(s, "// ")
 			s = append(s, strings.TrimSuffix(strings.TrimPrefix(strCol[0], " "), " "))
 			s = append(s, "\n")
 		} else {
-			s = append(s, getIndentation(depth))
-			s = append(s, "/* ")
-			s = append(s, strings.TrimSuffix(strings.TrimPrefix(strCol[0], " "), " "))
-			s = append(s, "\n ")
-			for i := 1; i < len(strCol)-1; i += 1 {
-				line := strCol[i]
-				s = append(s, getIndentation(depth+1))
-				s = append(s, strings.TrimSuffix(strings.TrimPrefix(line, " "), " "))
+			// Multi-line comments
+			if strings.Contains(text, "/*") || strings.Contains(text, "*/") {
+				// Block comments cannot nest
+				for _, line := range strCol {
+					s = append(s, getIndentation(depth))
+					s = append(s, "// ")
+					s = append(s, strings.TrimSuffix(strings.TrimPrefix(line, " "), " "))
+					s = append(s, "\n")
+				}
+			} else {
+				s = append(s, getIndentation(depth))
+				s = append(s, "/* ")
+				s = append(s, strings.TrimSuffix(strings.TrimPrefix(strCol[0], " "), " "))
 				s = append(s, "\n ")
+				for i := 1; i < len(strCol)-1; i += 1 {
+					line := strCol[i]
+					s = append(s, getIndentation(depth+1))
+					s = append(s, strings.TrimSuffix(strings.TrimPrefix(line, " "), " "))
+					s = append(s, "\n ")
+				}
+				s = append(s, getIndentation(depth+1))
+				s = append(s, strings.TrimSuffix(strings.TrimPrefix(strCol[len(strCol)-1], " "), " "))
+				s = append(s, " */\n")
 			}
-			s = append(s, getIndentation(depth+1))
-			s = append(s, strings.TrimSuffix(strings.TrimPrefix(strCol[len(strCol)-1], " "), " "))
-			s = append(s, " */\n")
 
 		}
 		return strings.Join(s, "")
