@@ -20,3 +20,6 @@ Limitations
 4. Style of comments are not preserved (/* */ vs. //), so single-line comments are shown with `//` and multi-line comments with `/* */`.
 
 5. Top-of-file comment not preserved (unless attached to package decleration or similar).
+
+
+[![Build Status](https://drone.io/github.com/DirkBrand/protobuf-code-formatter/status.png)](https://drone.io/github.com/DirkBrand/protobuf-code-formatter/latest)
