@@ -47,7 +47,7 @@ func parseAndTestFile(t *testing.T, filename string) {
 		fo.Close()
 
 		_, err2 := parser.ParseFile("tempOutput.proto", "./", "../../../")
-		//os.Remove("tempOutput.proto")
+		os.Remove("tempOutput.proto")
 		if err2 != nil {
 			fmt.Println(err2)
 			t.Fail()
