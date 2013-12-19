@@ -130,30 +130,30 @@ func TestWalterTest1(t *testing.T) {
 func TestExtendCommentLimitation(t *testing.T) {
 	fileName := "extendCommentsLimitationTest.proto"
 	res, err := parseAndTestFile(fileLocation + fileName)
-	if res {
+	if !res {
 		t.Errorf("%v", err)
 	} else {
-		fmt.Println(fileName + " <TEST FAILED CORRECTLY>")
+		fmt.Println(fileName + " <TEST PASSED>")
 	}
 }
 
 func TestOrderLostLimitation(t *testing.T) {
 	fileName := "orderLostTest.proto"
 	res, err := parseAndTestFile(fileLocation + fileName)
-	if res {
+	if !res {
 		t.Errorf("%v", err)
 	} else {
-		fmt.Println(fileName + " <TEST FAILED CORRECTLY>")
+		fmt.Println(fileName + " <TEST PASSED>")
 	}
 }
 
 func TestUnattachedCommentsLostLimitation(t *testing.T) {
 	fileName := "commentsStyleLostTest.proto"
 	res, err := parseAndTestFile(fileLocation + fileName)
-	if res {
+	if !res {
 		t.Errorf("%v", err)
 	} else {
-		fmt.Println(fileName + " <TEST FAILED CORRECTLY>")
+		fmt.Println(fileName + " <TEST PASSED>")
 	}
 }
 

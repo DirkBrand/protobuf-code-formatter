@@ -50,7 +50,9 @@ func (this *FileDescriptorSet) Fmt(fileToFormat string) string {
 	WrapTypes(this)
 	for _, tmpFile := range allFiles {
 		if tmpFile.GetName() == fileToFormat {
-			return tmpFile.Fmt(0)
+			s := tmpFile.Fmt(0)
+			s = strings.Replace(s, "\n\n\n", "\n\n", -1)
+			return s
 		}
 	}
 	return ""

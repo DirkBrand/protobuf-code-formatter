@@ -11,11 +11,11 @@ message Baz {
     optional Baz foo_ext = 127;
   }
 
+  // Intra second comment
   extend Bar {
     optional Baz bar_ext = 1543;
   }
 
-  // Intra second comment
   extend Koo {
     optional int32 koo_field = 112;
   }
