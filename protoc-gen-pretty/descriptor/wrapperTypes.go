@@ -1,27 +1,27 @@
 /*
 
-Copyright (c) 2013, Dirk Brand 
-All rights reserved. 
+Copyright (c) 2013, Dirk Brand
+All rights reserved.
 
-Redistribution and use in source and binary forms, with or without modification, are permitted 
-provided that the following conditions are met: 
+Redistribution and use in source and binary forms, with or without modification, are permitted
+provided that the following conditions are met:
 
- * Redistributions of source code must retain the above copyright notice, this list of 
-   conditions and the following disclaimer. 
- * Redistributions in binary form must reproduce the above copyright notice, this list of 
-   conditions and the following disclaimer in the documentation and/or other materials provided 
-   with the distribution. 
+ * Redistributions of source code must retain the above copyright notice, this list of
+   conditions and the following disclaimer.
+ * Redistributions in binary form must reproduce the above copyright notice, this list of
+   conditions and the following disclaimer in the documentation and/or other materials provided
+   with the distribution.
 
-THIS SOFTWARE IS PROVIDED BY THE AUTHOR AND CONTRIBUTORS ``AS IS'' AND ANY EXPRESS OR IMPLIED 
-WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND 
-FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHOR OR CONTRIBUTORS 
-BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES 
-(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, 
-OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN 
-CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT 
-OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+THIS SOFTWARE IS PROVIDED BY THE AUTHOR AND CONTRIBUTORS ``AS IS'' AND ANY EXPRESS OR IMPLIED
+WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
+FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHOR OR CONTRIBUTORS
+BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT
+OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
- */
+*/
 
 package descriptor
 
@@ -291,7 +291,7 @@ func extractComments(file *FileDescriptor) {
 // PrintComments prints any comments from the source .proto file.
 // The path is a comma-separated list of integers.
 // See descriptor.proto for its format.
-func PrintLeadingComments(path string, depth int) string {
+func LeadingComments(path string, depth int) string {
 	if loc, ok := currentFile.comments[path]; ok && loc.LeadingComments != nil {
 		text := strings.TrimSuffix(loc.GetLeadingComments(), "\n")
 		var s []string
@@ -300,7 +300,7 @@ func PrintLeadingComments(path string, depth int) string {
 			// Single line comments
 			s = append(s, getIndentation(depth))
 			s = append(s, "// ")
-			s = append(s, strings.TrimSuffix(strings.TrimPrefix(strCol[0], " "), " "))
+			s = append(s, strings.TrimSpace(strCol[0]))
 			s = append(s, "\n")
 		} else {
 			// Multi-line comments
@@ -309,22 +309,22 @@ func PrintLeadingComments(path string, depth int) string {
 				for _, line := range strCol {
 					s = append(s, getIndentation(depth))
 					s = append(s, "// ")
-					s = append(s, strings.TrimSuffix(strings.TrimPrefix(line, " "), " "))
+					s = append(s, strings.TrimSpace(line))
 					s = append(s, "\n")
 				}
 			} else {
 				s = append(s, getIndentation(depth))
 				s = append(s, "/* ")
-				s = append(s, strings.TrimSuffix(strings.TrimPrefix(strCol[0], " "), " "))
+				s = append(s, strings.TrimSpace(strCol[0]))
 				s = append(s, "\n ")
 				for i := 1; i < len(strCol)-1; i += 1 {
 					line := strCol[i]
 					s = append(s, getIndentation(depth+1))
-					s = append(s, strings.TrimSuffix(strings.TrimPrefix(line, " "), " "))
+					s = append(s, strings.TrimSpace(line))
 					s = append(s, "\n ")
 				}
 				s = append(s, getIndentation(depth+1))
-				s = append(s, strings.TrimSuffix(strings.TrimPrefix(strCol[len(strCol)-1], " "), " "))
+				s = append(s, strings.TrimSpace(strCol[len(strCol)-1]))
 				s = append(s, " */\n")
 			}
 
@@ -336,7 +336,7 @@ func PrintLeadingComments(path string, depth int) string {
 	return ""
 }
 
-func PrintTrailingComments(path string, depth int) string {
+func TrailingComments(path string, depth int) string {
 	if loc, ok := currentFile.comments[path]; ok && loc.TrailingComments != nil {
 		text := strings.TrimSuffix(loc.GetTrailingComments(), "\n")
 		var s []string

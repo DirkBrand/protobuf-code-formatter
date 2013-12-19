@@ -5,9 +5,11 @@ import "testdata/descriptor.proto";
 extend google.protobuf.FileOptions {
   optional string my_file_option = 50000;
 }
-extend google.protobuf.MessageOptions {
-  optional int32 my_message_option = 50001;
-}
+
+
+		extend google.protobuf.MessageOptions {
+		  optional int32 my_message_option = 50001;
+		}
 extend google.protobuf.FieldOptions {
   optional float my_field_option = 50002;
 }
@@ -24,16 +26,20 @@ extend google.protobuf.MethodOptions {
   optional MyMessage my_method_option = 50006;
 }
 
-option (my_file_option) = "Hello world!";
+
+
+	option (my_file_option) = "Hello world!";
 
 message MyMessage {
-  option (my_message_option) = 1234;
+  	option (my_message_option) = 1234;
 
-  optional int32 foo = 1 [(my_field_option) = 4.5];
+  	optional int32 foo = 1 		[(my_field_option) 	= 4.5];
   optional string bar = 2;
 }
 
 enum MyEnum {
+
+
   option (my_enum_option) = true;
 
   FOO = 1 [(my_enum_value_option) = 321];
@@ -41,13 +47,19 @@ enum MyEnum {
 }
 
 message RequestType {}
+
+
 message ResponseType {}
+
+
 
 service MyService {
   option (my_service_option) = FOO;
 
   rpc MyMethod(RequestType) returns(ResponseType) {
+
     option (my_method_option).foo = 567;
+
     option (my_method_option).bar = "Some string";
   }
 }

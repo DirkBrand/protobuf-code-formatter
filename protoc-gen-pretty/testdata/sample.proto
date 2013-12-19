@@ -1,5 +1,4 @@
 message Person2 {
-  // Aweo
   required string name = 1;
 }
 

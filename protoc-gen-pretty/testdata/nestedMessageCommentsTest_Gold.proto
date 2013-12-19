@@ -1,0 +1,53 @@
+package unrecognizedgroup;
+
+import "testdata/gogo.proto";
+
+// Outer message comment
+message OldWithGroup {
+  // Outer message trailing
+
+  optional int64 Field1 = 1;
+
+  // Leading group comment
+  optional group Group1 = 2 {
+    // trailing group comment
+
+    // Group field comment
+    optional int64 Field1 = 1;
+    optional int32 Field2 = 2;
+    repeated double Field3 = 3;
+  }
+  repeated double Field3 = 3;
+
+  // second group comment
+  optional group Group2 = 4 {
+    // second group trailing
+
+    optional int64 Field1 = 1;
+    repeated double Field2 = 2;
+  }
+
+  // nested message comment
+  message within {
+    // nested message trailing comment
+
+    optional int32 InnerInt = 1;
+
+    // nested deeper message comment
+    message deeper {
+      // nested deeper trailing
+
+      // nested nested field comment
+      optional string myString = 1;
+
+      // nested deeperer message comment
+      message deeperer {
+        // nested deeperer trailing
+
+        // nested nested field comment
+        optional string myString = 1;
+      }
+    }
+  }
+}
+

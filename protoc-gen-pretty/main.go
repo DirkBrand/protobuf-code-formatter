@@ -1,27 +1,27 @@
 /*
 
-Copyright (c) 2013, Dirk Brand 
-All rights reserved. 
+Copyright (c) 2013, Dirk Brand
+All rights reserved.
 
-Redistribution and use in source and binary forms, with or without modification, are permitted 
-provided that the following conditions are met: 
+Redistribution and use in source and binary forms, with or without modification, are permitted
+provided that the following conditions are met:
 
- * Redistributions of source code must retain the above copyright notice, this list of 
-   conditions and the following disclaimer. 
- * Redistributions in binary form must reproduce the above copyright notice, this list of 
-   conditions and the following disclaimer in the documentation and/or other materials provided 
-   with the distribution. 
+ * Redistributions of source code must retain the above copyright notice, this list of
+   conditions and the following disclaimer.
+ * Redistributions in binary form must reproduce the above copyright notice, this list of
+   conditions and the following disclaimer in the documentation and/or other materials provided
+   with the distribution.
 
-THIS SOFTWARE IS PROVIDED BY THE AUTHOR AND CONTRIBUTORS ``AS IS'' AND ANY EXPRESS OR IMPLIED 
-WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND 
-FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHOR OR CONTRIBUTORS 
-BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES 
-(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, 
-OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN 
-CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT 
-OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+THIS SOFTWARE IS PROVIDED BY THE AUTHOR AND CONTRIBUTORS ``AS IS'' AND ANY EXPRESS OR IMPLIED
+WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
+FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHOR OR CONTRIBUTORS
+BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT
+OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
- */
+*/
 
 package main
 
@@ -32,7 +32,6 @@ import (
 	plugin "github.com/DirkBrand/protobuf-code-formatter/protoc-gen-pretty/plugin"
 	"io/ioutil"
 	"os"
-	//"path"
 	//"strings"
 )
 
@@ -60,8 +59,9 @@ func main() {
 		for _, fileToGen := range Request.GetFileToGenerate() {
 			for _, protoFile := range Request.GetProtoFile() {
 				if protoFile.GetName() == fileToGen {
-					fileSet := descriptor.FileDescriptorSet{[]*descriptor.FileDescriptorProto{protoFile}, nil}
-					formattedFiles[fileToGen] = fileSet.FormattedGoString(fileToGen)
+					fileSet := descriptor.FileDescriptorSet{Request.GetProtoFile(), nil}
+					formattedFiles[fileToGen] = fileSet.Fmt(fileToGen)
+					//os.Stderr.WriteString(fmt.Sprintf("%v", formattedFiles[fileToGen]))
 				}
 			}
 		}
@@ -72,12 +72,15 @@ func main() {
 		i := 0
 		for fileName, formatFile := range formattedFiles {
 
-			fo, _ := os.Create("tempOutput.proto")
+			fo, err := os.Create("tempOutput.proto")
+			if err != nil {
+				panic(err)
+			}
 			fo.WriteString(formatFile)
 			fo.Close()
 
 			_, err2 := parser.ParseFile("tempOutput.proto", "./", "../../../")
-			os.Remove("tempOutput.proto")
+			defer os.Remove("tempOutput.proto")
 			if err2 != nil {
 				Response.Error = proto.String(err2.Error())
 			} else {

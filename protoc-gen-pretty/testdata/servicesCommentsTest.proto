@@ -7,6 +7,8 @@ message ResponseType {}
 
 // My First Service Comment
 service MyService {
+  // trailing service comment
+
 	
 	// Intra-Service comment before options
 	option (my_service_option) = FOO;
@@ -34,6 +36,8 @@ service MyService2 {
   
   // A second method comment
   rpc MyMethod(RequestType) returns(ResponseType) {
+    // trailing method comment
+
     option (my_method_option).foo = 567;
     option (my_method_option).bar = "Some string";
   }

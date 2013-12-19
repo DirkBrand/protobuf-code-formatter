@@ -1,0 +1,35 @@
+import "testdata/descriptor.proto";
+
+// Comment before message
+message Baz {
+  // Message trailing
+
+  // Comment before intra message extend
+  extend Foo {
+    // Trailing extend comment
+
+    optional Baz foo_ext = 127;
+  }
+
+  // Intra second comment
+  extend Bar {
+    optional Baz bar_ext = 1543;
+  }
+
+  extend Koo {
+    optional int32 koo_field = 112;
+  }
+}
+
+message Bar {
+  extensions 100 to 5001;
+}
+
+message Foo {
+  extensions 100 to 5001;
+}
+
+message Koo {
+  extensions 100 to 5001;
+}
+

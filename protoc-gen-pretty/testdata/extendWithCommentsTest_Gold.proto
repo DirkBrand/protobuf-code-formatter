@@ -2,7 +2,7 @@ import "testdata/descriptor.proto";
 
 // Comment before extension
 extend google.protobuf.FileOptions {
-  	optional bool goproto_enum_prefix_all = 63002;
+  optional bool goproto_enum_prefix_all = 63002;
   optional string goproto_stringer_all = 5003;
 }
 

@@ -1,5 +1,3 @@
-package gogoproto;
-
 import "testdata/descriptor.proto";
 
 extend google.protobuf.FileOptions {
