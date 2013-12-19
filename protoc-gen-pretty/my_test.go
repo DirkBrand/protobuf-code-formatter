@@ -76,16 +76,6 @@ func TestFieldOptions(t *testing.T) {
 	}
 }
 
-func TestExtendCommentLimitation(t *testing.T) {
-	fileName := "extendCommentsLimitationTest.proto"
-	res, err := parseAndTestFile(fileLocation + fileName)
-	if res {
-		t.Errorf("%v", err)
-	} else {
-		fmt.Println(fileName + " <TEST FAILED CORRECTLY>")
-	}
-}
-
 func TestNestedMessage(t *testing.T) {
 	fileName := "nestedMessageCommentsTest.proto"
 	res, err := parseAndTestFile(fileLocation + fileName)
@@ -133,6 +123,37 @@ func TestWalterTest1(t *testing.T) {
 		t.Errorf("%v", err)
 	} else {
 		fmt.Println(fileName + " <TEST PASSED>")
+	}
+}
+
+// Negative Tests
+func TestExtendCommentLimitation(t *testing.T) {
+	fileName := "extendCommentsLimitationTest.proto"
+	res, err := parseAndTestFile(fileLocation + fileName)
+	if res {
+		t.Errorf("%v", err)
+	} else {
+		fmt.Println(fileName + " <TEST FAILED CORRECTLY>")
+	}
+}
+
+func TestOrderLostLimitation(t *testing.T) {
+	fileName := "orderLostTest.proto"
+	res, err := parseAndTestFile(fileLocation + fileName)
+	if res {
+		t.Errorf("%v", err)
+	} else {
+		fmt.Println(fileName + " <TEST FAILED CORRECTLY>")
+	}
+}
+
+func TestUnattachedCommentsLostLimitation(t *testing.T) {
+	fileName := "commentsStyleLostTest.proto"
+	res, err := parseAndTestFile(fileLocation + fileName)
+	if res {
+		t.Errorf("%v", err)
+	} else {
+		fmt.Println(fileName + " <TEST FAILED CORRECTLY>")
 	}
 }
 

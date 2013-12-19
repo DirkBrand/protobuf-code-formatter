@@ -1,0 +1,35 @@
+package sample;
+
+import "testdata/descriptor.proto";
+import "testdata/gogo_small.proto";
+
+extend google.protobuf.FileOptions {
+  optional bool goproto_enum_prefix_all = 63002;
+  optional string goproto_stringer_all = 5003;
+}
+
+option (goproto_stringer_dall) = 4.2;
+
+extend google.protobuf.MethodOptions {
+  optional int32 option1 = 1000000;
+  optional string option2 = 1000;
+}
+
+enum MyEnum {
+  FOO = 1;
+  BAR = 2;
+}
+
+message Person {
+  required string name = 1;
+}
+
+message Person2 {
+  required string name = 1;
+}
+
+enum MyEnum2 {
+  FOO2 = 1;
+  BAR2 = 2;
+}
+
