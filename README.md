@@ -21,11 +21,9 @@ Limitations
 
 2. For comments, outer `extend' groups are logically grouped together, so inner comments are lost
 
-3. For comments, trailing comments are not stored for group/nested message/message, so those are lost in formatting.
+3. Style of comments are not preserved (/* */ vs. //), so single-line comments are shown with `//` and multi-line comments with `/* */`.
 
-4. Style of comments are not preserved (/* */ vs. //), so single-line comments are shown with `//` and multi-line comments with `/* */`.
-
-5. Any comments not directly adjacent to a line of code, are not preserved.  Comments must be directly above or below a line of code (without newlines).
+4. Any comments not directly adjacent to a line of code, are not preserved.  Comments must be directly above or below a line of code (without newlines).
 
 
 [![Build Status](https://drone.io/github.com/DirkBrand/protobuf-code-formatter/status.png)](https://drone.io/github.com/DirkBrand/protobuf-code-formatter/latest)
