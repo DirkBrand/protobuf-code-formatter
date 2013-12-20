@@ -39,7 +39,6 @@ enum MyEnum {
   BAR = 2;
 }
 
-
 message MyMessage {
   option (my_message_option) = 1234;
 
@@ -51,7 +50,6 @@ message RequestType {}
 
 message ResponseType {}
 
-
 service MyService {
   option (my_service_option) = FOO;
 
@@ -60,6 +58,3 @@ service MyService {
     option (my_method_option).bar = "Some string";
   }
 }
-
-
-

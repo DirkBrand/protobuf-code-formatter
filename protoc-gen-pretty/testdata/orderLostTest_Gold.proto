@@ -25,7 +25,6 @@ enum MyEnum2 {
   BAR2 = 2;
 }
 
-
 message Person {
   required string name = 1;
 }

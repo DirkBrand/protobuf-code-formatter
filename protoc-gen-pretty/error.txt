@@ -1,4 +1,0 @@
-failed to marshal output prototestdata/orderLostTest_Gold.proto:33:3: "FOO" is already defined in "sample".
-testdata/orderLostTest_Gold.proto:33:3: Note that enum values use C++ scoping rules, meaning that enum values are siblings of their type, not children of it.  Therefore, "FOO" must be unique within "sample", not just within "MyEnum2".
-testdata/orderLostTest_Gold.proto:34:3: "BAR" is already defined in "sample".
-testdata/orderLostTest_Gold.proto:34:3: Note that enum values use C++ scoping rules, meaning that enum values are siblings of their type, not children of it.  Therefore, "BAR" must be unique within "sample", not just within "MyEnum2".

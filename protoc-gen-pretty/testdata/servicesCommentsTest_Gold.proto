@@ -6,7 +6,6 @@ message RequestType {}
 
 message ResponseType {}
 
-
 // My First Service Comment
 service MyService {
   // trailing service comment

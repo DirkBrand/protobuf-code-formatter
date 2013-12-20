@@ -40,7 +40,6 @@ enum AnotherTestEnum {
   E = 11;
 }
 
-
 message someCustomFieldOptions {
   repeated double Field1 = 1 [(gogoproto.nullable) = true];
   repeated float Field2 = 2 [(gogoproto.embed) = false];

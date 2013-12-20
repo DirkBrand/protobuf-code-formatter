@@ -173,7 +173,9 @@ func parseAndTestFile(filename string) (bool, error) {
 		if err != nil {
 			panic(err)
 		}
-		fo.WriteString(formattedFile)
+		if len(formattedFile) > 0 {
+			fo.WriteString(formattedFile)
+		}
 		fo.Close()
 
 		_, err2 := parser.ParseFile("tempOutput.proto", "./", "../../../")

@@ -31,7 +31,6 @@ option (goproto_stringer_dall) = 4.2;
    comments
    over here */
 
-
 // Comment before enum
 enum MyEnum {
   // Enum trailing comment
@@ -41,7 +40,6 @@ enum MyEnum {
   // second enumvalue comment
   BAR = 2;
 }
-
 
 /* hello
    multi-line
