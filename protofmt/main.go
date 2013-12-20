@@ -1,0 +1,105 @@
+/*
+
+Copyright (c) 2013, Dirk Brand
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without modification, are permitted
+provided that the following conditions are met:
+
+ * Redistributions of source code must retain the above copyright notice, this list of
+   conditions and the following disclaimer.
+ * Redistributions in binary form must reproduce the above copyright notice, this list of
+   conditions and the following disclaimer in the documentation and/or other materials provided
+   with the distribution.
+
+THIS SOFTWARE IS PROVIDED BY THE AUTHOR AND CONTRIBUTORS ``AS IS'' AND ANY EXPRESS OR IMPLIED
+WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
+FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHOR OR CONTRIBUTORS
+BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT
+OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+*/
+
+package main
+
+import (
+	"errors"
+	"flag"
+	"fmt"
+	parser "github.com/DirkBrand/protobuf-code-formatter/protofmt/parser"
+	"os"
+	"strings"
+)
+
+func main() {
+
+	// FLAGS
+	r := flag.Bool("r", false, "Indicates whether to recursively format the files in the argument folder.")
+	imp_path := flag.String("proto_path", "./", "The path to find all relative imported .proto files.")
+
+	flag.Parse()
+
+	fmt.Println("r has value ", *r)
+	fmt.Println("proto_path has value ", *imp_path)
+
+	if len(os.Args) <= 1 {
+		panic(errors.New("Not enough arguments! You need atleast the .proto location. "))
+	}
+
+	proto_path := os.Args[len(os.Args)-1]
+
+	d, err := os.Open(proto_path)
+	if err != nil {
+		fmt.Errorf("%v", err)
+	}
+	defer d.Close()
+	fi, err := d.Readdir(-1)
+	if err != nil {
+		fmt.Errorf("%v", err)
+	}
+	for _, fi := range fi {
+		if !strings.HasSuffix(proto_path, string(os.PathSeparator)) {
+			proto_path += string(os.PathSeparator)
+		}
+		visit(proto_path, *imp_path, fi)
+	}
+
+}
+
+func visit(pathThusFar string, imp_path string, f os.FileInfo) {
+
+	path := pathThusFar + f.Name()
+
+	if f.IsDir() {
+		d, err := os.Open(path)
+		if err != nil {
+			fmt.Errorf("%v", err)
+		}
+		defer d.Close()
+		fi, err := d.Readdir(-1)
+		if err != nil {
+			fmt.Errorf("%v", err)
+		}
+		for _, fi := range fi {
+			if !strings.HasSuffix(path, string(os.PathSeparator)) {
+				path += string(os.PathSeparator)
+			}
+			visit(path, imp_path, fi)
+		}
+	} else if f.Mode().IsRegular() && strings.HasSuffix(f.Name(), ".proto") {
+		d, err := parser.ParseFile(path, pathThusFar, imp_path, "./")
+		if err != nil {
+			panic(err)
+		} else {
+			fmt.Println("Formatting " + f.Name())
+			formattedFile := d.Fmt(f.Name())
+			formattedFile = strings.TrimSpace(formattedFile)
+			fmt.Println(formattedFile)
+		}
+	} else {
+		fmt.Errorf("%v", errors.New(f.Name()+" cannot be processed."))
+	}
+}

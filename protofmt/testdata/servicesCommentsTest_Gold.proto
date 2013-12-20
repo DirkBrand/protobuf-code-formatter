@@ -1,0 +1,42 @@
+package gogoproto;
+
+import "testdata/gogo_small.proto";
+
+message RequestType {}
+
+message ResponseType {}
+
+// My First Service Comment
+service MyService {
+  // trailing service comment
+
+  // Intra-Service comment before options
+  option (my_service_option) = FOO;
+  // Intra-Service comment after options
+
+  option (my_service_option2) = BAR;
+
+  // comments before method in service
+  rpc MyMethod(RequestType) returns(ResponseType) {
+    // Intra-Method comment before options
+    option (my_method_option).foo = 567;
+    // Intra-Method trailing comment
+
+    // Intra second comment
+    option (my_method_option).bar = "Some string";
+    // Intra second trailing
+  }
+}
+// My Second Service Comment
+service MyService2 {
+  option (my_service_option) = FOO;
+  // A trailing options comment
+
+  // A second method comment
+  rpc MyMethod(RequestType) returns(ResponseType) {
+    // trailing method comment
+
+    option (my_method_option).foo = 567;
+    option (my_method_option).bar = "Some string";
+  }
+}
