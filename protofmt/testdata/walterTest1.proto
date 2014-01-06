@@ -2,6 +2,5 @@ package test;
 
 message SrcTree {
   optional string PackageName = 1;
-  repeated test.SrcTree Imports = 2;
+  repeated SrcTree Imports = 2;
 }
-

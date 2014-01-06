@@ -1,23 +1,8 @@
 import "testdata/descriptor.proto";
 
-
 extend google.protobuf.FileOptions {
-    optional bool goproto_enum_prefix_all = 63002;
-    optional string goproto_stringer_all = 5003;
-}
-
-message Baz {
-
-  extend Foo {
-    optional Baz foo_ext = 127;
-  }  
-
- 
-   optional int32 bar = 126;
-}
-
-message Foo {
-  extensions 100 to max;
+  optional bool goproto_enum_prefix_all = 63002;
+  optional string goproto_stringer_all = 5003;
 }
 
 extend google.protobuf.MethodOptions {
@@ -25,3 +10,14 @@ extend google.protobuf.MethodOptions {
   optional Foo option2 = 1000;
 }
 
+message Baz {
+  extend Foo {
+    optional Baz foo_ext = 127;
+  }
+
+  optional int32 bar = 126;
+}
+
+message Foo {
+  extensions 100 to max;
+}

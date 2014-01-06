@@ -42,8 +42,8 @@ func main() {
 
 	flag.Parse()
 
-	fmt.Println("r has value ", *r)
-	fmt.Println("proto_path has value ", *imp_path)
+	fmt.Println("r has value", *r)
+	fmt.Println("proto_path has value", *imp_path)
 
 	if len(os.Args) <= 1 {
 		panic(errors.New("Not enough arguments! You need atleast the .proto location. "))
@@ -61,19 +61,20 @@ func main() {
 		fmt.Errorf("%v", err)
 	}
 	for _, fi := range fi {
+		// It is not a proper filename
 		if !strings.HasSuffix(proto_path, string(os.PathSeparator)) {
 			proto_path += string(os.PathSeparator)
 		}
-		visit(proto_path, *imp_path, fi)
+		// Visit the directory / .proto file
+		visit(proto_path, *imp_path, fi, *r)
 	}
 
 }
 
-func visit(pathThusFar string, imp_path string, f os.FileInfo) {
+func visit(pathThusFar string, imp_path string, f os.FileInfo, recurs bool) {
 
 	path := pathThusFar + f.Name()
-
-	if f.IsDir() {
+	if f.IsDir() && recurs {
 		d, err := os.Open(path)
 		if err != nil {
 			fmt.Errorf("%v", err)
@@ -87,17 +88,22 @@ func visit(pathThusFar string, imp_path string, f os.FileInfo) {
 			if !strings.HasSuffix(path, string(os.PathSeparator)) {
 				path += string(os.PathSeparator)
 			}
-			visit(path, imp_path, fi)
+			visit(path, imp_path, fi, recurs)
 		}
 	} else if f.Mode().IsRegular() && strings.HasSuffix(f.Name(), ".proto") {
-		d, err := parser.ParseFile(path, pathThusFar, imp_path, "./")
+		d, err := parser.ParseFile(path, pathThusFar, imp_path)
 		if err != nil {
 			panic(err)
 		} else {
-			fmt.Println("Formatting " + f.Name())
+			fmt.Println("Formatting " + path)
 			formattedFile := d.Fmt(f.Name())
 			formattedFile = strings.TrimSpace(formattedFile)
-			fmt.Println(formattedFile)
+			//fmt.Println(formattedFile)
+
+			fo, _ := os.Create(path)
+
+			fo.WriteString(formattedFile)
+			fo.Close()
 		}
 	} else {
 		fmt.Errorf("%v", errors.New(f.Name()+" cannot be processed."))

@@ -32,4 +32,3 @@ message Foo {
 message Koo {
   extensions 100 to 5001;
 }
-

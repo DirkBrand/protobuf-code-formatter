@@ -21,4 +21,3 @@ message Baz {
 message Foo {
   extensions 100 to max;
 }
-

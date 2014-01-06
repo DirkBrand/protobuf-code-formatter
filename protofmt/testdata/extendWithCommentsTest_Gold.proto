@@ -42,4 +42,3 @@ message Foo {
   extensions 300 to max;
 
 }
-
