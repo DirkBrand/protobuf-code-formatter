@@ -606,7 +606,9 @@ func getFormattedOptionsFromExtensionMap(extensionMap map[int32]proto.Extension,
 				for _, ext := range extensions {
 					if ext.GetNumber() == optInd {
 						bytes, _ := proto.GetRawExtension(extensionMap, optInd)
+						//fmt.Printf("bytes: %v\n", hex.Dump(bytes))
 						key, n := proto.DecodeVarint(bytes)
+						headerlength := n
 
 						wt := key & 0x7
 
@@ -662,11 +664,15 @@ func getFormattedOptionsFromExtensionMap(extensionMap map[int32]proto.Extension,
 							counter += 1
 
 						} else if wt == 2 && ext.GetType() != FieldDescriptorProto_TYPE_STRING { // Messages are special (for method options)
-							payload, m := proto.DecodeVarint(bytes[n:])
-							n += m
-							//fmt.Printf("payload: %v\n", payload)
-							for ind := uint64(0); ind < payload-1; ind += 1 {
+
+							for n < len(bytes) {
+								// Grab the payload
+								_, m := proto.DecodeVarint(bytes[n:])
+								n += m
+								// Grab tag/wiretype
+								//fmt.Printf("%v, %v\n", n, len(bytes))
 								firstInt, a := proto.DecodeVarint(bytes[n:])
+								//fmt.Printf("firstint: %v\n", a)
 								n += a
 								wiretype := firstInt & 0x7
 								var packType FieldDescriptorProto_Type
@@ -685,8 +691,10 @@ func getFormattedOptionsFromExtensionMap(extensionMap map[int32]proto.Extension,
 								}
 
 								packVal, b := byteToValueString(bytes, n, packType)
-								n += b
+								n = b
+								//fmt.Printf("%v\n", packType)
 								//fmt.Printf("%v\n", packVal)
+								n += headerlength
 
 								if ext.GetType() == FieldDescriptorProto_TYPE_MESSAGE {
 									tagNum := firstInt >> 3
@@ -737,7 +745,8 @@ func getFormattedOptionsFromExtensionMap(extensionMap map[int32]proto.Extension,
 							}
 
 						} else {
-							val, _ = byteToValueString(bytes, n, ext.GetType())
+							val, b := byteToValueString(bytes, n, ext.GetType())
+							n = b
 
 							s = append(s, LeadingComments(fmt.Sprintf("%s,%d,%d", pathIncludingParent, 999, commentsIndex), depth+1))
 
@@ -863,8 +872,9 @@ func byteToValueString(b []byte, lastReadIndex int, t FieldDescriptorProto_Type)
 		lastReadIndex += 1
 
 	case FieldDescriptorProto_TYPE_UINT32, FieldDescriptorProto_TYPE_INT32, FieldDescriptorProto_TYPE_UINT64, FieldDescriptorProto_TYPE_INT64:
-		d, _ := proto.DecodeVarint(b[lastReadIndex:])
-		lastReadIndex += 1
+		d, m := proto.DecodeVarint(b[lastReadIndex:])
+		lastReadIndex += m
+		//fmt.Printf("m: %v\n", m)
 		val = fmt.Sprintf("%v", d)
 
 	case FieldDescriptorProto_TYPE_FLOAT, FieldDescriptorProto_TYPE_SFIXED32, FieldDescriptorProto_TYPE_FIXED32:
@@ -880,9 +890,10 @@ func byteToValueString(b []byte, lastReadIndex int, t FieldDescriptorProto_Type)
 		val = fmt.Sprintf("%v", f)
 
 	case FieldDescriptorProto_TYPE_STRING:
-		_, n := proto.DecodeVarint(b[lastReadIndex:])
+		l, n := proto.DecodeVarint(b[lastReadIndex:])
 		lastReadIndex += n
-		val = `"` + string(b[lastReadIndex:]) + `"`
+		val = `"` + string(b[lastReadIndex:lastReadIndex+int(l)]) + `"`
+		lastReadIndex += int(l)
 
 	}
 

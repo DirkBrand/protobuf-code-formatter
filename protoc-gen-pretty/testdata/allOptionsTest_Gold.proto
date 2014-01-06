@@ -54,7 +54,7 @@ service MyService {
   option (my_service_option) = FOO;
 
   rpc MyMethod(RequestType) returns(ResponseType) {
-    option (my_method_option).foo = 567;
-    option (my_method_option).bar = "Some string";
+    option (my_method_option).bar = "testing";
+    option (my_method_option).foo = 127;
   }
 }

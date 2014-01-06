@@ -39,6 +39,7 @@ func main() {
 	// FLAGS
 	r := flag.Bool("r", false, "Indicates whether to recursively format the files in the argument folder.")
 	imp_path := flag.String("proto_path", "./", "The path to find all relative imported .proto files.")
+	excl_dirs := flag.String("exclude_dirs", "", "A list")
 
 	flag.Parse()
 
