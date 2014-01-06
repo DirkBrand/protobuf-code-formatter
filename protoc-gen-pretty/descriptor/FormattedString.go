@@ -51,6 +51,7 @@ func (this *FileDescriptorSet) Fmt(fileToFormat string) string {
 	for _, tmpFile := range allFiles {
 		if tmpFile.GetName() == fileToFormat {
 			s := tmpFile.Fmt(0)
+			//fmt.Println(tmpFile.GetSourceCodeInfo().GoString())
 			s = strings.Replace(s, "\n\n\n", "\n\n", -1)
 			return s
 		}

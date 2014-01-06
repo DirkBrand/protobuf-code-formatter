@@ -26,7 +26,7 @@ extend google.protobuf.FileOptions {
 
 /* Some
    // nested
-   comments */
+   comments*/
 option (goproto_stringer_dall) = 4.2;
 	/* Different
   	 comments
@@ -45,10 +45,10 @@ enum MyEnum {
 /* hello
    	multi-line
    	comment
-   world */
+   world*/
 message Person2 {
   /* Already
-     multiline */
+     multiline*/
   required string name = 1;
   // trailing
 }

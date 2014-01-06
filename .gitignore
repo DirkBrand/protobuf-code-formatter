@@ -1,1 +1,3 @@
 *tempOutput.proto
+protoc-gen-pretty/protoc-gen-pretty
+protofmt/protofmt
