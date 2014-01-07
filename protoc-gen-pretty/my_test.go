@@ -163,7 +163,7 @@ func parseAndTestFile(filename string) (bool, error) {
 		return false, err
 	} else {
 
-		header := readFileHeader(filename)
+		header := parser.ReadFileHeader(filename)
 
 		formattedFile := d.Fmt(filename)
 		formattedFile = strings.TrimSpace(formattedFile)
@@ -193,28 +193,13 @@ func parseAndTestFile(filename string) (bool, error) {
 			panic(err)
 		}
 
-		if strcmp(formattedFile, strings.TrimSpace(string(goldString))) != 0 {
+		if parser.Strcmp(formattedFile, strings.TrimSpace(string(goldString))) != 0 {
 			fmt.Println("Failed: " + filename)
 			os.Exit(-1)
-			return false, errors.New("Failed the gold standard with: " + fmt.Sprintf("%v", strcmp(formattedFile, strings.TrimSpace(string(goldString)))))
+			return false, errors.New("Failed the gold standard with: " + fmt.Sprintf("%v", parser.Strcmp(formattedFile, strings.TrimSpace(string(goldString)))))
 		}
 
 		return true, nil
 
 	}
-}
-
-func strcmp(a, b string) int {
-	var min = len(b)
-	if len(a) < len(b) {
-		min = len(a)
-	}
-	var diff int
-	for i := 0; i < min && diff == 0; i++ {
-		diff = int(a[i]) - int(b[i])
-	}
-	if diff == 0 {
-		diff = len(a) - len(b)
-	}
-	return diff
 }

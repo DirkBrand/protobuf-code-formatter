@@ -23,13 +23,13 @@ extend google.protobuf.MethodOptions {
   optional string option2 = 1000;
 }
 
-//                Some
-//               // nested
-//               comments 
+//                                Some
+//                               // nested
+//                               comments 
 option (goproto_stringer_dall) = 4.2;
-//                Different
-//               comments
-//               over here 
+//                                Different
+//                               comments
+//                               over here 
 
 // Comment before enum
 enum MyEnum {
@@ -41,13 +41,13 @@ enum MyEnum {
   BAR = 2;
 }
 
-//                hello
-//               multi-line
-//               comment
-//               world 
+//                                hello
+//                               multi-line
+//                               comment
+//                               world 
 message Person2 {
-  //                Already
-  //               multiline 
+  //                                Already
+  //                               multiline 
   required string name = 1;
   // trailing
 }

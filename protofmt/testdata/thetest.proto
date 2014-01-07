@@ -9,25 +9,25 @@ extend test.MyExtendable {
   optional NinEmbeddedStruct FieldC = 102;
 }
 
+option (gogoproto.marshaler_all) = false;
+option (gogoproto.stringer_all) = true;
+option (gogoproto.sizer_all) = true;
+option (gogoproto.benchgen_all) = true;
+option (gogoproto.enum_stringer_all) = true;
+option (gogoproto.goproto_stringer_all) = false;
+option (gogoproto.equal_all) = true;
+option (gogoproto.goproto_enum_stringer_all) = false;
 option (gogoproto.goproto_getters_all) = false;
 option (gogoproto.goproto_enum_prefix_all) = false;
-option (gogoproto.testgen_all) = true;
-option (gogoproto.enum_stringer_all) = true;
-option (gogoproto.verbose_equal_all) = true;
-option (gogoproto.stringer_all) = true;
-option (gogoproto.goproto_enum_stringer_all) = false;
-option (gogoproto.gostring_all) = true;
-option (gogoproto.description_all) = true;
-option (gogoproto.face_all) = true;
-option (gogoproto.sizer_all) = true;
-option (gogoproto.unsafe_unmarshaler_all) = false;
-option (gogoproto.marshaler_all) = false;
-option (gogoproto.equal_all) = true;
-option (gogoproto.unmarshaler_all) = false;
-option (gogoproto.benchgen_all) = true;
 option (gogoproto.unsafe_marshaler_all) = false;
+option (gogoproto.unmarshaler_all) = false;
+option (gogoproto.gostring_all) = true;
+option (gogoproto.unsafe_unmarshaler_all) = false;
 option (gogoproto.populate_all) = true;
-option (gogoproto.goproto_stringer_all) = false;
+option (gogoproto.face_all) = true;
+option (gogoproto.description_all) = true;
+option (gogoproto.verbose_equal_all) = true;
+option (gogoproto.testgen_all) = true;
 
 enum TheTestEnum {
   A = 0;

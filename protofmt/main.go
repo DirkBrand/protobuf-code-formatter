@@ -26,12 +26,10 @@ OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package main
 
 import (
-	"bufio"
 	"errors"
 	"flag"
 	"fmt"
-	parser "github.com/DirkBrand/protobuf-code-formatter/protofmt/parser"
-	"io"
+	parser "github.com/DirkBrand/protobuf-code-formatter/protoc-gen-pretty/parser"
 	"os"
 	"strings"
 )
@@ -76,7 +74,12 @@ func main() {
 func visit(pathThusFar string, imp_path string, exclude_paths []string, f os.FileInfo, recurs bool) {
 
 	path := pathThusFar + f.Name()
-	if f.IsDir() && recurs && stringInSlice(path, exclude_paths) {
+
+	if f.IsDir() && !strings.HasSuffix(path, string(os.PathSeparator)) {
+		path += string(os.PathSeparator)
+	}
+
+	if f.IsDir() && recurs && !stringInSlice(path, exclude_paths) {
 		d, err := os.Open(path)
 		if err != nil {
 			fmt.Errorf("%v", err)
@@ -87,9 +90,6 @@ func visit(pathThusFar string, imp_path string, exclude_paths []string, f os.Fil
 			fmt.Errorf("%v", err)
 		}
 		for _, fi := range fi {
-			if !strings.HasSuffix(path, string(os.PathSeparator)) {
-				path += string(os.PathSeparator)
-			}
 			visit(path, imp_path, exclude_paths, fi, recurs)
 		}
 	} else if f.Mode().IsRegular() && strings.HasSuffix(f.Name(), ".proto") {
@@ -98,7 +98,7 @@ func visit(pathThusFar string, imp_path string, exclude_paths []string, f os.Fil
 			panic(err)
 		} else {
 			fmt.Println("Formatted " + path)
-			header := readFileHeader(path)
+			header := parser.ReadFileHeader(path)
 			formattedFile := d.Fmt(f.Name())
 			formattedFile = strings.TrimSpace(formattedFile)
 			if len(header) != 0 {
@@ -115,40 +115,6 @@ func visit(pathThusFar string, imp_path string, exclude_paths []string, f os.Fil
 	}
 }
 
-func readFileHeader(filename string) string {
-	var s string
-
-	f, err := os.Open(filename)
-	if err != nil {
-		panic(err)
-	}
-	defer f.Close()
-	r := bufio.NewReader(f)
-	for {
-		path, err := r.ReadString(10) // 0x0A separator = newline
-		if err == io.EOF {
-			// do something here
-			break
-		} else if err != nil {
-			panic(err)
-		}
-
-		path = strings.TrimSpace(path)
-
-		if strings.HasPrefix(path, "//") {
-			path = strings.Replace(path, "//", "// ", 1)
-			s += path + "\n"
-		} else if strings.HasPrefix(path, "package") {
-			s = ""
-			break
-		} else {
-			break
-		}
-	}
-
-	return s
-}
-
 func stringInSlice(a string, list []string) bool {
 	for _, b := range list {
 		if strings.HasPrefix(a, b) {
@@ -156,19 +122,4 @@ func stringInSlice(a string, list []string) bool {
 		}
 	}
 	return false
-}
-
-func strcmp(a, b string) int {
-	var min = len(b)
-	if len(a) < len(b) {
-		min = len(a)
-	}
-	var diff int
-	for i := 0; i < min && diff == 0; i++ {
-		diff = int(a[i]) - int(b[i])
-	}
-	if diff == 0 {
-		diff = len(a) - len(b)
-	}
-	return diff
 }
