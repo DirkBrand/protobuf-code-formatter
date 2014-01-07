@@ -163,8 +163,13 @@ func parseAndTestFile(filename string) (bool, error) {
 		return false, err
 	} else {
 
+		header := readFileHeader(filename)
+
 		formattedFile := d.Fmt(filename)
 		formattedFile = strings.TrimSpace(formattedFile)
+		if len(header) != 0 {
+			formattedFile = header + "\n" + formattedFile
+		}
 
 		// Test if formatted file can be parsed
 		fo, err := os.Create("tempOutput.proto")
@@ -190,7 +195,6 @@ func parseAndTestFile(filename string) (bool, error) {
 
 		if strcmp(formattedFile, strings.TrimSpace(string(goldString))) != 0 {
 			fmt.Println("Failed: " + filename)
-			//fmt.Println(formattedFile)
 			os.Exit(-1)
 			return false, errors.New("Failed the gold standard with: " + fmt.Sprintf("%v", strcmp(formattedFile, strings.TrimSpace(string(goldString)))))
 		}

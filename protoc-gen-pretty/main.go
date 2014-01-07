@@ -26,12 +26,15 @@ OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package main
 
 import (
+	"bufio"
 	proto "code.google.com/p/gogoprotobuf/proto"
 	descriptor "github.com/DirkBrand/protobuf-code-formatter/protoc-gen-pretty/descriptor"
 	parser "github.com/DirkBrand/protobuf-code-formatter/protoc-gen-pretty/parser"
 	plugin "github.com/DirkBrand/protobuf-code-formatter/protoc-gen-pretty/plugin"
+	"io"
 	"io/ioutil"
 	"os"
+	"strings"
 	//"strings"
 )
 
@@ -61,6 +64,10 @@ func main() {
 				if protoFile.GetName() == fileToGen {
 					fileSet := descriptor.FileDescriptorSet{Request.GetProtoFile(), nil}
 					formattedFiles[fileToGen] = fileSet.Fmt(fileToGen)
+					header := readFileHeader(fileToGen)
+					if len(header) != 0 {
+						formattedFiles[fileToGen] = header + "\n" + formattedFiles[fileToGen]
+					}
 					//os.Stderr.WriteString(fmt.Sprintf("%v", formattedFiles[fileToGen]))
 				}
 			}
@@ -86,15 +93,9 @@ func main() {
 			} else {
 				Response.File[i] = new(plugin.CodeGeneratorResponse_File)
 
-				// Adds `_fixed`
-				//fileName = path.Base(fileName)
-				//fileName = strings.Split(fileName, ".")[0] + "_fixed." + strings.Split(fileName, ".")[1]
-
 				Response.File[i].Name = proto.String(fileName)
 				Response.File[i].Content = proto.String(formatFile)
 
-				//os.Stderr.Write([]byte(Response.File[i].GetName() + "\n"))
-				//os.Stderr.Write([]byte(Response.File[i].GetContent() + "\n"))
 				i += 1
 
 			}
@@ -111,4 +112,38 @@ func main() {
 		}
 
 	}
+}
+
+func readFileHeader(filename string) string {
+	var s string
+
+	f, err := os.Open(filename)
+	if err != nil {
+		panic(err)
+	}
+	defer f.Close()
+	r := bufio.NewReader(f)
+	for {
+		path, err := r.ReadString(10) // 0x0A separator = newline
+		if err == io.EOF {
+			// do something here
+			break
+		} else if err != nil {
+			panic(err)
+		}
+
+		path = strings.TrimSpace(path)
+
+		if strings.HasPrefix(path, "//") {
+			path = strings.Replace(path, "//", "// ", 1)
+			s += path + "\n"
+		} else if strings.HasPrefix(path, "package") {
+			s = ""
+			break
+		} else {
+			break
+		}
+	}
+
+	return s
 }
