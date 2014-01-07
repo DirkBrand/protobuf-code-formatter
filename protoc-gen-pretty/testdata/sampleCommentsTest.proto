@@ -25,12 +25,12 @@ extend google.protobuf.FileOptions {
 	}
 
 /* Some
-   // nested
-   comments*/
+    // nested
+    comments*/
 option (goproto_stringer_dall) = 4.2;
-	/* Different
-  	 comments
-   	over here */
+/* Different
+    comments
+     over here */
 
 // Comment before enum
 enum MyEnum {

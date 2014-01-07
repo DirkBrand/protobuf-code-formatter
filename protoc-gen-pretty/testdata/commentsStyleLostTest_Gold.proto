@@ -1,7 +1,7 @@
-//  Not attached Comments
+// Not attached Comments
 
-//  Double line
-//  Should stay like this
+// Double line
+// Should stay like this
 message Person2 {
 
   // Block comment on one line, should stay like this

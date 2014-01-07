@@ -311,14 +311,14 @@ func LeadingComments(path string, depth int) string {
 				for _, line := range strCol {
 					s = append(s, getIndentation(depth))
 					s = append(s, "// ")
-					s = append(s, line)
+					s = append(s, strings.TrimSpace(line))
 					s = append(s, "\n")
 				}
 			} else {
 				for i := 0; i < len(strCol); i += 1 {
 					line := strCol[i]
 					s = append(s, getIndentation(depth))
-					s = append(s, "// ")
+					s = append(s, "//")
 					s = append(s, line)
 					s = append(s, "\n")
 				}
@@ -348,7 +348,7 @@ func TrailingComments(path string, depth int) string {
 				// Block comments cannot nest
 				for _, line := range strCol {
 					s = append(s, getIndentation(depth))
-					s = append(s, "// ")
+					s = append(s, "//")
 					s = append(s, line)
 					s = append(s, "\n")
 				}
@@ -356,7 +356,7 @@ func TrailingComments(path string, depth int) string {
 				for i := 0; i < len(strCol); i += 1 {
 					line := strCol[i]
 					s = append(s, getIndentation(depth))
-					s = append(s, "// ")
+					s = append(s, "//")
 					s = append(s, line)
 					s = append(s, "\n")
 				}

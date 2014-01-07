@@ -6,13 +6,13 @@
 //  modification, are permitted provided that the following conditions are
 //  met:
 // 
-//      * Redistributions of source code must retain the above copyright
+//   * Redistributions of source code must retain the above copyright
 //  notice, this list of conditions and the following disclaimer.
-//      * Redistributions in binary form must reproduce the above
+//   * Redistributions in binary form must reproduce the above
 //  copyright notice, this list of conditions and the following disclaimer
 //  in the documentation and/or other materials provided with the
 //  distribution.
-//      * Neither the name of Google Inc. nor the names of its
+//   * Neither the name of Google Inc. nor the names of its
 //  contributors may be used to endorse or promote products derived from
 //  this software without specific prior written permission.
 // 
@@ -39,22 +39,28 @@ message FileDescriptorSet {
 // Describes a complete .proto file.
 message FileDescriptorProto {
   optional string name = 1;
+
   // file name, relative to root of source tree
   optional string package = 2;
   // e.g. "foo", "foo.bar", etc.
+
   // Names of files imported by this file.
   repeated string dependency = 3;
+
   // Indexes of the public imported files in the dependency list above.
   repeated int32 public_dependency = 10;
+
   //  Indexes of the weak imported files in the dependency list.
   //  For Google-internal migration only. Do not use.
   repeated int32 weak_dependency = 11;
+
   // All top-level definitions in this file.
   repeated DescriptorProto message_type = 4;
   repeated EnumDescriptorProto enum_type = 5;
   repeated ServiceDescriptorProto service = 6;
   repeated FieldDescriptorProto extension = 7;
   optional FileOptions options = 8;
+
   //  This field contains optional information about the original source code.
   //  You may safely remove this entire field whithout harming runtime
   //  functionality of the descriptors -- the information is needed only by
@@ -83,18 +89,22 @@ message FieldDescriptorProto {
   optional string name = 1;
   optional int32 number = 3;
   optional google.protobuf.FieldDescriptorProto.Label label = 4;
+
   //  If type_name is set, this need not be set.  If both this and type_name
   //  are set, this must be either TYPE_ENUM or TYPE_MESSAGE.
   optional google.protobuf.FieldDescriptorProto.Type type = 5;
+
   //  For message and enum types, this is the name of the type.  If the name
   //  starts with a '.', it is fully-qualified.  Otherwise, C++-like scoping
   //  rules are used to find the type (i.e. first the nested types within this
   //  message are searched, then within the parent, on up to the root
   //  namespace).
   optional string type_name = 6;
+
   //  For extensions, this is the name of the type being extended.  It is
   //  resolved in the same manner as type_name.
   optional string extendee = 2;
+
   //  For numeric types, contains the original text representation of the value.
   //  For booleans, "true" or "false".
   //  For strings, contains the default text contents (not escaped in any way).
@@ -104,14 +114,17 @@ message FieldDescriptorProto {
   optional FieldOptions options = 8;
 
   enum Type {
+
     //  0 is reserved for errors.
     //  Order is weird for historical reasons.
     TYPE_DOUBLE = 1;
     TYPE_FLOAT = 2;
+
     //  Not ZigZag encoded.  Negative numbers take 10 bytes.  Use TYPE_SINT64 if
     //  negative values are likely.
     TYPE_INT64 = 3;
     TYPE_UINT64 = 4;
+
     //  Not ZigZag encoded.  Negative numbers take 10 bytes.  Use TYPE_SINT32 if
     //  negative values are likely.
     TYPE_INT32 = 5;
@@ -120,9 +133,11 @@ message FieldDescriptorProto {
     TYPE_BOOL = 8;
     TYPE_STRING = 9;
     TYPE_GROUP = 10;
+
     // Tag-delimited aggregate.
     TYPE_MESSAGE = 11;
     // Length-delimited aggregate.
+
     // New in version 2.
     TYPE_BYTES = 12;
     TYPE_UINT32 = 13;
@@ -130,11 +145,13 @@ message FieldDescriptorProto {
     TYPE_SFIXED32 = 15;
     TYPE_SFIXED64 = 16;
     TYPE_SINT32 = 17;
+
     // Uses ZigZag encoding.
     TYPE_SINT64 = 18;
     // Uses ZigZag encoding.
   }
   enum Label {
+
     // 0 is reserved for errors
     LABEL_OPTIONAL = 1;
     LABEL_REQUIRED = 2;
@@ -167,6 +184,7 @@ message ServiceDescriptorProto {
 // Describes a method of a service.
 message MethodDescriptorProto {
   optional string name = 1;
+
   //  Input and output type names.  These are resolved in the same way as
   //  FieldDescriptorProto.type_name, but must refer to a message type.
   optional string input_type = 2;
@@ -175,6 +193,7 @@ message MethodDescriptorProto {
 }
 
 message FileOptions {
+
   // Clients can define custom options in extensions of this message. See above.
   extensions 1000 to max;
 
@@ -183,12 +202,14 @@ message FileOptions {
   //  inappropriate because proto packages do not normally start with backwards
   //  domain names.
   optional string java_package = 1;
+
   //  If set, all the classes from the .proto file are wrapped in a single
   //  outer class with the given name.  This applies to both Proto1
   //  (equivalent to the old "--one_java_file" option) and Proto2 (where
   //  a .proto always translates to a single class, but you may want to
   //  explicitly choose the class name).
   optional string java_outer_classname = 8;
+
   //  If set true, then the Java code generator will generate a separate .java
   //  file for each top-level message, enum, and service defined in the .proto
   //  file.  Thus, these types will *not* be nested inside the outer class
@@ -196,15 +217,18 @@ message FileOptions {
   //  generated to contain the file's getDescriptor() method as well as any
   //  top-level extensions defined in the file.
   optional bool java_multiple_files = 10;
+
   //  If set true, then the Java code generator will generate equals() and
   //  hashCode() methods for all messages defined in the .proto file. This is
   //  purely a speed optimization, as the AbstractMessage base class includes
   //  reflection-based implementations of these methods.
   optional bool java_generate_equals_and_hash = 20;
   optional google.protobuf.FileOptions.OptimizeMode optimize_for = 9;
+
   //  Sets the Go package where structs generated from this .proto will be
   //  placed.  There is no default.
   optional string go_package = 11;
+
   //  Should generic services be generated in each language?  "Generic" services
   //  are not specific to any particular RPC system.  They are generated by the
   //  main code generators in each language (without additional plugins).
@@ -218,6 +242,7 @@ message FileOptions {
   optional bool cc_generic_services = 16;
   optional bool java_generic_services = 17;
   optional bool py_generic_services = 18;
+
   // The parser stores options it doesn't recognize here. See above.
   repeated UninterpretedOption uninterpreted_option = 999;
 
@@ -226,7 +251,9 @@ message FileOptions {
     SPEED = 1;
     // Generate complete code for parsing, serialization,
     // etc.
+
     CODE_SIZE = 2;
+
     // Use ReflectionOps to implement these methods.
     LITE_RUNTIME = 3;
     // Generate code using MessageLite and the lite runtime.
@@ -234,6 +261,7 @@ message FileOptions {
 }
 
 message MessageOptions {
+
   // Clients can define custom options in extensions of this message. See above.
   extensions 1000 to max;
 
@@ -256,15 +284,18 @@ message MessageOptions {
   //  Because this is an option, the above two restrictions are not enforced by
   //  the protocol compiler.
   optional bool message_set_wire_format = 1;
+
   //  Disables the generation of the standard "descriptor()" accessor, which can
   //  conflict with a field of the same name.  This is meant to make migration
   //  from proto1 easier; new code should avoid fields named "descriptor".
   optional bool no_standard_descriptor_accessor = 2;
+
   // The parser stores options it doesn't recognize here. See above.
   repeated UninterpretedOption uninterpreted_option = 999;
 }
 
 message FieldOptions {
+
   // Clients can define custom options in extensions of this message. See above.
   extensions 1000 to max;
 
@@ -273,11 +304,13 @@ message FieldOptions {
   //  options below.  This option is not yet implemented in the open source
   //  release -- sorry, we'll try to include it in a future version!
   optional google.protobuf.FieldOptions.CType ctype = 1;
+
   //  The packed option can be enabled for repeated primitive fields to enable
   //  a more efficient representation on the wire. Rather than repeatedly
   //  writing the tag and type for each element, the entire array is encoded as
   //  a single length-delimited blob.
   optional bool packed = 2;
+
   //  Should this field be parsed lazily?  Lazy applies only to message-type
   //  fields.  It means that when the outer message is initially parsed, the
   //  inner message's contents will not be parsed but instead stored in encoded
@@ -307,11 +340,13 @@ message FieldOptions {
   //  check its required fields, regardless of whether or not the message has
   //  been parsed.
   optional bool lazy = 5;
+
   //  Is this field deprecated?
   //  Depending on the target platform, this can emit Deprecated annotations
   //  for accessors, or it will be completely ignored; in the very least, this
   //  is a formalization for deprecating fields.
   optional bool deprecated = 3;
+
   //  EXPERIMENTAL.  DO NOT USE.
   //  For "map" fields, the name of the field in the enclosed type that
   //  is the key for this map.  For example, suppose we have:
@@ -325,13 +360,16 @@ message FieldOptions {
   //  In this situation, the map key for Item will be set to "name".
   //  TODO: Fully-implement this, then remove the "experimental_" prefix.
   optional string experimental_map_key = 9;
+
   // For Google-internal migration only. Do not use.
   optional bool weak = 10;
   optional string interpreted_customtype = 616;
+
   // The parser stores options it doesn't recognize here. See above.
   repeated UninterpretedOption uninterpreted_option = 999;
 
   enum CType {
+
     // Default mode.
     STRING = 0;
     CORD = 1;
@@ -340,17 +378,20 @@ message FieldOptions {
 }
 
 message EnumOptions {
+
   // Clients can define custom options in extensions of this message. See above.
   extensions 1000 to max;
 
   //  Set this option to false to disallow mapping different tag names to a same
   //  value.
   optional bool allow_alias = 2;
+
   // The parser stores options it doesn't recognize here. See above.
   repeated UninterpretedOption uninterpreted_option = 999;
 }
 
 message EnumValueOptions {
+
   // Clients can define custom options in extensions of this message. See above.
   extensions 1000 to max;
 
@@ -359,6 +400,7 @@ message EnumValueOptions {
 }
 
 message ServiceOptions {
+
   // Clients can define custom options in extensions of this message. See above.
   extensions 1000 to max;
 
@@ -367,6 +409,7 @@ message ServiceOptions {
 }
 
 message MethodOptions {
+
   // Clients can define custom options in extensions of this message. See above.
   extensions 1000 to max;
 
@@ -382,6 +425,7 @@ message MethodOptions {
 //  in them.
 message UninterpretedOption {
   repeated google.protobuf.UninterpretedOption.NamePart name = 2;
+
   //  The value of the uninterpreted option, in whatever type the tokenizer
   //  identified it as during parsing. Exactly one of these should be set.
   optional string identifier_value = 3;
@@ -405,6 +449,7 @@ message UninterpretedOption {
 //  Encapsulates information about the original source file from which a
 //  FileDescriptorProto was generated.
 message SourceCodeInfo {
+
   //  A Location identifies a piece of source code in a .proto file which
   //  corresponds to a particular definition.  This information is intended
   //  to be useful to IDEs, code indexers, documentation generators, and similar
@@ -451,6 +496,7 @@ message SourceCodeInfo {
   repeated google.protobuf.SourceCodeInfo.Location location = 1;
 
   message Location {
+
     //  Identifies which part of the FileDescriptorProto was defined at this
     //  location.
     // 
@@ -475,12 +521,14 @@ message SourceCodeInfo {
     //  this path refers to the whole field declaration (from the beginning
     //  of the label to the terminating semicolon).
     repeated int32 path = 1 [packed = true];
+
     //  Always has exactly three or four elements: start line, start column,
     //  end line (optional, otherwise assumed same as start line), end column.
     //  These are packed into a single field for efficiency.  Note that line
     //  and column numbers are zero-based -- typically you will want to add
     //  1 to each before displaying to a user.
     repeated int32 span = 2 [packed = true];
+
     //  If this SourceCodeInfo represents a complete declaration, these are any
     //  comments appearing before and after the declaration which appear to be
     //  attached to the declaration.

@@ -28,7 +28,7 @@ func ReadFileHeader(filename string) string {
 		path = strings.TrimSpace(path)
 
 		if strings.HasPrefix(path, "//") {
-			path = strings.Replace(path, "//", "// ", 1)
+			//path = strings.Replace(path, "//", "// ", 1)
 			s += path + "\n"
 		} else if strings.HasPrefix(path, "package") {
 			s = ""
