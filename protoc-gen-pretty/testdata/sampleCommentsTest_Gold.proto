@@ -4,21 +4,26 @@ package sample;
 
 // Important import
 import "testdata/descriptor.proto";
+
 // But also kinda important
 import "testdata/gogo_small.proto";
 
 // I'm extending this
 extend google.protobuf.FileOptions {
+
   // This is an extended field
   optional bool goproto_enum_prefix_all = 63002;
+
   // This is another extended field
   optional string goproto_stringer_all = 5003;
 }
 
 // Also this
 extend google.protobuf.MethodOptions {
+
   // This is yet another extended field
   optional int32 option1 = 1000000;
+
   // Yet another
   optional string option2 = 1000;
 }
@@ -31,21 +36,25 @@ option (goproto_stringer_dall) = 4.2;
 // comments
 // over here 
 
+
 // Comment before enum
 enum MyEnum {
   // Enum trailing comment
 
   // Enum value comment
   FOO = 1;
+
   // second enumvalue comment
   BAR = 2;
 }
+
 
 //  hello
 // multi-line
 // comment
 // world
 message Person2 {
+
   //  Already
   // multiline
   required string name = 1;

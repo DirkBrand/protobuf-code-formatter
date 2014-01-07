@@ -13,8 +13,10 @@ extend google.protobuf.MethodOptions {
 
 // Comment before message
 message Baz {
+
   // Comment before intra message extend
   extend Foo {
+
     // Extend inside comment
     optional Baz foo_ext = 127;
     // Extend trailing comment
@@ -34,6 +36,7 @@ message Bar {
 }
 
 message Foo {
+
   // comment before extension range
   extensions 100 to 201;
   // extension trailing comment
@@ -42,4 +45,3 @@ message Foo {
   extensions 300 to max;
 
 }
-

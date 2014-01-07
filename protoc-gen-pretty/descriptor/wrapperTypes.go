@@ -297,6 +297,7 @@ func LeadingComments(path string, depth int) string {
 		//text = strings.TrimSpace(text)
 		var s []string
 		strCol := strings.Split(text, "\n")
+		s = append(s, "\n")
 		if len(strCol) == 1 {
 			// Single line comments
 			s = append(s, getIndentation(depth))

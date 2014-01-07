@@ -2,6 +2,7 @@ import "testdata/gogo_small.proto";
 
 option (goproto_enum_prefix_all) = true;
 option (goproto_stringer_all) = "aw yeah";
+
 // Comment before option
 option (goproto_stringer_fall) = 4;
 // Comment after option
