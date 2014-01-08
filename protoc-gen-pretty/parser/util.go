@@ -16,6 +16,7 @@ func ReadFileHeader(filename string) string {
 	}
 	defer f.Close()
 	r := bufio.NewReader(f)
+	gap := 0
 	for {
 		path, err := r.ReadString(10) // 0x0A separator = newline
 		if err == io.EOF {
@@ -28,13 +29,20 @@ func ReadFileHeader(filename string) string {
 		path = strings.TrimSpace(path)
 
 		if strings.HasPrefix(path, "//") {
-			//path = strings.Replace(path, "//", "// ", 1)
+			gap = 0
 			s += path + "\n"
-		} else if strings.HasPrefix(path, "package") {
-			s = ""
-			break
+		} else if len(path) == 0 {
+			if gap == 0 {
+				s += "\n"
+			}
+			gap += 1
 		} else {
-			break
+			if gap == 0 {
+				s = ""
+				break
+			} else {
+				break
+			}
 		}
 	}
 

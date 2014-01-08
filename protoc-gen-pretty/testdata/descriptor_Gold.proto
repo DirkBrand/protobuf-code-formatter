@@ -36,10 +36,15 @@
 // A valid .proto file can be translated directly to a FileDescriptorProto
 // without any other information (e.g. without reading its imports).
 
-package google.protobuf;
 
+
+package google.protobuf;
 option java_package = "com.google.protobuf";
 option java_outer_classname = "DescriptorProtos";
+
+// descriptor.proto must be optimized for speed because reflection-based
+// algorithms don't work during bootstrapping.
+option optimize_for = SPEED;
 
 // The protocol compiler can output a FileDescriptorSet containing the .proto
 // files it parses.
@@ -49,15 +54,13 @@ message FileDescriptorSet {
 
 // Describes a complete .proto file.
 message FileDescriptorProto {
-  optional string name = 1;  // file name, relative to root of source tree
-  optional string package = 2;  // e.g. "foo", "foo.bar", etc.
+  optional string name = 1;       // file name, relative to root of source tree
+  optional string package = 2;    // e.g. "foo", "foo.bar", etc.
 
   // Names of files imported by this file.
   repeated string dependency = 3;
-
   // Indexes of the public imported files in the dependency list above.
   repeated int32 public_dependency = 10;
-
   // Indexes of the weak imported files in the dependency list.
   // For Google-internal migration only. Do not use.
   repeated int32 weak_dependency = 11;
@@ -67,6 +70,7 @@ message FileDescriptorProto {
   repeated EnumDescriptorProto enum_type = 5;
   repeated ServiceDescriptorProto service = 6;
   repeated FieldDescriptorProto extension = 7;
+
   optional FileOptions options = 8;
 
   // This field contains optional information about the original source code.
@@ -79,60 +83,33 @@ message FileDescriptorProto {
 // Describes a message type.
 message DescriptorProto {
   optional string name = 1;
+
   repeated FieldDescriptorProto field = 2;
   repeated FieldDescriptorProto extension = 6;
+
   repeated DescriptorProto nested_type = 3;
   repeated EnumDescriptorProto enum_type = 4;
-  repeated ExtensionRange extension_range = 5;
-  optional MessageOptions options = 7;
 
   message ExtensionRange {
     optional int32 start = 1;
     optional int32 end = 2;
   }
+  repeated ExtensionRange extension_range = 5;
+
+  optional MessageOptions options = 7;
 }
 
 // Describes a field within a message.
-message FieldDescriptorProto {  
-  optional string name = 1;
-  optional int32 number = 3;
-  optional Label label = 4;
-
-  // If type_name is set, this need not be set.  If both this and type_name
-  // are set, this must be either TYPE_ENUM or TYPE_MESSAGE.
-  optional Type type = 5;
-
-  // For message and enum types, this is the name of the type.  If the name
-  // starts with a '.', it is fully-qualified.  Otherwise, C++-like scoping
-  // rules are used to find the type (i.e. first the nested types within this
-  // message are searched, then within the parent, on up to the root
-  // namespace).
-  optional string type_name = 6;
-
-  // For extensions, this is the name of the type being extended.  It is
-  // resolved in the same manner as type_name.
-  optional string extendee = 2;
-
-  // For numeric types, contains the original text representation of the value.
-  // For booleans, "true" or "false".
-  // For strings, contains the default text contents (not escaped in any way).
-  // For bytes, contains the C escaped value.  All bytes >= 128 are escaped.
-  // TODO(kenton):  Base-64 encode?
-  optional string default_value = 7;
-  optional FieldOptions options = 8;
-
+message FieldDescriptorProto {
   enum Type {
-
     // 0 is reserved for errors.
     // Order is weird for historical reasons.
     TYPE_DOUBLE         = 1;
     TYPE_FLOAT          = 2;
-
     // Not ZigZag encoded.  Negative numbers take 10 bytes.  Use TYPE_SINT64 if
     // negative values are likely.
     TYPE_INT64          = 3;
     TYPE_UINT64         = 4;
-
     // Not ZigZag encoded.  Negative numbers take 10 bytes.  Use TYPE_SINT32 if
     // negative values are likely.
     TYPE_INT32          = 5;
@@ -161,7 +138,33 @@ message FieldDescriptorProto {
     // TODO(sanjay): Should we add LABEL_MAP?
   };
 
+  optional string name = 1;
+  optional int32 number = 3;
+  optional Label label = 4;
 
+  // If type_name is set, this need not be set.  If both this and type_name
+  // are set, this must be either TYPE_ENUM or TYPE_MESSAGE.
+  optional Type type = 5;
+
+  // For message and enum types, this is the name of the type.  If the name
+  // starts with a '.', it is fully-qualified.  Otherwise, C++-like scoping
+  // rules are used to find the type (i.e. first the nested types within this
+  // message are searched, then within the parent, on up to the root
+  // namespace).
+  optional string type_name = 6;
+
+  // For extensions, this is the name of the type being extended.  It is
+  // resolved in the same manner as type_name.
+  optional string extendee = 2;
+
+  // For numeric types, contains the original text representation of the value.
+  // For booleans, "true" or "false".
+  // For strings, contains the default text contents (not escaped in any way).
+  // For bytes, contains the C escaped value.  All bytes >= 128 are escaped.
+  // TODO(kenton):  Base-64 encode?
+  optional string default_value = 7;
+
+  optional FieldOptions options = 8;
 }
 
 // Describes an enum type.

@@ -62,7 +62,7 @@ func main() {
 					formattedFiles[fileToGen] = fileSet.Fmt(fileToGen)
 					header := parser.ReadFileHeader(fileToGen)
 					if len(header) != 0 {
-						formattedFiles[fileToGen] = header + "\n" + formattedFiles[fileToGen]
+						formattedFiles[fileToGen] = header + formattedFiles[fileToGen]
 					}
 					//os.Stderr.WriteString(fmt.Sprintf("%v", formattedFiles[fileToGen]))
 				}

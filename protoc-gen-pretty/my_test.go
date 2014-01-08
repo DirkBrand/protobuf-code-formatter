@@ -126,6 +126,17 @@ func TestWalterTest1(t *testing.T) {
 	}
 }
 
+func TestDescriptor(t *testing.T) {
+	fileName := "descriptor.proto"
+	res, err := parseAndTestFile(fileLocation + fileName)
+	if !res {
+		t.Errorf("%v", err)
+	} else {
+		fmt.Println(fileName + " <TEST PASSED>")
+	}
+	//os.Exit(-1)
+}
+
 // Negative Tests
 func TestExtendCommentLimitation(t *testing.T) {
 	fileName := "extendCommentsLimitationTest.proto"
@@ -168,7 +179,7 @@ func parseAndTestFile(filename string) (bool, error) {
 		formattedFile := d.Fmt(filename)
 		formattedFile = strings.TrimSpace(formattedFile)
 		if len(header) != 0 {
-			formattedFile = header + "\n" + formattedFile
+			formattedFile = header + formattedFile
 		}
 
 		// Test if formatted file can be parsed
@@ -182,8 +193,9 @@ func parseAndTestFile(filename string) (bool, error) {
 		fo.Close()
 
 		_, err2 := parser.ParseFile("tempOutput.proto", "./", "../../../")
-		defer os.Remove("tempOutput.proto")
+		//defer os.Remove("tempOutput.proto")
 		if err2 != nil {
+			os.Exit(-1)
 			return false, err2
 		}
 
@@ -194,7 +206,7 @@ func parseAndTestFile(filename string) (bool, error) {
 		}
 
 		if parser.Strcmp(formattedFile, strings.TrimSpace(string(goldString))) != 0 {
-			fmt.Println("Failed: " + filename)
+			fmt.Println("FAILED: " + filename)
 			os.Exit(-1)
 			return false, errors.New("Failed the gold standard with: " + fmt.Sprintf("%v", parser.Strcmp(formattedFile, strings.TrimSpace(string(goldString)))))
 		}

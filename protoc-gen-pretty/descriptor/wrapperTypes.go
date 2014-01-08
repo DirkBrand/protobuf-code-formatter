@@ -102,13 +102,19 @@ type ServiceDescriptor struct {
 	path string
 }
 
+type FileOptionsDescriptor struct {
+	common
+	*FileOptions
+}
+
 type FileDescriptor struct {
 	*FileDescriptorProto
-	desc []*Descriptor         // All the messages defined in this file.
-	enum []*EnumDescriptor     // All the enums defined in this file.
-	ext  []*FieldDescriptor    // All the top-level extensions defined in this file.
-	serv []*ServiceDescriptor  // All the top-level services defined in this file.
-	imp  []*ImportedDescriptor // All types defined in files publicly imported by this file.
+	desc []*Descriptor          // All the messages defined in this file.
+	enum []*EnumDescriptor      // All the enums defined in this file.
+	ext  []*FieldDescriptor     // All the top-level extensions defined in this file.
+	serv []*ServiceDescriptor   // All the top-level services defined in this file.
+	imp  []*ImportedDescriptor  // All types defined in files publicly imported by this file.
+	opt  *FileOptionsDescriptor // All options in the file.
 
 	// Comments, stored as a map of path (comma-separated integers) to the comment.
 	comments map[string]*SourceCodeInfo_Location
@@ -122,12 +128,14 @@ func WrapTypes(set *FileDescriptorSet) {
 		enums := wrapEnumDescriptors(f, descs)
 		exts := wrapExtensions(f)
 		serves := wrapServiceDescriptors(f)
+		options := wrapFileOptionsDescriptor(f)
 		fd := &FileDescriptor{
 			FileDescriptorProto: f,
 			desc:                descs,
 			enum:                enums,
 			ext:                 exts,
 			serv:                serves,
+			opt:                 options,
 		}
 		extractComments(fd)
 		allFiles[i] = fd
@@ -252,6 +260,15 @@ func wrapServiceDescriptors(file *FileDescriptorProto) []*ServiceDescriptor {
 		sl = append(sl, newServiceDescriptor(serve, file, i))
 	}
 	return sl
+}
+
+func wrapFileOptionsDescriptor(file *FileDescriptorProto) *FileOptionsDescriptor {
+	fod := &FileOptionsDescriptor{
+		common:      common{file},
+		FileOptions: file.GetOptions(),
+	}
+
+	return fod
 }
 
 func extractComments(file *FileDescriptor) {

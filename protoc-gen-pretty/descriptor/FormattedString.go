@@ -51,7 +51,7 @@ func (this *FileDescriptorSet) Fmt(fileToFormat string) string {
 	for _, tmpFile := range allFiles {
 		if tmpFile.GetName() == fileToFormat {
 			s := tmpFile.Fmt(0)
-			//fmt.Println(tmpFile.GetSourceCodeInfo().GoString())
+			//fmt.Println(tmpFile.GoString())
 			s = strings.Replace(s, "\n\n\n", "\n\n", -1)
 			return s
 		}
@@ -70,12 +70,6 @@ func (this *FileDescriptor) Fmt(depth int) string {
 
 	counter := 0
 
-	// SourceCodeInfo
-	// Generates a map of comments to paths to use in the construction of the program
-	//source := this.GetSourceCodeInfo()
-	//fmt.Println(len(source.GetLocation()))
-	//commentsMap = source.ExtractComments()
-
 	// the package
 	if len(this.GetPackage()) > 0 {
 		s = append(s, LeadingComments(fmt.Sprintf("%d", packagePath), depth))
@@ -85,6 +79,37 @@ func (this *FileDescriptor) Fmt(depth int) string {
 		s = append(s, TrailingComments(fmt.Sprintf("%d", packagePath), depth))
 
 		counter += 1
+	}
+	// Special imports
+	if (len(this.GetOptions().GetJavaPackage()) > 0 ||
+		len(this.GetOptions().GetJavaOuterClassname()) != 0 ||
+		this.GetOptions().GetJavaMultipleFiles() ||
+		this.GetOptions().GetJavaGenerateEqualsAndHash() ||
+		int32(*this.GetOptions().GetOptimizeFor().Enum()) > 1) && counter > 0 {
+		s = append(s, "\n")
+	}
+	if len(this.GetOptions().GetJavaPackage()) != 0 {
+		s = append(s, "option java_package = ")
+		s = append(s, `"`+this.GetOptions().GetJavaPackage()+`"`)
+		s = append(s, ";\n")
+	}
+	if len(this.GetOptions().GetJavaOuterClassname()) != 0 {
+		s = append(s, "option java_outer_classname = ")
+		s = append(s, `"`+this.GetOptions().GetJavaOuterClassname()+`"`)
+		s = append(s, ";\n")
+	}
+	if this.GetOptions().GetJavaMultipleFiles() {
+		s = append(s, "option java_multiple_files = true")
+		s = append(s, ";\n")
+	}
+	if this.GetOptions().GetJavaGenerateEqualsAndHash() {
+		s = append(s, "option java_generate_equals_and_hash = true")
+		s = append(s, ";\n")
+	}
+	if int32(*this.GetOptions().GetOptimizeFor().Enum()) > 1 {
+		s = append(s, "option optimize_for = ")
+		s = append(s, this.GetOptions().GetOptimizeFor().String())
+		s = append(s, ";\n")
 	}
 
 	// For each import
@@ -331,8 +356,13 @@ func (this *Descriptor) Fmt(depth int, isGroup bool, groupField *FieldDescriptor
 		} else {
 			s = append(s, LeadingComments(fmt.Sprintf("%s,%d,%d", this.path, messageFieldPath, i), depth+1))
 			s = append(s, field.Fmt(depth+1))
-			s = append(s, ";\n")
-			s = append(s, TrailingComments(fmt.Sprintf("%s,%d,%d", this.path, messageFieldPath, i), depth+1))
+			s = append(s, ";")
+			tc := TrailingComments(fmt.Sprintf("%s,%d,%d", this.path, messageFieldPath, i), depth+1)
+			if len(tc) > 0 {
+				s = append(s, tc)
+			} else {
+				s = append(s, "\n")
+			}
 		}
 	}
 
@@ -378,6 +408,11 @@ func (this *FieldDescriptor) Fmt(depth int) string {
 		var found bool
 		typeName := getLastWordFromPath(this.GetTypeName(), ".")
 		for _, mes := range currentFile.GetMessageType() {
+			if mes.GetName() == typeName {
+				found = true
+			}
+		}
+		for _, mes := range this.parent.GetNestedType() {
 			if mes.GetName() == typeName {
 				found = true
 			}
@@ -476,6 +511,7 @@ func (this *EnumDescriptor) Fmt(depth int) string {
 		s = append(s, getFormattedOptionsFromExtensionMap(options.ExtensionMap(), depth, false, fmt.Sprintf("%d,%d", this.path, enumOptionsPath)))
 	}
 
+	// enum fields
 	if len(this.GetValue()) > 0 {
 		s = append(s, "\n")
 	}
@@ -497,9 +533,13 @@ func (this *EnumDescriptor) Fmt(depth int) string {
 			s = append(s, `]`)
 		}
 
-		s = append(s, ";\n")
-
-		s = append(s, TrailingComments(fmt.Sprintf("%s,%d,%d", this.path, enumValuePath, i), depth+1))
+		s = append(s, ";")
+		tc := TrailingComments(fmt.Sprintf("%s,%d,%d", this.path, enumValuePath, i), depth+1)
+		if len(tc) > 0 {
+			s = append(s, tc)
+		} else {
+			s = append(s, "\n")
+		}
 	}
 
 	s = append(s, getIndentation(depth))
