@@ -35,9 +35,9 @@ option (my_file_option) = "Hello world!";
 enum MyEnum {
   option (my_enum_option) = true;
 
-  FOO = 1 [(my_enum_value_option) = 321];
-  BAR = 2;
-}
+  FOO		= 1 [(my_enum_value_option) = 321];
+  BAR		= 2;
+};
 
 message MyMessage {
   option (my_message_option) = 1234;

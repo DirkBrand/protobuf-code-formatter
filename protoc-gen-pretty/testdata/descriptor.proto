@@ -96,11 +96,11 @@ message DescriptorProto {
 message FieldDescriptorProto {
   optional string name = 1;
   optional int32 number = 3;
-  optional google.protobuf.FieldDescriptorProto.Label label = 4;
+  optional Label label = 4;
 
   // If type_name is set, this need not be set.  If both this and type_name
   // are set, this must be either TYPE_ENUM or TYPE_MESSAGE.
-  optional google.protobuf.FieldDescriptorProto.Type type = 5;
+  optional Type type = 5;
 
   // For message and enum types, this is the name of the type.  If the name
   // starts with a '.', it is fully-qualified.  Otherwise, C++-like scoping
@@ -125,40 +125,40 @@ message FieldDescriptorProto {
 
     // 0 is reserved for errors.
     // Order is weird for historical reasons.
-    TYPE_DOUBLE = 1;
-    TYPE_FLOAT = 2;
+    TYPE_DOUBLE		= 1;
+    TYPE_FLOAT		= 2;
 
     // Not ZigZag encoded.  Negative numbers take 10 bytes.  Use TYPE_SINT64 if
     // negative values are likely.
-    TYPE_INT64 = 3;
-    TYPE_UINT64 = 4;
+    TYPE_INT64		= 3;
+    TYPE_UINT64		= 4;
 
     // Not ZigZag encoded.  Negative numbers take 10 bytes.  Use TYPE_SINT32 if
     // negative values are likely.
-    TYPE_INT32 = 5;
-    TYPE_FIXED64 = 6;
-    TYPE_FIXED32 = 7;
-    TYPE_BOOL = 8;
-    TYPE_STRING = 9;
-    TYPE_GROUP = 10;    // Tag-delimited aggregate.
-    TYPE_MESSAGE = 11;    // Length-delimited aggregate.
+    TYPE_INT32		= 5;
+    TYPE_FIXED64	= 6;
+    TYPE_FIXED32	= 7;
+    TYPE_BOOL		= 8;
+    TYPE_STRING		= 9;
+    TYPE_GROUP		= 10;    // Tag-delimited aggregate.
+    TYPE_MESSAGE	= 11;    // Length-delimited aggregate.
 
     // New in version 2.
-    TYPE_BYTES = 12;
-    TYPE_UINT32 = 13;
-    TYPE_ENUM = 14;
-    TYPE_SFIXED32 = 15;
-    TYPE_SFIXED64 = 16;
-    TYPE_SINT32 = 17;    // Uses ZigZag encoding.
-    TYPE_SINT64 = 18;    // Uses ZigZag encoding.
-  }
+    TYPE_BYTES		= 12;
+    TYPE_UINT32		= 13;
+    TYPE_ENUM		= 14;
+    TYPE_SFIXED32	= 15;
+    TYPE_SFIXED64	= 16;
+    TYPE_SINT32		= 17;    // Uses ZigZag encoding.
+    TYPE_SINT64		= 18;    // Uses ZigZag encoding.
+  };
   enum Label {
 
     // 0 is reserved for errors
-    LABEL_OPTIONAL = 1;
-    LABEL_REQUIRED = 2;
-    LABEL_REPEATED = 3;    // TODO(sanjay): Should we add LABEL_MAP?
-  }
+    LABEL_OPTIONAL	= 1;
+    LABEL_REQUIRED	= 2;
+    LABEL_REPEATED	= 3;    // TODO(sanjay): Should we add LABEL_MAP?
+  };
 }
 
 // Describes an enum type.
@@ -193,6 +193,37 @@ message MethodDescriptorProto {
   optional MethodOptions options = 4;
 }
 
+// ===================================================================
+// Options
+//
+// Each of the definitions above may have "options" attached.  These are
+// just annotations which may cause code to be generated slightly differently
+// or may contain hints for code that manipulates protocol messages.
+//
+// Clients may define custom options as extensions of the *Options messages.
+// These extensions may not yet be known at parsing time, so the parser cannot
+// store the values in them.  Instead it stores them in a field in the *Options
+// message called uninterpreted_option. This field must have the same name
+// across all *Options messages. We then use this field to populate the
+// extensions when we build a descriptor, at which point all protos have been
+// parsed and so all extensions are known.
+//
+// Extension numbers for custom options may be chosen as follows:
+// * For options which will only be used within a single application or
+//   organization, or for experimental options, use field numbers 50000
+//   through 99999.  It is up to you to ensure that you do not use the
+//   same number for multiple options.
+// * For options which will be published and used publicly by multiple
+//   independent entities, e-mail protobuf-global-extension-registry@google.com
+//   to reserve extension numbers. Simply provide your project name (e.g.
+//   Object-C plugin) and your porject website (if available) -- there's no need
+//   to explain how you intend to use them. Usually you only need one extension
+//   number. You can declare multiple options with only one extension number by
+//   putting them in a sub-message. See the Custom Options section of the docs
+//   for examples:
+//   http://code.google.com/apis/protocolbuffers/docs/proto.html#options
+//   If this turns out to be popular, a web service will be set up
+//   to automatically assign option numbers.
 message FileOptions {
 
   // Clients can define custom options in extensions of this message. See above.
@@ -217,14 +248,14 @@ message FileOptions {
   // named by java_outer_classname.  However, the outer class will still be
   // generated to contain the file's getDescriptor() method as well as any
   // top-level extensions defined in the file.
-  optional bool java_multiple_files = 10;
+  optional bool java_multiple_files = 10 [default = false];
 
   // If set true, then the Java code generator will generate equals() and
   // hashCode() methods for all messages defined in the .proto file. This is
   // purely a speed optimization, as the AbstractMessage base class includes
   // reflection-based implementations of these methods.
-  optional bool java_generate_equals_and_hash = 20;
-  optional google.protobuf.FileOptions.OptimizeMode optimize_for = 9;
+  optional bool java_generate_equals_and_hash = 20 [default = false];
+  optional OptimizeMode optimize_for = 9 [default = SPEED];
 
   // Sets the Go package where structs generated from this .proto will be
   // placed.  There is no default.
@@ -240,21 +271,19 @@ message FileOptions {
   // that generate code specific to your particular RPC system.  Therefore,
   // these default to false.  Old code which depends on generic services should
   // explicitly set them to true.
-  optional bool cc_generic_services = 16;
-  optional bool java_generic_services = 17;
-  optional bool py_generic_services = 18;
+  optional bool cc_generic_services = 16 [default = false];
+  optional bool java_generic_services = 17 [default = false];
+  optional bool py_generic_services = 18 [default = false];
 
   // The parser stores options it doesn't recognize here. See above.
   repeated UninterpretedOption uninterpreted_option = 999;
 
   // Generated classes can be optimized for speed or code size.
   enum OptimizeMode {
-    SPEED = 1;    // Generate complete code for parsing, serialization,
-
-    // etc.
-    CODE_SIZE = 2;    // Use ReflectionOps to implement these methods.
-    LITE_RUNTIME = 3;    // Generate code using MessageLite and the lite runtime.
-  }
+    SPEED		= 1;    // Generate complete code for parsing, serialization, etc.
+    CODE_SIZE		= 2;    // Use ReflectionOps to implement these methods.
+    LITE_RUNTIME	= 3;    // Generate code using MessageLite and the lite runtime.
+  };
 }
 
 message MessageOptions {
@@ -280,12 +309,12 @@ message MessageOptions {
   //
   // Because this is an option, the above two restrictions are not enforced by
   // the protocol compiler.
-  optional bool message_set_wire_format = 1;
+  optional bool message_set_wire_format = 1 [default = false];
 
   // Disables the generation of the standard "descriptor()" accessor, which can
   // conflict with a field of the same name.  This is meant to make migration
   // from proto1 easier; new code should avoid fields named "descriptor".
-  optional bool no_standard_descriptor_accessor = 2;
+  optional bool no_standard_descriptor_accessor = 2 [default = false];
 
   // The parser stores options it doesn't recognize here. See above.
   repeated UninterpretedOption uninterpreted_option = 999;
@@ -300,7 +329,7 @@ message FieldOptions {
   // representation of the field than it normally would.  See the specific
   // options below.  This option is not yet implemented in the open source
   // release -- sorry, we'll try to include it in a future version!
-  optional google.protobuf.FieldOptions.CType ctype = 1;
+  optional CType ctype = 1 [default = STRING];
 
   // The packed option can be enabled for repeated primitive fields to enable
   // a more efficient representation on the wire. Rather than repeatedly
@@ -336,13 +365,13 @@ message FieldOptions {
   // implementation must either *always* check its required fields, or *never*
   // check its required fields, regardless of whether or not the message has
   // been parsed.
-  optional bool lazy = 5;
+  optional bool lazy = 5 [default = false];
 
   // Is this field deprecated?
   // Depending on the target platform, this can emit Deprecated annotations
   // for accessors, or it will be completely ignored; in the very least, this
   // is a formalization for deprecating fields.
-  optional bool deprecated = 3;
+  optional bool deprecated = 3 [default = false];
 
   // EXPERIMENTAL.  DO NOT USE.
   // For "map" fields, the name of the field in the enclosed type that
@@ -359,7 +388,7 @@ message FieldOptions {
   optional string experimental_map_key = 9;
 
   // For Google-internal migration only. Do not use.
-  optional bool weak = 10;
+  optional bool weak = 10 [default = false];
 
   // The parser stores options it doesn't recognize here. See above.
   repeated UninterpretedOption uninterpreted_option = 999;
@@ -367,10 +396,10 @@ message FieldOptions {
   enum CType {
 
     // Default mode.
-    STRING = 0;
-    CORD = 1;
-    STRING_PIECE = 2;
-  }
+    STRING		= 0;
+    CORD		= 1;
+    STRING_PIECE	= 2;
+  };
 }
 
 message EnumOptions {
@@ -380,7 +409,7 @@ message EnumOptions {
 
   // Set this option to false to disallow mapping different tag names to a same
   // value.
-  optional bool allow_alias = 2;
+  optional bool allow_alias = 2 [default = true];
 
   // The parser stores options it doesn't recognize here. See above.
   repeated UninterpretedOption uninterpreted_option = 999;
@@ -400,6 +429,11 @@ message ServiceOptions {
   // Clients can define custom options in extensions of this message. See above.
   extensions 1000 to max;
 
+  // Note:  Field numbers 1 through 32 are reserved for Google's internal RPC
+  //   framework.  We apologize for hoarding these numbers to ourselves, but
+  //   we were already using them long before we decided to release Protocol
+  //   Buffers.
+  //
   // The parser stores options it doesn't recognize here. See above.
   repeated UninterpretedOption uninterpreted_option = 999;
 }
@@ -409,6 +443,11 @@ message MethodOptions {
   // Clients can define custom options in extensions of this message. See above.
   extensions 1000 to max;
 
+  // Note:  Field numbers 1 through 32 are reserved for Google's internal RPC
+  //   framework.  We apologize for hoarding these numbers to ourselves, but
+  //   we were already using them long before we decided to release Protocol
+  //   Buffers.
+  //
   // The parser stores options it doesn't recognize here. See above.
   repeated UninterpretedOption uninterpreted_option = 999;
 }
@@ -442,10 +481,12 @@ message UninterpretedOption {
   }
 }
 
+// ===================================================================
+// Optional source code info
+//
 // Encapsulates information about the original source file from which a
 // FileDescriptorProto was generated.
 message SourceCodeInfo {
-
   // A Location identifies a piece of source code in a .proto file which
   // corresponds to a particular definition.  This information is intended
   // to be useful to IDEs, code indexers, documentation generators, and similar
@@ -455,6 +496,10 @@ message SourceCodeInfo {
   //   message Foo {
   //     optional string foo = 1;
   //   }
+
+  // Clients can define custom options in extensions of this message. See above.
+  extensions 1000 to max;
+
   // Let's look at just the field definition:
   //   optional string foo = 1;
   //   ^       ^^     ^^  ^  ^^^

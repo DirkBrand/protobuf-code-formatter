@@ -412,9 +412,21 @@ func (this *FieldDescriptor) Fmt(depth int) string {
 				found = true
 			}
 		}
-		for _, mes := range this.parent.GetNestedType() {
-			if mes.GetName() == typeName {
-				found = true
+		if this.parent != nil {
+			for _, mes := range this.parent.DescriptorProto.GetNestedType() {
+				if b, str := scanNestedMessages(mes, typeName, ""); b {
+					typeName = str
+					found = true
+					break
+				}
+			}
+			if !found {
+				for _, mes := range this.parent.enum {
+					if mes.GetName() == typeName {
+						found = true
+						break
+					}
+				}
 			}
 		}
 		if found {
@@ -436,23 +448,28 @@ func (this *FieldDescriptor) Fmt(depth int) string {
 	s = append(s, fmt.Sprintf("%v", this.GetNumber()))
 
 	// OPTIONS
+
 	options := this.GetOptions()
 	i := 0
+	if options != nil || len(this.GetDefaultValue()) > 0 {
+		s = append(s, ` [`)
+	}
+
+	if len(this.GetDefaultValue()) > 0 {
+		s = append(s, `default = `)
+		s = append(s, this.GetDefaultValue())
+		i += 1
+	}
 	if options != nil {
-		if options.GetPacked() || options.GetLazy() || options.GetDeprecated() || len(this.GetDefaultValue()) > 0 || len(options.ExtensionMap()) > 0 {
-			s = append(s, ` [`)
+		if options.GetPacked() || options.GetLazy() || options.GetDeprecated() || len(options.ExtensionMap()) > 0 {
 
 			if len(options.ExtensionMap()) > 0 {
-				s = append(s, getFormattedOptionsFromExtensionMap(options.ExtensionMap(), -1, true, ""))
-				i += 1
-			}
-
-			if len(this.GetDefaultValue()) > 0 {
 				if i >= 1 {
 					s = append(s, ", ")
+				} else {
+					i += 1
 				}
-				s = append(s, `default = `)
-				s = append(s, this.GetDefaultValue())
+				s = append(s, getFormattedOptionsFromExtensionMap(options.ExtensionMap(), -1, true, ""))
 			}
 
 			if options.GetPacked() {
@@ -460,6 +477,7 @@ func (this *FieldDescriptor) Fmt(depth int) string {
 					s = append(s, ", ")
 				}
 				s = append(s, `packed = true`)
+				i += 1
 			}
 
 			if options.GetLazy() {
@@ -467,6 +485,7 @@ func (this *FieldDescriptor) Fmt(depth int) string {
 					s = append(s, ", ")
 				}
 				s = append(s, `lazy = true`)
+				i += 1
 			}
 
 			if options.GetDeprecated() {
@@ -474,11 +493,17 @@ func (this *FieldDescriptor) Fmt(depth int) string {
 					s = append(s, ", ")
 				}
 				s = append(s, `deprecated = true`)
+				i += 1
 			}
-
-			s = append(s, `]`)
+		}
+		if i == 0 {
+			s = append(s, `deprecated = false`)
 		}
 	}
+	if options != nil || len(this.GetDefaultValue()) > 0 {
+		s = append(s, `]`)
+	}
+
 	return strings.Join(s, "")
 }
 
@@ -522,7 +547,13 @@ func (this *EnumDescriptor) Fmt(depth int) string {
 
 		s = append(s, getIndentation(depth+1))
 		s = append(s, enumValue.GetName())
-		s = append(s, ` = `)
+		// TODO: Hacky
+		if len(enumValue.GetName()) >= 12 {
+			s = append(s, "\t")
+		} else {
+			s = append(s, "\t\t")
+		}
+		s = append(s, `= `)
 		s = append(s, fmt.Sprintf("%v", enumValue.GetNumber()))
 
 		// OPTIONS
@@ -543,7 +574,7 @@ func (this *EnumDescriptor) Fmt(depth int) string {
 	}
 
 	s = append(s, getIndentation(depth))
-	s = append(s, "}\n")
+	s = append(s, "};\n")
 
 	return strings.Join(s, "")
 }
@@ -647,7 +678,6 @@ func getFormattedOptionsFromExtensionMap(extensionMap map[int32]proto.Extension,
 				for _, ext := range extensions {
 					if ext.GetNumber() == optInd {
 						bytes, _ := proto.GetRawExtension(extensionMap, optInd)
-						//fmt.Printf("bytes: %v\n", hex.Dump(bytes))
 						key, n := proto.DecodeVarint(bytes)
 						headerlength := n
 
@@ -943,4 +973,34 @@ func byteToValueString(b []byte, lastReadIndex int, t FieldDescriptorProto_Type)
 
 func getLastWordFromPath(s string, d string) string {
 	return strings.Split(s, d)[len(strings.Split(s, d))-1]
+}
+
+func scanNestedMessages(parent *DescriptorProto, typename string, parentStr string) (bool, string) {
+	found := false
+	val := ""
+	if parent.GetName() == typename {
+		var str string
+		if len(parentStr) == 0 {
+			str = typename
+		} else {
+			str = parentStr + "." + typename
+		}
+		return true, str
+	} else {
+		for _, mes := range parent.GetNestedType() {
+			var str string
+			if len(parentStr) == 0 {
+				str = parent.GetName()
+			} else {
+				str = parentStr + "." + parent.GetName()
+			}
+			b, val := scanNestedMessages(mes, typename, str)
+
+			if b {
+				return b, val
+			}
+		}
+	}
+
+	return found, val
 }

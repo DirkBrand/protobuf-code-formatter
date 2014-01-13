@@ -137,6 +137,17 @@ func TestDescriptor(t *testing.T) {
 	//os.Exit(-1)
 }
 
+func TestSample(t *testing.T) {
+	fileName := "sample.proto"
+	res, err := parseAndTestFile(fileLocation + fileName)
+	if !res {
+		t.Errorf("%v", err)
+	} else {
+		fmt.Println(fileName + " <TEST PASSED>")
+	}
+	//os.Exit(-1)
+}
+
 // Negative Tests
 func TestExtendCommentLimitation(t *testing.T) {
 	fileName := "extendCommentsLimitationTest.proto"
@@ -195,7 +206,7 @@ func parseAndTestFile(filename string) (bool, error) {
 		_, err2 := parser.ParseFile("tempOutput.proto", "./", "../../../")
 		//defer os.Remove("tempOutput.proto")
 		if err2 != nil {
-			os.Exit(-1)
+			panic(err2)
 			return false, err2
 		}
 

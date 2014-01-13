@@ -1,0 +1,381 @@
+39d38
+< package google.protobuf;
+40a40,41
+> 
+> package google.protobuf;
+43a45,48
+> // descriptor.proto must be optimized for speed because reflection-based
+> // algorithms don't work during bootstrapping.
+> option optimize_for = SPEED;
+> 
+52,53c57,58
+<   optional string name = 1;  // file name, relative to root of source tree
+<   optional string package = 2;  // e.g. "foo", "foo.bar", etc.
+---
+>   optional string name = 1;       // file name, relative to root of source tree
+>   optional string package = 2;    // e.g. "foo", "foo.bar", etc.
+57d61
+< 
+60d63
+< 
+69a73
+> 
+81a86
+> 
+83a89
+> 
+86,87d91
+<   repeated ExtensionRange extension_range = 5;
+<   optional MessageOptions options = 7;
+92a97,99
+>   repeated ExtensionRange extension_range = 5;
+> 
+>   optional MessageOptions options = 7;
+96a104,140
+>   enum Type {
+>     // 0 is reserved for errors.
+>     // Order is weird for historical reasons.
+>     TYPE_DOUBLE         = 1;
+>     TYPE_FLOAT          = 2;
+>     // Not ZigZag encoded.  Negative numbers take 10 bytes.  Use TYPE_SINT64 if
+>     // negative values are likely.
+>     TYPE_INT64          = 3;
+>     TYPE_UINT64         = 4;
+>     // Not ZigZag encoded.  Negative numbers take 10 bytes.  Use TYPE_SINT32 if
+>     // negative values are likely.
+>     TYPE_INT32          = 5;
+>     TYPE_FIXED64        = 6;
+>     TYPE_FIXED32        = 7;
+>     TYPE_BOOL           = 8;
+>     TYPE_STRING         = 9;
+>     TYPE_GROUP          = 10;  // Tag-delimited aggregate.
+>     TYPE_MESSAGE        = 11;  // Length-delimited aggregate.
+> 
+>     // New in version 2.
+>     TYPE_BYTES          = 12;
+>     TYPE_UINT32         = 13;
+>     TYPE_ENUM           = 14;
+>     TYPE_SFIXED32       = 15;
+>     TYPE_SFIXED64       = 16;
+>     TYPE_SINT32         = 17;  // Uses ZigZag encoding.
+>     TYPE_SINT64         = 18;  // Uses ZigZag encoding.
+>   };
+> 
+>   enum Label {
+>     // 0 is reserved for errors
+>     LABEL_OPTIONAL      = 1;
+>     LABEL_REQUIRED      = 2;
+>     LABEL_REPEATED      = 3;
+>     // TODO(sanjay): Should we add LABEL_MAP?
+>   };
+> 
+122d165
+<   optional FieldOptions options = 8;
+124,161c167
+<   enum Type {
+< 
+<     // 0 is reserved for errors.
+<     // Order is weird for historical reasons.
+<     TYPE_DOUBLE		= 1;
+<     TYPE_FLOAT		= 2;
+< 
+<     // Not ZigZag encoded.  Negative numbers take 10 bytes.  Use TYPE_SINT64 if
+<     // negative values are likely.
+<     TYPE_INT64		= 3;
+<     TYPE_UINT64		= 4;
+< 
+<     // Not ZigZag encoded.  Negative numbers take 10 bytes.  Use TYPE_SINT32 if
+<     // negative values are likely.
+<     TYPE_INT32		= 5;
+<     TYPE_FIXED64	= 6;
+<     TYPE_FIXED32	= 7;
+<     TYPE_BOOL		= 8;
+<     TYPE_STRING		= 9;
+<     TYPE_GROUP		= 10;    // Tag-delimited aggregate.
+<     TYPE_MESSAGE	= 11;    // Length-delimited aggregate.
+< 
+<     // New in version 2.
+<     TYPE_BYTES		= 12;
+<     TYPE_UINT32		= 13;
+<     TYPE_ENUM		= 14;
+<     TYPE_SFIXED32	= 15;
+<     TYPE_SFIXED64	= 16;
+<     TYPE_SINT32		= 17;    // Uses ZigZag encoding.
+<     TYPE_SINT64		= 18;    // Uses ZigZag encoding.
+<   };
+<   enum Label {
+< 
+<     // 0 is reserved for errors
+<     LABEL_OPTIONAL	= 1;
+<     LABEL_REQUIRED	= 2;
+<     LABEL_REPEATED	= 3;    // TODO(sanjay): Should we add LABEL_MAP?
+<   };
+---
+>   optional FieldOptions options = 8;
+166a173
+> 
+167a175
+> 
+174a183
+> 
+181a191
+> 
+192a203
+> 
+195a207
+> 
+198c210
+< //
+---
+> 
+227d238
+< message FileOptions {
+229,230c240,241
+<   // Clients can define custom options in extensions of this message. See above.
+<   extensions 1000 to max;
+---
+> 
+> message FileOptions {
+237a249
+> 
+251c263
+<   optional bool java_multiple_files = 10 [default = false];
+---
+>   optional bool java_multiple_files = 10 [default=false];
+257,258c269,278
+<   optional bool java_generate_equals_and_hash = 20 [default = false];
+<   optional OptimizeMode optimize_for = 9 [default = SPEED];
+---
+>   optional bool java_generate_equals_and_hash = 20 [default=false];
+> 
+>   // Generated classes can be optimized for speed or code size.
+>   enum OptimizeMode {
+>     SPEED = 1;        // Generate complete code for parsing, serialization,
+>                       // etc.
+>     CODE_SIZE = 2;    // Use ReflectionOps to implement these methods.
+>     LITE_RUNTIME = 3; // Generate code using MessageLite and the lite runtime.
+>   }
+>   optional OptimizeMode optimize_for = 9 [default=SPEED];
+263a284,285
+> 
+> 
+274,276c296,298
+<   optional bool cc_generic_services = 16 [default = false];
+<   optional bool java_generic_services = 17 [default = false];
+<   optional bool py_generic_services = 18 [default = false];
+---
+>   optional bool cc_generic_services = 16 [default=false];
+>   optional bool java_generic_services = 17 [default=false];
+>   optional bool py_generic_services = 18 [default=false];
+281,290d302
+<   // Generated classes can be optimized for speed or code size.
+<   enum OptimizeMode {
+<     SPEED		= 1;    // Generate complete code for parsing, serialization, etc.
+<     CODE_SIZE		= 2;    // Use ReflectionOps to implement these methods.
+<     LITE_RUNTIME	= 3;    // Generate code using MessageLite and the lite runtime.
+<   };
+< }
+< 
+< message MessageOptions {
+< 
+292a305
+> }
+293a307
+> message MessageOptions {
+312c326
+<   optional bool message_set_wire_format = 1 [default = false];
+---
+>   optional bool message_set_wire_format = 1 [default=false];
+317c331
+<   optional bool no_standard_descriptor_accessor = 2 [default = false];
+---
+>   optional bool no_standard_descriptor_accessor = 2 [default=false];
+321,323d334
+< }
+< 
+< message FieldOptions {
+326a338
+> }
+327a340
+> message FieldOptions {
+332a346,348
+>   enum CType {
+>     // Default mode.
+>     STRING = 0;
+333a350,353
+>     CORD = 1;
+> 
+>     STRING_PIECE = 2;
+>   }
+339a360,361
+> 
+> 
+368c390
+<   optional bool lazy = 5 [default = false];
+---
+>   optional bool lazy = 5 [default=false];
+374c396
+<   optional bool deprecated = 3 [default = false];
+---
+>   optional bool deprecated = 3 [default=false];
+391c413
+<   optional bool weak = 10 [default = false];
+---
+>   optional bool weak = 10 [default=false];
+396,402c418,419
+<   enum CType {
+< 
+<     // Default mode.
+<     STRING		= 0;
+<     CORD		= 1;
+<     STRING_PIECE	= 2;
+<   };
+---
+>   // Clients can define custom options in extensions of this message. See above.
+>   extensions 1000 to max;
+407,409d423
+<   // Clients can define custom options in extensions of this message. See above.
+<   extensions 1000 to max;
+< 
+412c426
+<   optional bool allow_alias = 2 [default = true];
+---
+>   optional bool allow_alias = 2 [default=true];
+416,418d429
+< }
+< 
+< message EnumValueOptions {
+421a433
+> }
+422a435
+> message EnumValueOptions {
+425,427d437
+< }
+< 
+< message ServiceOptions {
+430a441,443
+> }
+> 
+> message ServiceOptions {
+436c449
+<   //
+---
+> 
+439,441d451
+< }
+< 
+< message MethodOptions {
+444a455,457
+> }
+> 
+> message MethodOptions {
+450c463
+<   //
+---
+> 
+452a466,468
+> 
+>   // Clients can define custom options in extensions of this message. See above.
+>   extensions 1000 to max;
+454a471
+> 
+461a479,487
+>   // The name of the uninterpreted option.  Each string represents a segment in
+>   // a dot-separated name.  is_extension is true iff a segment represents an
+>   // extension (denoted with parentheses in options specs in .proto files).
+>   // E.g.,{ ["foo", false], ["bar.baz", true], ["qux", false] } represents
+>   // "foo.(bar.baz).qux".
+>   message NamePart {
+>     required string name_part = 1;
+>     required bool is_extension = 2;
+>   }
+472,481d497
+< 
+<   // The name of the uninterpreted option.  Each string represents a segment in
+<   // a dot-separated name.  is_extension is true iff a segment represents an
+<   // extension (denoted with parentheses in options specs in .proto files).
+<   // E.g.,{ ["foo", false], ["bar.baz", true], ["qux", false] } represents
+<   // "foo.(bar.baz).qux".
+<   message NamePart {
+<     required string name_part = 1;
+<     required bool is_extension = 2;
+<   }
+486c502
+< //
+---
+> 
+499,502d514
+< 
+<   // Clients can define custom options in extensions of this message. See above.
+<   extensions 1000 to max;
+< 
+538d549
+< 
+540d550
+< 
+564c574
+<     repeated int32 path = 1 [packed = true];
+---
+>     repeated int32 path = 1 [packed=true];
+571c581
+<     repeated int32 span = 2 [packed = true];
+---
+>     repeated int32 span = 2 [packed=true];
+576c586
+<     // 
+---
+>     //
+579c589
+<     // 
+---
+>     //
+584c594
+<     // 
+---
+>     //
+586,606c596,616
+<     // 
+<     // optional int32 foo = 1;  // Comment attached to foo.
+<     // // Comment attached to bar.
+<     // optional int32 bar = 2;
+<     // 
+<     // optional string baz = 3;
+<     // // Comment attached to baz.
+<     // // Another line attached to baz.
+<     // 
+<     // // Comment attached to qux.
+<     // //
+<     // // Another line attached to qux.
+<     // optional double qux = 4;
+<     // 
+<     // optional string corge = 5;
+<     // /* Block comment attached
+<     // * to corge.  Leading asterisks
+<     // * will be removed. */
+<     // /* Block comment attached to
+<     // * grault. */
+<     // optional int32 grault = 6;
+---
+>     //
+>     //   optional int32 foo = 1;  // Comment attached to foo.
+>     //   // Comment attached to bar.
+>     //   optional int32 bar = 2;
+>     //
+>     //   optional string baz = 3;
+>     //   // Comment attached to baz.
+>     //   // Another line attached to baz.
+>     //
+>     //   // Comment attached to qux.
+>     //   //
+>     //   // Another line attached to qux.
+>     //   optional double qux = 4;
+>     //
+>     //   optional string corge = 5;
+>     //   /* Block comment attached
+>     //    * to corge.  Leading asterisks
+>     //    * will be removed. */
+>     //   /* Block comment attached to
+>     //    * grault. */
+>     //   optional int32 grault = 6;
+611d620
+< 

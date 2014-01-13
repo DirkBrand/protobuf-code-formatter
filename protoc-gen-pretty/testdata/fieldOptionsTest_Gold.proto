@@ -29,17 +29,17 @@ package test;
 import "testdata/gogo.proto";
 
 enum TheTestEnum {
-  A = 0;
-  B = 1;
-  C = 2;
-}
+  A		= 0;
+  B		= 1;
+  C		= 2;
+};
 
 enum AnotherTestEnum {
   option (gogoproto.goproto_enum_prefix) = false;
 
-  D = 10;
-  E = 11;
-}
+  D		= 10;
+  E		= 11;
+};
 
 message someCustomFieldOptions {
   repeated double Field1 = 1 [(gogoproto.nullable) = true];
@@ -108,7 +108,7 @@ message someFieldOptions {
   repeated fixed32 Field9 = 9 [packed = true];
   repeated sfixed32 Field10 = 10 [packed = true];
   repeated fixed64 Field11 = 11 [deprecated = true];
-  repeated sfixed64 Field12 = 12;
+  repeated sfixed64 Field12 = 12 [deprecated = false];
   repeated bool Field13 = 13 [packed = true];
 }
 
@@ -156,17 +156,17 @@ message MyExtendable {
 
 message NestedDefinition {
   optional int64 Field1 = 1 [(gogoproto.nullable) = false, deprecated = true];
-  optional test.NestedDefinition.NestedEnum EnumField = 2;
-  optional test.NestedDefinition.NestedMessage.NestedNestedMsg NNM = 3;
-  optional test.NestedDefinition.NestedMessage NM = 4;
+  optional NestedEnum EnumField = 2;
+  optional NestedMessage.NestedNestedMsg NNM = 3;
+  optional NestedMessage NM = 4;
 
   enum NestedEnum {
-    TYPE_NESTED = 1;
-  }
+    TYPE_NESTED		= 1;
+  };
 
   message NestedMessage {
     optional fixed64 NestedField1 = 1 [(gogoproto.nullable) = false, deprecated = true];
-    optional test.NestedDefinition.NestedMessage.NestedNestedMsg NNM = 2;
+    optional NestedNestedMsg NNM = 2;
 
     message NestedNestedMsg {
       optional string NestedNestedField1 = 10 [(gogoproto.nullable) = false, deprecated = true];

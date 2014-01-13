@@ -42,11 +42,11 @@ enum MyEnum {
   // Enum trailing comment
 
   // Enum value comment
-  FOO = 1;
+  FOO		= 1;
 
   // second enumvalue comment
-  BAR = 2;
-}
+  BAR		= 2;
+};
 
 
 // hello
@@ -57,6 +57,5 @@ message Person2 {
 
   // Already
   //multiline
-  required string name = 1;
-  // trailing
+  required string name = 1;  // trailing
 }
