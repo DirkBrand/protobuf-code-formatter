@@ -12,10 +12,10 @@ service MyService {
   // trailing service comment
 
   // Intra-Service comment before options
-  option (my_service_option) = FOO;
+  option (my_service_option)=FOO;
   // Intra-Service comment after options
 
-  option (my_service_option2) = BAR;
+  option (my_service_option2)=BAR;
 
   // comments before method in service
   rpc MyMethod(RequestType) returns(ResponseType) {
@@ -32,7 +32,7 @@ service MyService {
 
 // My Second Service Comment
 service MyService2 {
-  option (my_service_option) = FOO;
+  option (my_service_option)=FOO;
   // A trailing options comment
 
   // A second method comment

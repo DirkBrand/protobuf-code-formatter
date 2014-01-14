@@ -13,16 +13,16 @@ extend google.protobuf.MethodOptions {
   optional string option2 = 1000;
 }
 
-option (goproto_stringer_dall) = 4.2;
+option (goproto_stringer_dall)=4.2;
 
 enum MyEnum {
-  FOO		= 1;
-  BAR		= 2;
+  FOO = 1;
+  BAR = 2;
 };
 
 enum MyEnum2 {
-  FOO2		= 1;
-  BAR2		= 2;
+  FOO2 = 1;
+  BAR2 = 2;
 };
 
 message Person {

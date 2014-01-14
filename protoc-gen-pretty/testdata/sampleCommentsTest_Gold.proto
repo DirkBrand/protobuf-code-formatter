@@ -31,7 +31,7 @@ extend google.protobuf.MethodOptions {
 // Some
 //// nested
 //comments
-option (goproto_stringer_dall) = 4.2;
+option (goproto_stringer_dall)=4.2;
 // Different
 //comments
 //over here 
@@ -42,10 +42,10 @@ enum MyEnum {
   // Enum trailing comment
 
   // Enum value comment
-  FOO		= 1;
+  FOO = 1;
 
   // second enumvalue comment
-  BAR		= 2;
+  BAR = 2;
 };
 
 
@@ -54,7 +54,6 @@ enum MyEnum {
 //comment
 //world
 message Person2 {
-
   // Already
   //multiline
   required string name = 1;  // trailing

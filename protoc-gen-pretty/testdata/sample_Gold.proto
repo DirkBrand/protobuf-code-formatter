@@ -1,4 +1,4 @@
 message Person2 {
-  required bool name = 1 [default = true];
+  required bool name = 1 [default=true];
 }
 

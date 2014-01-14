@@ -20,7 +20,7 @@ extend google.protobuf.ServiceOptions {
 enum MyEnum {
   FOO = 1;
   BAR = 2;
-}
+};
 
 message MyMessage {
   optional int32 foo = 1;

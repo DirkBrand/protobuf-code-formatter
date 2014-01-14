@@ -41,6 +41,14 @@ const (
 	extendPath  = 7 // extensions
 	optionsPath = 8 // options
 
+	// tag numbers for options
+	javaPackagePath               = 1
+	JavaOuterClassnamePath        = 2
+	javaMultipleFilesPath         = 10
+	javaGenerateEqualsAndHashPath = 20
+	optimizeForPath               = 9
+	goPackagePath                 = 11
+
 	// tag numbers in DescriptorProto
 	messageFieldPath          = 2 // field
 	messageMessagePath        = 3 // nested_type

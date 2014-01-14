@@ -1,7 +1,6 @@
 // Double line
 // Should stay like this
 message Person2 {
-
   // Block comment on one line, should stay like this
   required string name = 1;
 }

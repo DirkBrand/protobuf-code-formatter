@@ -29,34 +29,34 @@ package test;
 import "testdata/gogo.proto";
 
 enum TheTestEnum {
-  A		= 0;
-  B		= 1;
-  C		= 2;
+  A = 0;
+  B = 1;
+  C = 2;
 };
 
 enum AnotherTestEnum {
-  option (gogoproto.goproto_enum_prefix) = false;
+  option (gogoproto.goproto_enum_prefix)=false;
 
-  D		= 10;
-  E		= 11;
+  D = 10;
+  E = 11;
 };
 
 message someCustomFieldOptions {
-  repeated double Field1 = 1 [(gogoproto.nullable) = true];
-  repeated float Field2 = 2 [(gogoproto.embed) = false];
-  repeated int32 Field3 = 3 [(gogoproto.nullable) = false];
-  repeated int64 Field4 = 4 [(gogoproto.embed) = true];
-  repeated uint32 Field5 = 5 [(gogoproto.nullable) = false];
-  repeated uint64 Field6 = 6 [(gogoproto.embed) = false];
-  repeated sint32 Field7 = 7 [(gogoproto.nullable) = true];
-  repeated sint64 Field8 = 8 [(gogoproto.embed) = false];
-  repeated fixed32 Field9 = 9 [(gogoproto.nullable) = false];
-  repeated sfixed32 Field10 = 10 [(gogoproto.embed) = true];
-  repeated fixed64 Field11 = 11 [(gogoproto.nullable) = false];
-  repeated sfixed64 Field12 = 12 [(gogoproto.embed) = false];
-  repeated bool Field13 = 13 [(gogoproto.nullable) = true];
-  repeated string Field14 = 14 [(gogoproto.embed) = false];
-  repeated bytes Field15 = 15 [(gogoproto.nullable) = false];
+  repeated double Field1 = 1 [(gogoproto.nullable)=true];
+  repeated float Field2 = 2 [(gogoproto.embed)=false];
+  repeated int32 Field3 = 3 [(gogoproto.nullable)=false];
+  repeated int64 Field4 = 4 [(gogoproto.embed)=true];
+  repeated uint32 Field5 = 5 [(gogoproto.nullable)=false];
+  repeated uint64 Field6 = 6 [(gogoproto.embed)=false];
+  repeated sint32 Field7 = 7 [(gogoproto.nullable)=true];
+  repeated sint64 Field8 = 8 [(gogoproto.embed)=false];
+  repeated fixed32 Field9 = 9 [(gogoproto.nullable)=false];
+  repeated sfixed32 Field10 = 10 [(gogoproto.embed)=true];
+  repeated fixed64 Field11 = 11 [(gogoproto.nullable)=false];
+  repeated sfixed64 Field12 = 12 [(gogoproto.embed)=false];
+  repeated bool Field13 = 13 [(gogoproto.nullable)=true];
+  repeated string Field14 = 14 [(gogoproto.embed)=false];
+  repeated bytes Field15 = 15 [(gogoproto.nullable)=false];
 }
 
 message fieldsWithValues {
@@ -78,62 +78,62 @@ message fieldsWithValues {
 }
 
 message someCompositeFieldOptions {
-  repeated double Field1 = 1 [(gogoproto.nullable) = false, packed = true];
-  repeated float Field2 = 2 [(gogoproto.nullable) = false, deprecated = true];
-  repeated int32 Field3 = 3 [(gogoproto.nullable) = false, packed = true];
-  repeated int64 Field4 = 4 [(gogoproto.nullable) = false, packed = true];
-  repeated uint32 Field5 = 5 [(gogoproto.nullable) = false, deprecated = true];
-  repeated uint64 Field6 = 6 [(gogoproto.nullable) = false, deprecated = true];
-  repeated sint32 Field7 = 7 [(gogoproto.nullable) = false, deprecated = true];
-  repeated sint64 Field8 = 8 [(gogoproto.nullable) = false, packed = true];
-  repeated fixed32 Field9 = 9 [(gogoproto.nullable) = false, packed = true, deprecated = true];
-  repeated sfixed32 Field10 = 10 [(gogoproto.nullable) = false, packed = true];
-  repeated fixed64 Field11 = 11 [(gogoproto.nullable) = false, packed = true, deprecated = true];
-  repeated sfixed64 Field12 = 12 [(gogoproto.nullable) = false, packed = true];
-  repeated bool Field13 = 13 [(gogoproto.nullable) = false, deprecated = true];
-  optional bytes Id = 14 [(gogoproto.customtype) = "Uuid", (gogoproto.nullable) = false];
-  optional bytes Value = 15 [(gogoproto.customtype) = "code.google.com/p/gogoprotobuf/test/custom.Uint128", (gogoproto.nullable) = false];
-  optional bytes customId = 16 [(gogoproto.customtype) = "Uuid", (gogoproto.nullable) = false, deprecated = true];
+  repeated double Field1 = 1 [(gogoproto.nullable)=false, packed=true];
+  repeated float Field2 = 2 [(gogoproto.nullable)=false, deprecated=true];
+  repeated int32 Field3 = 3 [(gogoproto.nullable)=false, packed=true];
+  repeated int64 Field4 = 4 [(gogoproto.nullable)=false, packed=true];
+  repeated uint32 Field5 = 5 [(gogoproto.nullable)=false, deprecated=true];
+  repeated uint64 Field6 = 6 [(gogoproto.nullable)=false, deprecated=true];
+  repeated sint32 Field7 = 7 [(gogoproto.nullable)=false, deprecated=true];
+  repeated sint64 Field8 = 8 [(gogoproto.nullable)=false, packed=true];
+  repeated fixed32 Field9 = 9 [(gogoproto.nullable)=false, packed=true, deprecated=true];
+  repeated sfixed32 Field10 = 10 [(gogoproto.nullable)=false, packed=true];
+  repeated fixed64 Field11 = 11 [(gogoproto.nullable)=false, packed=true, deprecated=true];
+  repeated sfixed64 Field12 = 12 [(gogoproto.nullable)=false, packed=true];
+  repeated bool Field13 = 13 [(gogoproto.nullable)=false, deprecated=true];
+  optional bytes Id = 14 [(gogoproto.customtype)="Uuid", (gogoproto.nullable)=false];
+  optional bytes Value = 15 [(gogoproto.customtype)="code.google.com/p/gogoprotobuf/test/custom.Uint128", (gogoproto.nullable)=false];
+  optional bytes customId = 16 [(gogoproto.customtype)="Uuid", (gogoproto.nullable)=false, deprecated=true];
 }
 
 message someFieldOptions {
-  repeated double Field1 = 1 [packed = true];
-  repeated float Field2 = 2 [deprecated = true];
-  repeated int32 Field3 = 3 [deprecated = true];
-  repeated int64 Field4 = 4 [packed = true];
-  repeated uint32 Field5 = 5 [deprecated = true];
-  repeated uint64 Field6 = 6 [packed = true];
-  repeated sint32 Field7 = 7 [deprecated = true];
-  repeated sint64 Field8 = 8 [deprecated = true];
-  repeated fixed32 Field9 = 9 [packed = true];
-  repeated sfixed32 Field10 = 10 [packed = true];
-  repeated fixed64 Field11 = 11 [deprecated = true];
-  repeated sfixed64 Field12 = 12 [deprecated = false];
-  repeated bool Field13 = 13 [packed = true];
+  repeated double Field1 = 1 [packed=true];
+  repeated float Field2 = 2 [deprecated=true];
+  repeated int32 Field3 = 3 [deprecated=true];
+  repeated int64 Field4 = 4 [packed=true];
+  repeated uint32 Field5 = 5 [deprecated=true];
+  repeated uint64 Field6 = 6 [packed=true];
+  repeated sint32 Field7 = 7 [deprecated=true];
+  repeated sint64 Field8 = 8 [deprecated=true];
+  repeated fixed32 Field9 = 9 [packed=true];
+  repeated sfixed32 Field10 = 10 [packed=true];
+  repeated fixed64 Field11 = 11 [deprecated=true];
+  repeated sfixed64 Field12 = 12 [deprecated=false];
+  repeated bool Field13 = 13 [packed=true];
 }
 
 message someStructFields {
   repeated double Field1 = 1;
   repeated float Field2 = 2;
   repeated NidOptCustom Field3 = 3;
-  repeated NidOptCustom Field4 = 4 [lazy = true];
+  repeated NidOptCustom Field4 = 4 [lazy=true];
   repeated uint64 Field6 = 6;
   repeated sint32 Field7 = 7;
-  repeated NidOptCustom Field8 = 8 [lazy = true];
+  repeated NidOptCustom Field8 = 8 [lazy=true];
   repeated bool Field13 = 13;
   repeated string Field14 = 14;
   repeated bytes Field15 = 15;
 }
 
 message NidOptCustom {
-  optional bytes Id = 1 [(gogoproto.customtype) = "Uuid", (gogoproto.nullable) = false];
-  optional bytes Value = 2 [(gogoproto.customtype) = "code.google.com/p/gogoprotobuf/test/custom.Uint128", (gogoproto.nullable) = false];
+  optional bytes Id = 1 [(gogoproto.customtype)="Uuid", (gogoproto.nullable)=false];
+  optional bytes Value = 2 [(gogoproto.customtype)="code.google.com/p/gogoprotobuf/test/custom.Uint128", (gogoproto.nullable)=false];
 }
 
 message Nil {}
 
 message NidOptEnum {
-  optional test.TheTestEnum Field1 = 1 [(gogoproto.nullable) = false];
+  optional test.TheTestEnum Field1 = 1 [(gogoproto.nullable)=false];
 }
 
 message NinOptEnum {
@@ -141,35 +141,35 @@ message NinOptEnum {
 }
 
 message Timer {
-  optional sfixed64 Time1 = 1 [(gogoproto.nullable) = false];
-  optional sfixed64 Time2 = 2 [(gogoproto.nullable) = false];
-  optional bytes Data = 3 [(gogoproto.nullable) = false];
+  optional sfixed64 Time1 = 1 [(gogoproto.nullable)=false];
+  optional sfixed64 Time2 = 2 [(gogoproto.nullable)=false];
+  optional bytes Data = 3 [(gogoproto.nullable)=false];
 }
 
 message MyExtendable {
-  extensions 100 to 199;
-
-  option (gogoproto.face) = false;
+  option (gogoproto.face)=false;
 
   optional int64 Field1 = 1;
+
+  extensions 100 to 199;
 }
 
 message NestedDefinition {
-  optional int64 Field1 = 1 [(gogoproto.nullable) = false, deprecated = true];
+  optional int64 Field1 = 1 [(gogoproto.nullable)=false, deprecated=true];
   optional NestedEnum EnumField = 2;
   optional NestedMessage.NestedNestedMsg NNM = 3;
   optional NestedMessage NM = 4;
 
   enum NestedEnum {
-    TYPE_NESTED		= 1;
+    TYPE_NESTED = 1;
   };
 
   message NestedMessage {
-    optional fixed64 NestedField1 = 1 [(gogoproto.nullable) = false, deprecated = true];
+    optional fixed64 NestedField1 = 1 [(gogoproto.nullable)=false, deprecated=true];
     optional NestedNestedMsg NNM = 2;
 
     message NestedNestedMsg {
-      optional string NestedNestedField1 = 10 [(gogoproto.nullable) = false, deprecated = true];
+      optional string NestedNestedField1 = 10 [(gogoproto.nullable)=false, deprecated=true];
     }
   }
 }
