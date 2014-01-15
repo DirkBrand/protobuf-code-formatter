@@ -16,11 +16,11 @@ For use as stand-alone tool:
 
 Install the tool, then run the following on the command-line:
 
-`$ protofmt -r=true -proto_path='path' -exclude_dirs='list of paths' 'path of directory to format`
+`$ protofmt -r=true -proto_path='path' -exclude_path='list of paths' 'path of directory to format`
 
 `-r` is a flag indicating whether to format the directory recursively or not.  
 `-proto_path` is used to provide the location of all dependencies.  
-`-exlude_dirs` is used to provide a colon separated list of paths of directories that should not be formatted.
+`-exlude_path` is used to provide a colon separated list of paths of directories that should not be formatted.
 
 The command will format and override all `.proto` files in the provided directory (not including the excluded directories).
 
