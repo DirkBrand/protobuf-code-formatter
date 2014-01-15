@@ -1,19 +1,38 @@
 ProtoBuf-Code-Formatter
 =======================
 
-Code Formatter for Protocol Buffer 2.5.  Should be used as a plugin for protoc.
+Code Formatter for Protocol Buffer 2.5.  Should be used as a plugin for protoc or a stand-alone tool to format entire directories of code.
 
 For use in protoc:
-Have the location of the plugin binary in your PATH variable, then run the following on the command line:
+
+Install the plugin, then have the location of the plugin binary in your PATH variable. Run the following on the command-line:
 
 `$ protoc --pretty_out='location of output' 'location of unformatted .proto file' `
 
+The command will format the input file and write it in the provided location.  If the location is the same as the original file, it will be overwritten.
+
+
+For use as stand-alone tool:
+
+Install the tool, then run the following on the command-line:
+
+`$ protofmt -r=true -proto_path='path' -exclude_path='list of paths' 'path of directory to format`
+
+`-r` is a flag indicating whether to format the directory recursively or not.  
+`-proto_path` is used to provide the location of all dependencies.  
+`-exlude_path` is used to provide a colon separated list of paths of directories that should not be formatted.
+
+The command will format and override all `.proto` files in the provided directory (not including the excluded directories).
+
 Installation
 ============
-Run the following command in the terminal:
+To install the plugin for protoc, run the following command in the terminal:
 
-$ go get github.com/DirkBrand/protobuf-code-formatter/protoc-gen-pretty
+`$ go get github.com/DirkBrand/protobuf-code-formatter/protoc-gen-pretty`
 
+To install the stand-alone tool, run the following command in the terminal:
+
+` $ go get github.com/DirkBrand/protobuf-code-formatter/protofmt`
 
 Limitations
 ===========
