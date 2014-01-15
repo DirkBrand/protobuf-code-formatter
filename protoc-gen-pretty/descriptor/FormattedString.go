@@ -80,95 +80,6 @@ func (this *FileDescriptor) Fmt(depth int) string {
 
 		counter += 1
 	}
-	// Special imports
-	if this.GetOptions() != nil {
-		optionCount := 0
-		if (len(this.GetOptions().GetJavaPackage()) > 0 ||
-			len(this.GetOptions().GetJavaOuterClassname()) != 0 ||
-			this.GetOptions().GetJavaMultipleFiles() ||
-			this.GetOptions().GetJavaGenerateEqualsAndHash() ||
-			int32(*this.GetOptions().GetOptimizeFor().Enum()) > 1) && counter > 0 {
-			s = append(s, "\n")
-		}
-		if len(this.GetOptions().GetJavaPackage()) != 0 {
-			lc := LeadingComments(fmt.Sprintf("%d,999,%d", optionsPath, optionCount), depth)
-			if len(lc) > 0 {
-				if optionCount == 0 {
-					s = append(s, strings.TrimPrefix(lc, "\n"))
-				} else {
-					s = append(s, lc)
-				}
-			}
-			s = append(s, "option java_package = ")
-			s = append(s, `"`+this.GetOptions().GetJavaPackage()+`"`)
-			s = append(s, ";\n")
-			s = append(s, TrailingComments(fmt.Sprintf("%d,999,%d", optionsPath, optionCount), depth))
-			optionCount += 1
-		}
-		if len(this.GetOptions().GetJavaOuterClassname()) != 0 {
-			lc := LeadingComments(fmt.Sprintf("%d,999,%d", optionsPath, optionCount), depth)
-			if len(lc) > 0 {
-				if optionCount == 0 {
-					s = append(s, strings.TrimPrefix(lc, "\n"))
-				} else {
-					s = append(s, lc)
-				}
-			}
-			s = append(s, "option java_outer_classname = ")
-			s = append(s, `"`+this.GetOptions().GetJavaOuterClassname()+`"`)
-			s = append(s, ";\n")
-			s = append(s, TrailingComments(fmt.Sprintf("%d,999,%d", optionsPath, optionCount), depth))
-			optionCount += 1
-		}
-		if this.GetOptions().GetJavaMultipleFiles() {
-			lc := LeadingComments(fmt.Sprintf("%d,999,%d", optionsPath, optionCount), depth)
-			if len(lc) > 0 {
-				if optionCount == 0 {
-					s = append(s, strings.TrimPrefix(lc, "\n"))
-				} else {
-					s = append(s, lc)
-				}
-			}
-			s = append(s, "option java_multiple_files = true")
-			s = append(s, ";\n")
-			s = append(s, TrailingComments(fmt.Sprintf("%d,999,%d", optionsPath, optionCount), depth))
-			optionCount += 1
-		}
-		if this.GetOptions().GetJavaGenerateEqualsAndHash() {
-			lc := LeadingComments(fmt.Sprintf("%d,999,%d", optionsPath, optionCount), depth)
-			if len(lc) > 0 {
-				if optionCount == 0 {
-					s = append(s, strings.TrimPrefix(lc, "\n"))
-				} else {
-					s = append(s, lc)
-				}
-			}
-			s = append(s, "option java_generate_equals_and_hash = true")
-			s = append(s, ";\n")
-			s = append(s, TrailingComments(fmt.Sprintf("%d,999,%d", optionsPath, optionCount), depth))
-			optionCount += 1
-		}
-
-		if this.GetOptions().OptimizeFor != nil {
-			lc := LeadingComments(fmt.Sprintf("%d,999,%d", optionsPath, optionCount), depth)
-			if len(lc) > 0 {
-				if optionCount == 0 {
-					s = append(s, strings.TrimPrefix(lc, "\n"))
-				} else {
-					s = append(s, lc)
-				}
-			}
-			s = append(s, "option optimize_for = ")
-			if int32(*this.GetOptions().GetOptimizeFor().Enum()) > 1 {
-				s = append(s, this.GetOptions().GetOptimizeFor().String())
-			} else {
-				s = append(s, "SPEED")
-			}
-			s = append(s, ";\n")
-			s = append(s, TrailingComments(fmt.Sprintf("%d,999,%d", optionsPath, optionCount), depth))
-		}
-	}
-
 	// For each import
 	if len(this.GetDependency()) > 0 && counter > 0 {
 		s = append(s, "\n")
@@ -198,6 +109,168 @@ func (this *FileDescriptor) Fmt(depth int) string {
 		}
 
 		counter += 1
+	}
+
+	// Special options
+	if this.GetOptions() != nil {
+		optionCount := 0
+		if (len(this.GetOptions().GetJavaPackage()) > 0 ||
+			len(this.GetOptions().GetJavaOuterClassname()) != 0 ||
+			this.GetOptions().GetJavaMultipleFiles() ||
+			this.GetOptions().GetJavaGenerateEqualsAndHash() ||
+			int32(*this.GetOptions().GetOptimizeFor().Enum()) > 1) && counter > 0 {
+			s = append(s, "\n")
+		}
+
+		// JAVA PACKAGE
+		if len(this.GetOptions().GetJavaPackage()) != 0 {
+			lc := LeadingComments(fmt.Sprintf("%d,999,%d", optionsPath, optionCount), depth)
+			if len(lc) > 0 {
+				if optionCount == 0 {
+					s = append(s, strings.TrimPrefix(lc, "\n"))
+				} else {
+					s = append(s, lc)
+				}
+			}
+			s = append(s, "option java_package = ")
+			s = append(s, `"`+this.GetOptions().GetJavaPackage()+`"`)
+			s = append(s, ";\n")
+			s = append(s, TrailingComments(fmt.Sprintf("%d,999,%d", optionsPath, optionCount), depth))
+			optionCount += 1
+		}
+
+		// JAVA OUTER CLASSNAME
+		if len(this.GetOptions().GetJavaOuterClassname()) != 0 {
+			lc := LeadingComments(fmt.Sprintf("%d,999,%d", optionsPath, optionCount), depth)
+			if len(lc) > 0 {
+				if optionCount == 0 {
+					s = append(s, strings.TrimPrefix(lc, "\n"))
+				} else {
+					s = append(s, lc)
+				}
+			}
+			s = append(s, "option java_outer_classname = ")
+			s = append(s, `"`+this.GetOptions().GetJavaOuterClassname()+`"`)
+			s = append(s, ";\n")
+			s = append(s, TrailingComments(fmt.Sprintf("%d,999,%d", optionsPath, optionCount), depth))
+			optionCount += 1
+		}
+
+		// JAVA MULTIPLE FILES
+		if this.GetOptions().GetJavaMultipleFiles() {
+			lc := LeadingComments(fmt.Sprintf("%d,999,%d", optionsPath, optionCount), depth)
+			if len(lc) > 0 {
+				if optionCount == 0 {
+					s = append(s, strings.TrimPrefix(lc, "\n"))
+				} else {
+					s = append(s, lc)
+				}
+			}
+			s = append(s, "option java_multiple_files = true")
+			s = append(s, ";\n")
+			s = append(s, TrailingComments(fmt.Sprintf("%d,999,%d", optionsPath, optionCount), depth))
+			optionCount += 1
+		}
+
+		// JAVA GENERATE EQUALS AND HASH
+		if this.GetOptions().GetJavaGenerateEqualsAndHash() {
+			lc := LeadingComments(fmt.Sprintf("%d,999,%d", optionsPath, optionCount), depth)
+			if len(lc) > 0 {
+				if optionCount == 0 {
+					s = append(s, strings.TrimPrefix(lc, "\n"))
+				} else {
+					s = append(s, lc)
+				}
+			}
+			s = append(s, "option java_generate_equals_and_hash = true")
+			s = append(s, ";\n")
+			s = append(s, TrailingComments(fmt.Sprintf("%d,999,%d", optionsPath, optionCount), depth))
+			optionCount += 1
+		}
+
+		// GO PACKAGE
+		if len(this.GetOptions().GetGoPackage()) > 0 {
+			lc := LeadingComments(fmt.Sprintf("%d,999,%d", optionsPath, optionCount), depth)
+			if len(lc) > 0 {
+				if optionCount == 0 {
+					s = append(s, strings.TrimPrefix(lc, "\n"))
+				} else {
+					s = append(s, lc)
+				}
+			}
+			s = append(s, "option go_package = ")
+			s = append(s, this.GetOptions().GetGoPackage())
+			s = append(s, ";\n")
+			s = append(s, TrailingComments(fmt.Sprintf("%d,999,%d", optionsPath, optionCount), depth))
+			optionCount += 1
+		}
+
+		//CC GENERIC SERVICE
+		if this.GetOptions().GetCcGenericServices() {
+			lc := LeadingComments(fmt.Sprintf("%d,999,%d", optionsPath, optionCount), depth)
+			if len(lc) > 0 {
+				if optionCount == 0 {
+					s = append(s, strings.TrimPrefix(lc, "\n"))
+				} else {
+					s = append(s, lc)
+				}
+			}
+			s = append(s, "option cc_generic_services = true")
+			s = append(s, ";\n")
+			s = append(s, TrailingComments(fmt.Sprintf("%d,999,%d", optionsPath, optionCount), depth))
+			optionCount += 1
+		}
+
+		//JAVA GENERIC SERVICE
+		if this.GetOptions().GetJavaGenericServices() {
+			lc := LeadingComments(fmt.Sprintf("%d,999,%d", optionsPath, optionCount), depth)
+			if len(lc) > 0 {
+				if optionCount == 0 {
+					s = append(s, strings.TrimPrefix(lc, "\n"))
+				} else {
+					s = append(s, lc)
+				}
+			}
+			s = append(s, "option java_generic_services = true")
+			s = append(s, ";\n")
+			s = append(s, TrailingComments(fmt.Sprintf("%d,999,%d", optionsPath, optionCount), depth))
+			optionCount += 1
+		}
+
+		// PY GENERIC SERVICE
+		if this.GetOptions().GetPyGenericServices() {
+			lc := LeadingComments(fmt.Sprintf("%d,999,%d", optionsPath, optionCount), depth)
+			if len(lc) > 0 {
+				if optionCount == 0 {
+					s = append(s, strings.TrimPrefix(lc, "\n"))
+				} else {
+					s = append(s, lc)
+				}
+			}
+			s = append(s, "option py_generic_services = true")
+			s = append(s, ";\n")
+			s = append(s, TrailingComments(fmt.Sprintf("%d,999,%d", optionsPath, optionCount), depth))
+			optionCount += 1
+		}
+		//OPTIMIZE FOR
+		if this.GetOptions().OptimizeFor != nil {
+			lc := LeadingComments(fmt.Sprintf("%d,999,%d", optionsPath, optionCount), depth)
+			if len(lc) > 0 {
+				if optionCount == 0 {
+					s = append(s, strings.TrimPrefix(lc, "\n"))
+				} else {
+					s = append(s, lc)
+				}
+			}
+			s = append(s, "option optimize_for = ")
+			if int32(*this.GetOptions().GetOptimizeFor().Enum()) > 1 {
+				s = append(s, this.GetOptions().GetOptimizeFor().String())
+			} else {
+				s = append(s, "SPEED")
+			}
+			s = append(s, ";\n")
+			s = append(s, TrailingComments(fmt.Sprintf("%d,999,%d", optionsPath, optionCount), depth))
+		}
 	}
 
 	// For each extend

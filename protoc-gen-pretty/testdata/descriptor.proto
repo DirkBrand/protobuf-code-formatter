@@ -597,8 +597,5 @@ message SourceCodeInfo {
     optional string leading_comments = 3;
     optional string trailing_comments = 4;
   }
-
-  // Clients can define custom options in extensions of this message. See above.
-  extensions 1000 to max;
 }
 

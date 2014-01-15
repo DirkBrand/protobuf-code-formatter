@@ -39,14 +39,15 @@ func main() {
 	// FLAGS
 	r := flag.Bool("r", false, "Indicates whether to recursively format the files in the argument folder.")
 	imp_path := flag.String("proto_path", "./", "The path to find all relative imported .proto files.")
-	exclude_dirs := flag.String("exclude_dirs", "None", "A list of directories that should not be included in the formatting (if done recursively)")
+	exclude_dirs := flag.String("exclude_path", "None", "A list of directories that should not be included in the formatting (if done recursively)")
 
 	flag.Parse()
 
 	excluded := strings.Split(*exclude_dirs, ":")
 
-	if len(os.Args) <= 1 {
-		panic(errors.New("Not enough arguments! You need atleast the .proto location. "))
+	if len(os.Args) <= 1 || len(os.Args)%2 != 0 {
+		fmt.Errorf("%V", errors.New("Not enough arguments! You need atleast the .proto location. "))
+		os.Exit(-1)
 	}
 
 	proto_path := os.Args[len(os.Args)-1]
@@ -54,11 +55,13 @@ func main() {
 	d, err := os.Open(proto_path)
 	if err != nil {
 		fmt.Errorf("%v", err)
+		os.Exit(1)
 	}
 	defer d.Close()
 	fi, err := d.Readdir(-1)
 	if err != nil {
 		fmt.Errorf("%v", err)
+		os.Exit(1)
 	}
 	for _, fi := range fi {
 		// It is not a proper filename
@@ -83,11 +86,13 @@ func visit(pathThusFar string, imp_path string, exclude_paths []string, f os.Fil
 		d, err := os.Open(path)
 		if err != nil {
 			fmt.Errorf("%v", err)
+			os.Exit(1)
 		}
 		defer d.Close()
 		fi, err := d.Readdir(-1)
 		if err != nil {
 			fmt.Errorf("%v", err)
+			os.Exit(1)
 		}
 		for _, fi := range fi {
 			visit(path, imp_path, exclude_paths, fi, recurs)
@@ -95,7 +100,8 @@ func visit(pathThusFar string, imp_path string, exclude_paths []string, f os.Fil
 	} else if f.Mode().IsRegular() && strings.HasSuffix(f.Name(), ".proto") {
 		d, err := parser.ParseFile(path, pathThusFar, imp_path)
 		if err != nil {
-			panic(err)
+			fmt.Errorf("%v", err)
+			os.Exit(1)
 		} else {
 			fmt.Println("Formatted " + path)
 			header := parser.ReadFileHeader(path)
