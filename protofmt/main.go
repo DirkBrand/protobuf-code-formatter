@@ -45,22 +45,22 @@ func main() {
 
 	excluded := strings.Split(*exclude_dirs, ":")
 
-	if len(os.Args) <= 1 || len(os.Args)%2 != 0 {
-		fmt.Errorf("%V", errors.New("Not enough arguments! You need atleast the .proto location. "))
-		os.Exit(-1)
+	if len(os.Args) <= 1 || strings.HasPrefix(os.Args[len(os.Args)-1], "-") {
+		fmt.Println(errors.New("Not enough arguments!"))
+		os.Exit(1)
 	}
 
 	proto_path := os.Args[len(os.Args)-1]
 
 	d, err := os.Open(proto_path)
 	if err != nil {
-		fmt.Errorf("%v", err)
+		fmt.Println(err)
 		os.Exit(1)
 	}
 	defer d.Close()
 	fi, err := d.Readdir(-1)
 	if err != nil {
-		fmt.Errorf("%v", err)
+		fmt.Println(err)
 		os.Exit(1)
 	}
 	for _, fi := range fi {
@@ -85,13 +85,13 @@ func visit(pathThusFar string, imp_path string, exclude_paths []string, f os.Fil
 	if f.IsDir() && recurs && !stringInSlice(path, exclude_paths) {
 		d, err := os.Open(path)
 		if err != nil {
-			fmt.Errorf("%v", err)
+			fmt.Println(err)
 			os.Exit(1)
 		}
 		defer d.Close()
 		fi, err := d.Readdir(-1)
 		if err != nil {
-			fmt.Errorf("%v", err)
+			fmt.Println(err)
 			os.Exit(1)
 		}
 		for _, fi := range fi {
@@ -100,10 +100,10 @@ func visit(pathThusFar string, imp_path string, exclude_paths []string, f os.Fil
 	} else if f.Mode().IsRegular() && strings.HasSuffix(f.Name(), ".proto") {
 		d, err := parser.ParseFile(path, pathThusFar, imp_path)
 		if err != nil {
-			fmt.Errorf("%v", err)
+			fmt.Println("Parsing error! ", err)
 			os.Exit(1)
 		} else {
-			fmt.Println("Formatted " + path)
+			fmt.Println("Successfully Formatted " + path)
 			header := parser.ReadFileHeader(path)
 			formattedFile := d.Fmt(f.Name())
 			formattedFile = strings.TrimSpace(formattedFile)
