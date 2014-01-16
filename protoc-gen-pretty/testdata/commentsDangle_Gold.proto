@@ -1,5 +1,6 @@
 // Not attached Comments
 //
+//
 // Double line
 // Should stay like this
 message Person2 {
@@ -14,7 +15,7 @@ message Person {
 }
 
 // Dangling
-//block
+// block
 //comment
 message Person3 {
   optional string age = 2;

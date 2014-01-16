@@ -44,21 +44,6 @@ func main() {
 	if err != nil {
 		Response.Error = proto.String("reading input")
 	} else {
-
-		//	Fixing in-file comments
-		if err = proto.Unmarshal(data, Request); err != nil {
-			Response.Error = proto.String("parsing input proto")
-		}
-		for _, fileToGen := range Request.GetFileToGenerate() {
-			for _, protoFile := range Request.GetProtoFile() {
-				if protoFile.GetName() == fileToGen {
-					parser.FixFloatingComments(fileToGen)
-				}
-			}
-		}
-		Request = new(plugin.CodeGeneratorRequest)
-
-		// Official parsing
 		if err = proto.Unmarshal(data, Request); err != nil {
 			Response.Error = proto.String("parsing input proto")
 		}

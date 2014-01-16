@@ -80,6 +80,7 @@ func FixFloatingComments(filename string) {
 	for {
 		path, err := r.ReadString(10) // 0x0A separator = newline
 		if err == io.EOF {
+			file = append(file, path)
 			break
 		} else if err != nil {
 			panic(err)

@@ -98,13 +98,13 @@ func visit(pathThusFar string, imp_path string, exclude_paths []string, f os.Fil
 			visit(path, imp_path, exclude_paths, fi, recurs)
 		}
 	} else if f.Mode().IsRegular() && strings.HasSuffix(f.Name(), ".proto") {
+		parser.FixFloatingComments(path)
+
 		d, err := parser.ParseFile(path, pathThusFar, imp_path)
 		if err != nil {
 			fmt.Println("Parsing error! ", err)
 			os.Exit(1)
 		} else {
-			parser.FixFloatingComments(path)
-
 			header := parser.ReadFileHeader(path)
 			formattedFile := d.Fmt(f.Name())
 			formattedFile = strings.TrimSpace(formattedFile)
