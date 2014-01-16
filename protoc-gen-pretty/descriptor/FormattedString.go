@@ -416,7 +416,10 @@ func (this *Descriptor) Fmt(depth int, isGroup bool, groupField *FieldDescriptor
 		}
 		s = append(s, getIndentation(depth+1))
 		s = append(s, `extend `)
-		s = append(s, getLastWordFromPath(i, "."))
+		if strings.HasPrefix(i, ".") {
+			i = i[1:]
+		}
+		s = append(s, i)
 		s = append(s, " {\n")
 		if index == 0 {
 			tc := TrailingComments(fmt.Sprintf("%s,%d", this.path, messageExtensionPath), depth+1)
@@ -545,7 +548,6 @@ func (this *FieldDescriptor) Fmt(depth int) string {
 	}
 	var s []string
 
-	//s = append(s, LeadingComments(this.path))
 	s = append(s, getIndentation(depth))
 	s = append(s, fieldDescriptorProtoLabel_StringValue(*this.Label))
 	s = append(s, ` `)
