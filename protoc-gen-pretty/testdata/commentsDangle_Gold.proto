@@ -6,3 +6,16 @@ message Person2 {
   // Block comment on one line, should stay like this
   required string name = 1;
 }
+
+// Dangling Comment
+//
+message Person {
+  optional string age = 2;
+}
+
+// Dangling
+//block
+//comment
+message Person3 {
+  optional string age = 2;
+}

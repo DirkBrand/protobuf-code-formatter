@@ -2,6 +2,8 @@ package gogoproto;
 
 import "testdata/descriptor.proto";
 
+option (my_file_option)="Hello world!";
+
 extend google.protobuf.FileOptions {
   optional string my_file_option = 50000;
 }
@@ -29,8 +31,6 @@ extend google.protobuf.ServiceOptions {
 extend google.protobuf.MethodOptions {
   optional MyMessage my_method_option = 50006;
 }
-
-option (my_file_option)="Hello world!";
 
 enum MyEnum {
   option (my_enum_option)=true;

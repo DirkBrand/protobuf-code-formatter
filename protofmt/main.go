@@ -103,7 +103,8 @@ func visit(pathThusFar string, imp_path string, exclude_paths []string, f os.Fil
 			fmt.Println("Parsing error! ", err)
 			os.Exit(1)
 		} else {
-			fmt.Println("Successfully Formatted " + path)
+			parser.FixFloatingComments(path)
+
 			header := parser.ReadFileHeader(path)
 			formattedFile := d.Fmt(f.Name())
 			formattedFile = strings.TrimSpace(formattedFile)
@@ -115,6 +116,8 @@ func visit(pathThusFar string, imp_path string, exclude_paths []string, f os.Fil
 
 			fo.WriteString(formattedFile)
 			fo.Close()
+
+			fmt.Println("Successfully Formatted " + path)
 		}
 	} else {
 		fmt.Errorf("%v", errors.New(f.Name()+" cannot be processed."))

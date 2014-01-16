@@ -40,7 +40,8 @@ func TestAllOptions(t *testing.T) {
 	fileName := "allOptionsTest.proto"
 
 	if res, err := parseAndTestFile(fileLocation + fileName); !res {
-		t.Errorf("%v", err)
+		fmt.Println(err)
+		os.Exit(1)
 	} else {
 		fmt.Println(fileName + " <TEST PASSED>")
 	}
@@ -50,7 +51,8 @@ func TestExtendWithComments(t *testing.T) {
 	fileName := "extendWithCommentsTest.proto"
 
 	if res, err := parseAndTestFile(fileLocation + fileName); !res {
-		t.Errorf("%v", err)
+		fmt.Println(err)
+		os.Exit(1)
 	} else {
 		fmt.Println(fileName + " <TEST PASSED>")
 	}
@@ -60,7 +62,8 @@ func TestExtend(t *testing.T) {
 	fileName := "extendTest.proto"
 
 	if res, err := parseAndTestFile(fileLocation + fileName); !res {
-		t.Errorf("%v", err)
+		fmt.Println(err)
+		os.Exit(1)
 	} else {
 		fmt.Println(fileName + " <TEST PASSED>")
 	}
@@ -70,7 +73,8 @@ func TestFieldOptions(t *testing.T) {
 	fileName := "fieldOptionsTest.proto"
 	res, err := parseAndTestFile(fileLocation + fileName)
 	if !res {
-		t.Errorf("%v", err)
+		fmt.Println(err)
+		os.Exit(1)
 	} else {
 		fmt.Println(fileName + " <TEST PASSED>")
 	}
@@ -80,7 +84,8 @@ func TestNestedMessage(t *testing.T) {
 	fileName := "nestedMessageCommentsTest.proto"
 	res, err := parseAndTestFile(fileLocation + fileName)
 	if !res {
-		t.Errorf("%v", err)
+		fmt.Println(err)
+		os.Exit(1)
 	} else {
 		fmt.Println(fileName + " <TEST PASSED>")
 	}
@@ -90,7 +95,8 @@ func TestOptionsCorrectlyFormatted(t *testing.T) {
 	fileName := "optionCorrectlyFormattedTest.proto"
 	res, err := parseAndTestFile(fileLocation + fileName)
 	if !res {
-		t.Errorf("%v", err)
+		fmt.Println(err)
+		os.Exit(1)
 	} else {
 		fmt.Println(fileName + " <TEST PASSED>")
 	}
@@ -100,7 +106,8 @@ func TestSampleComments(t *testing.T) {
 	fileName := "sampleCommentsTest.proto"
 	res, err := parseAndTestFile(fileLocation + fileName)
 	if !res {
-		t.Errorf("%v", err)
+		fmt.Println(err)
+		os.Exit(1)
 	} else {
 		fmt.Println(fileName + " <TEST PASSED>")
 	}
@@ -110,7 +117,8 @@ func TestServicesComments(t *testing.T) {
 	fileName := "servicesCommentsTest.proto"
 	res, err := parseAndTestFile(fileLocation + fileName)
 	if !res {
-		t.Errorf("%v", err)
+		fmt.Println(err)
+		os.Exit(1)
 	} else {
 		fmt.Println(fileName + " <TEST PASSED>")
 	}
@@ -120,7 +128,19 @@ func TestWalterTest1(t *testing.T) {
 	fileName := "walterTest1.proto"
 	res, err := parseAndTestFile(fileLocation + fileName)
 	if !res {
-		t.Errorf("%v", err)
+		fmt.Println(err)
+		os.Exit(1)
+	} else {
+		fmt.Println(fileName + " <TEST PASSED>")
+	}
+}
+
+func TestWalterTest2(t *testing.T) {
+	fileName := "walterTest2.proto"
+	res, err := parseAndTestFile(fileLocation + fileName)
+	if !res {
+		fmt.Println(err)
+		os.Exit(1)
 	} else {
 		fmt.Println(fileName + " <TEST PASSED>")
 	}
@@ -130,7 +150,8 @@ func TestDescriptor(t *testing.T) {
 	fileName := "descriptor.proto"
 	res, err := parseAndTestFile(fileLocation + fileName)
 	if !res {
-		t.Errorf("%v", err)
+		fmt.Println(err)
+		os.Exit(1)
 	} else {
 		fmt.Println(fileName + " <TEST PASSED>")
 	}
@@ -141,7 +162,20 @@ func TestSample(t *testing.T) {
 	fileName := "sample.proto"
 	res, err := parseAndTestFile(fileLocation + fileName)
 	if !res {
-		t.Errorf("%v", err)
+		fmt.Println(err)
+		os.Exit(1)
+	} else {
+		fmt.Println(fileName + " <TEST PASSED>")
+	}
+	//os.Exit(-1)
+}
+
+func TestDanglingComments(t *testing.T) {
+	fileName := "commentsDangle.proto"
+	res, err := parseAndTestFile(fileLocation + fileName)
+	if !res {
+		fmt.Println(err)
+		os.Exit(1)
 	} else {
 		fmt.Println(fileName + " <TEST PASSED>")
 	}
@@ -153,7 +187,8 @@ func TestExtendCommentLimitation(t *testing.T) {
 	fileName := "extendCommentsLimitationTest.proto"
 	res, err := parseAndTestFile(fileLocation + fileName)
 	if !res {
-		t.Errorf("%v", err)
+		fmt.Println(err)
+		os.Exit(1)
 	} else {
 		fmt.Println(fileName + " <TEST PASSED>")
 	}
@@ -163,7 +198,8 @@ func TestOrderLostLimitation(t *testing.T) {
 	fileName := "orderLostTest.proto"
 	res, err := parseAndTestFile(fileLocation + fileName)
 	if !res {
-		t.Errorf("%v", err)
+		fmt.Println(err)
+		os.Exit(1)
 	} else {
 		fmt.Println(fileName + " <TEST PASSED>")
 	}
@@ -173,13 +209,16 @@ func TestUnattachedCommentsLostLimitation(t *testing.T) {
 	fileName := "commentsStyleLostTest.proto"
 	res, err := parseAndTestFile(fileLocation + fileName)
 	if !res {
-		t.Errorf("%v", err)
+		fmt.Println(err)
+		os.Exit(1)
 	} else {
 		fmt.Println(fileName + " <TEST PASSED>")
 	}
 }
 
 func parseAndTestFile(filename string) (bool, error) {
+	parser.FixFloatingComments(filename)
+
 	d, err := parser.ParseFile(filename, "./")
 	if err != nil {
 		return false, err
@@ -196,7 +235,7 @@ func parseAndTestFile(filename string) (bool, error) {
 		// Test if formatted file can be parsed
 		fo, err := os.Create("tempOutput.proto")
 		if err != nil {
-			panic(err)
+			fmt.Println(err)
 		}
 		if len(formattedFile) > 0 {
 			fo.WriteString(formattedFile)
@@ -206,7 +245,6 @@ func parseAndTestFile(filename string) (bool, error) {
 		_, err2 := parser.ParseFile("tempOutput.proto", "./", "../../../")
 		//defer os.Remove("tempOutput.proto")
 		if err2 != nil {
-			panic(err2)
 			return false, err2
 		}
 

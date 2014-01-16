@@ -12,12 +12,15 @@ extend google.protobuf.MethodOptions {
 }
 
 // Comment before message
+//
 message Baz {
 
   // Comment before intra message extend
   extend Foo {
 
     // Extend inside comment
+    //
+    //
     optional Baz foo_ext = 127;
     // Extend trailing comment
   }

@@ -1,4 +1,16 @@
 import "testdata/gogo_small.proto";
+import "testdata/descriptor.proto";
+
+option java_package = "com.vastech.storage";
+option java_outer_classname = "StorageProtos";
+option go_package = "next/volume2";
+
+extend google.protobuf.MethodOptions {
+  optional Foo option2 = 1000;
+}
+message Foo {
+  extensions 100 to max;
+}
 
 option (goproto_enum_prefix_all) = true;
 
@@ -8,7 +20,7 @@ option (goproto_stringer_all) = "aw yeah";
 option (goproto_stringer_fall) = 00004;
 // Comment after option
 
-		option (goproto_stringer_gall) = 4.200000;
-		option (goproto_stringer_dall) = 420.20606000;
+option (goproto_stringer_gall) = 4.200000;
+option (goproto_stringer_dall) = 420.20606000;
 
 

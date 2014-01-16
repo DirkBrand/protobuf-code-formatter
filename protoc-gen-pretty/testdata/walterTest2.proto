@@ -1,0 +1,10 @@
+package test;
+
+option java_package = "com.vastech.storage";
+option java_outer_classname = "StorageProtos";
+option go_package = "next/volume2";
+
+message SrcTree {
+  optional string name = 1;
+}
+

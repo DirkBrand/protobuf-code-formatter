@@ -2,6 +2,7 @@ package parser
 
 import (
 	"bufio"
+	//"fmt"
 	"io"
 	"os"
 	"strings"
@@ -62,4 +63,82 @@ func Strcmp(a, b string) int {
 		diff = len(a) - len(b)
 	}
 	return diff
+}
+
+func FixFloatingComments(filename string) {
+	var file []string
+
+	f, err := os.Open(filename)
+	if err != nil {
+		panic(err)
+	}
+	defer f.Close()
+
+	r := bufio.NewReader(f)
+
+	// Generate slice of program
+	for {
+		path, err := r.ReadString(10) // 0x0A separator = newline
+		if err == io.EOF {
+			break
+		} else if err != nil {
+			panic(err)
+		}
+		file = append(file, path)
+	}
+
+	for i, _ := range file {
+		// Start line comment
+		if strings.HasPrefix(strings.TrimSpace(file[i]), "//") {
+			if (i > 0 && len(strings.TrimSpace(file[i-1])) == 0) || i == 0 {
+
+				for strings.HasPrefix(strings.TrimSpace(file[i]), "//") && i < len(file) {
+					i += 1
+				}
+
+				// Dangling comment found
+				if i < len(file) && len(strings.TrimSpace(file[i])) == 0 {
+					for i < len(file) && len(strings.TrimSpace(file[i])) == 0 {
+						file[i] = "//\n"
+						i += 1
+					}
+				}
+			}
+		}
+
+		// Start block comment
+		if strings.HasPrefix(file[i], "/*") {
+			if (i > 0 && len(strings.TrimSpace(file[i-1])) == 0) || i == 0 {
+				for i < len(file) {
+					if strings.HasSuffix(file[i], "*/\n") {
+						i += 1
+						break
+					}
+					i += 1
+				}
+				// Dangling comment found
+				if i < len(file) && len(strings.TrimSpace(file[i])) == 0 {
+					for i < len(file) && len(strings.TrimSpace(file[i])) == 0 {
+						file = append(file[:i], file[i+1:]...)
+					}
+				}
+			}
+		}
+
+		if i == len(file)-1 {
+			break
+		}
+
+	}
+
+	// Overwrite file
+
+	fo, err := os.Create(filename)
+	if err != nil {
+		panic(err)
+	}
+	fo.WriteString(strings.Join(file, ""))
+	fo.Close()
+
+	//fmt.Println(strings.Join(file, ""))
 }

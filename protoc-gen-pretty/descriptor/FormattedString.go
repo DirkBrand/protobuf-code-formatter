@@ -112,8 +112,9 @@ func (this *FileDescriptor) Fmt(depth int) string {
 	}
 
 	// Special options
-	if this.GetOptions() != nil {
-		optionCount := 0
+	options := this.GetOptions()
+	optionCount := 0
+	if options != nil {
 		if (len(this.GetOptions().GetJavaPackage()) > 0 ||
 			len(this.GetOptions().GetJavaOuterClassname()) != 0 ||
 			this.GetOptions().GetJavaMultipleFiles() ||
@@ -198,9 +199,10 @@ func (this *FileDescriptor) Fmt(depth int) string {
 					s = append(s, lc)
 				}
 			}
-			s = append(s, "option go_package = ")
+			s = append(s, `option go_package = "`)
 			s = append(s, this.GetOptions().GetGoPackage())
-			s = append(s, ";\n")
+			s = append(s, `";`)
+			s = append(s, "\n")
 			s = append(s, TrailingComments(fmt.Sprintf("%d,999,%d", optionsPath, optionCount), depth))
 			optionCount += 1
 		}
@@ -273,6 +275,15 @@ func (this *FileDescriptor) Fmt(depth int) string {
 		}
 	}
 
+	// File Options
+	if options != nil && len(options.ExtensionMap()) > 0 {
+		s = append(s, "\n")
+		theOption := getFormattedOptionsFromExtensionMap(options.ExtensionMap(), -1, false, fmt.Sprintf("%d", optionsPath), optionCount)
+		s = append(s, theOption)
+
+		counter += 1
+	}
+
 	// For each extend
 	extendGroups := make(map[string]string)
 	for i, ext := range this.ext {
@@ -309,16 +320,6 @@ func (this *FileDescriptor) Fmt(depth int) string {
 		counter += 1
 	}
 
-	// File Options
-	options := this.GetOptions()
-	if options != nil && len(options.ExtensionMap()) > 0 {
-		s = append(s, "\n")
-		theOption := getFormattedOptionsFromExtensionMap(options.ExtensionMap(), -1, false, fmt.Sprintf("%d", optionsPath))
-		s = append(s, theOption)
-
-		counter += 1
-	}
-
 	// Enums
 	if len(this.enum) > 0 && counter > 0 {
 		s = append(s, "\n")
@@ -331,7 +332,7 @@ func (this *FileDescriptor) Fmt(depth int) string {
 	}
 
 	// Messages
-	if len(this.desc) > 0 && counter > 0 {
+	if counter > 0 && len(this.desc) > 0 {
 		s = append(s, "\n")
 	}
 	for _, message := range this.desc {
@@ -370,7 +371,6 @@ func (this *Descriptor) Fmt(depth int, isGroup bool, groupField *FieldDescriptor
 
 	// Message Header
 	s = append(s, LeadingComments(this.path, depth))
-
 	if isGroup {
 		s = append(s, getIndentation(depth))
 		s = append(s, fieldDescriptorProtoLabel_StringValue(*groupField.Label))
@@ -447,7 +447,7 @@ func (this *Descriptor) Fmt(depth int, isGroup bool, groupField *FieldDescriptor
 		s = append(s, "\n")
 		contentCount += 1
 
-		s = append(s, getFormattedOptionsFromExtensionMap(mesOptions.ExtensionMap(), depth, false, fmt.Sprintf("%d,%d", this.path, messageOptionsPath)))
+		s = append(s, getFormattedOptionsFromExtensionMap(mesOptions.ExtensionMap(), depth, false, fmt.Sprintf("%d,%d", this.path, messageOptionsPath), 0))
 	}
 
 	// Fields
@@ -615,7 +615,7 @@ func (this *FieldDescriptor) Fmt(depth int) string {
 				} else {
 					i += 1
 				}
-				s = append(s, getFormattedOptionsFromExtensionMap(options.ExtensionMap(), -1, true, ""))
+				s = append(s, getFormattedOptionsFromExtensionMap(options.ExtensionMap(), -1, true, "", 0))
 			}
 
 			if options.GetPacked() {
@@ -679,7 +679,7 @@ func (this *EnumDescriptor) Fmt(depth int) string {
 	if options != nil && len(options.ExtensionMap()) > 0 {
 		s = append(s, "\n")
 
-		s = append(s, getFormattedOptionsFromExtensionMap(options.ExtensionMap(), depth, false, fmt.Sprintf("%d,%d", this.path, enumOptionsPath)))
+		s = append(s, getFormattedOptionsFromExtensionMap(options.ExtensionMap(), depth, false, fmt.Sprintf("%d,%d", this.path, enumOptionsPath), 0))
 	}
 
 	// enum fields
@@ -708,7 +708,7 @@ func (this *EnumDescriptor) Fmt(depth int) string {
 		valueOptions := enumValue.GetOptions()
 		if valueOptions != nil {
 			s = append(s, ` [`)
-			s = append(s, getFormattedOptionsFromExtensionMap(valueOptions.ExtensionMap(), -1, true, fmt.Sprintf("%d,%d", this.path, enumValueOptionsPath)))
+			s = append(s, getFormattedOptionsFromExtensionMap(valueOptions.ExtensionMap(), -1, true, fmt.Sprintf("%d,%d", this.path, enumValueOptionsPath), 0))
 			s = append(s, `]`)
 		}
 
@@ -770,7 +770,7 @@ func (this *ServiceDescriptor) Fmt(depth int) string {
 	// Service Options
 	options := this.GetOptions()
 	if options != nil {
-		s = append(s, getFormattedOptionsFromExtensionMap(options.ExtensionMap(), depth, false, fmt.Sprintf("%s,%d", this.path, serviceOptionsPath)))
+		s = append(s, getFormattedOptionsFromExtensionMap(options.ExtensionMap(), depth, false, fmt.Sprintf("%s,%d", this.path, serviceOptionsPath), 0))
 	}
 
 	// Methods
@@ -807,7 +807,7 @@ func (this *ServiceDescriptor) Fmt(depth int) string {
 		}
 
 		methodOptions := method.GetOptions()
-		s = append(s, getFormattedOptionsFromExtensionMap(methodOptions.ExtensionMap(), depth+1, false, fmt.Sprintf("%s,%d,%d,%d", this.path, methodDescriptorPath, i, methodOptionsPath)))
+		s = append(s, getFormattedOptionsFromExtensionMap(methodOptions.ExtensionMap(), depth+1, false, fmt.Sprintf("%s,%d,%d,%d", this.path, methodDescriptorPath, i, methodOptionsPath), 0))
 
 		s = append(s, getIndentation(depth+1))
 		s = append(s, "}\n")
@@ -819,11 +819,11 @@ func (this *ServiceDescriptor) Fmt(depth int) string {
 	return strings.Join(s, "")
 }
 
-func getFormattedOptionsFromExtensionMap(extensionMap map[int32]proto.Extension, depth int, fieldOption bool, pathIncludingParent string) string {
+func getFormattedOptionsFromExtensionMap(extensionMap map[int32]proto.Extension, depth int, fieldOption bool, pathIncludingParent string, startIndex int) string {
 	var s []string
 	counter := 0
 	if len(extensionMap) > 0 {
-		commentsIndex := 0
+		commentsIndex := startIndex
 		for optInd := range extensionMap {
 			// Loop through all imported files
 			for _, curFile := range allFiles {

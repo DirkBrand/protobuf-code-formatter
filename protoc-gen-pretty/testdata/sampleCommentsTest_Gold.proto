@@ -8,6 +8,14 @@ import "testdata/descriptor.proto";
 // But also kinda important
 import "testdata/gogo_small.proto";
 
+// Some
+//// nested
+//comments
+option (goproto_stringer_dall)=4.2;
+// Different
+//comments
+//over here 
+
 // I'm extending this
 extend google.protobuf.FileOptions {
 
@@ -27,15 +35,6 @@ extend google.protobuf.MethodOptions {
   // Yet another
   optional string option2 = 1000;
 }
-
-// Some
-//// nested
-//comments
-option (goproto_stringer_dall)=4.2;
-// Different
-//comments
-//over here 
-
 
 // Comment before enum
 enum MyEnum {

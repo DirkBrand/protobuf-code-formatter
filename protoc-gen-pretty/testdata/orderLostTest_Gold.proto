@@ -3,6 +3,8 @@ package sample;
 import "testdata/descriptor.proto";
 import "testdata/gogo_small.proto";
 
+option (goproto_stringer_dall)=4.2;
+
 extend google.protobuf.FileOptions {
   optional bool goproto_enum_prefix_all = 63002;
   optional string goproto_stringer_all = 5003;
@@ -12,8 +14,6 @@ extend google.protobuf.MethodOptions {
   optional int32 option1 = 1000000;
   optional string option2 = 1000;
 }
-
-option (goproto_stringer_dall)=4.2;
 
 enum MyEnum {
   FOO = 1;
