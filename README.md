@@ -42,7 +42,7 @@ Limitations
 
 3. Style of comments are not preserved (/* */ vs. //), so single-line comments are shown with `//` and multi-line comments with `/* */`.
 
-4. Any comments not directly adjacent to a line of code, are not preserved.  Comments must be directly above or below a line of code (without newlines).
+4. When using the protoc plugin, any comments not directly adjacent to a line of code (dangling comments), are not preserved.  Comments must be directly above or below a line of code (without newlines).  Such comments are preserved when using the protofmt tool.
 
 
 [![Build Status](https://drone.io/github.com/DirkBrand/protobuf-code-formatter/status.png)](https://drone.io/github.com/DirkBrand/protobuf-code-formatter/latest)
