@@ -40,6 +40,7 @@ const (
 
 var importsList []string
 var allFiles []*FileDescriptor
+var thisFile *FileDescriptor
 
 var commentsMap map[string]*SourceCodeInfo_Location
 
@@ -50,6 +51,7 @@ func (this *FileDescriptorSet) Fmt(fileToFormat string) string {
 	WrapTypes(this)
 	for _, tmpFile := range allFiles {
 		if tmpFile.GetName() == fileToFormat {
+			thisFile = tmpFile
 			s := tmpFile.Fmt(0)
 			//fmt.Println(tmpFile.GoString())
 			s = strings.Replace(s, "\n\n\n", "\n\n", -1)
@@ -561,6 +563,7 @@ func (this *FieldDescriptor) Fmt(depth int) string {
 			}
 		}
 		if this.parent != nil {
+			// Maybe in other another message
 			for _, mes := range this.parent.DescriptorProto.GetNestedType() {
 				if b, str := scanNestedMessages(mes, typeName, ""); b {
 					typeName = str
@@ -568,6 +571,7 @@ func (this *FieldDescriptor) Fmt(depth int) string {
 					break
 				}
 			}
+			// Maybe in other enums
 			if !found {
 				for _, mes := range this.parent.enum {
 					if mes.GetName() == typeName {
@@ -575,6 +579,10 @@ func (this *FieldDescriptor) Fmt(depth int) string {
 						break
 					}
 				}
+			}
+			// Maybe same package
+			if !found && strcmp(strings.Split(strings.TrimPrefix(this.GetTypeName(), "."), ".")[0], thisFile.GetPackage()) == 0 {
+				found = true
 			}
 		}
 		if found {
@@ -1166,4 +1174,19 @@ func scanNestedMessages(parent *DescriptorProto, typename string, parentStr stri
 	}
 
 	return found, val
+}
+
+func strcmp(a, b string) int {
+	var min = len(b)
+	if len(a) < len(b) {
+		min = len(a)
+	}
+	var diff int
+	for i := 0; i < min && diff == 0; i++ {
+		diff = int(a[i]) - int(b[i])
+	}
+	if diff == 0 {
+		diff = len(a) - len(b)
+	}
+	return diff
 }

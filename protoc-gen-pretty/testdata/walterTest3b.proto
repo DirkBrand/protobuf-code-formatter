@@ -1,0 +1,7 @@
+package hello;
+
+message B {
+    optional bool a = 1;
+     //some stuff
+}
+

@@ -1,0 +1,7 @@
+package hello;
+
+import "testdata/walterTest3b.proto";
+
+message A {
+  optional B B = 1;
+}

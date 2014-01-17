@@ -146,6 +146,28 @@ func TestWalterTest2(t *testing.T) {
 	}
 }
 
+func TestWalterTest3a(t *testing.T) {
+	fileName := "walterTest3a.proto"
+	res, err := parseAndTestFile(fileLocation + fileName)
+	if !res {
+		fmt.Println(err)
+		os.Exit(1)
+	} else {
+		fmt.Println(fileName + " <TEST PASSED>")
+	}
+}
+
+func TestWalterTest3b(t *testing.T) {
+	fileName := "walterTest3b.proto"
+	res, err := parseAndTestFile(fileLocation + fileName)
+	if !res {
+		fmt.Println(err)
+		os.Exit(1)
+	} else {
+		fmt.Println(fileName + " <TEST PASSED>")
+	}
+}
+
 func TestDescriptor(t *testing.T) {
 	fileName := "descriptor.proto"
 	res, err := parseAndTestFile(fileLocation + fileName)
