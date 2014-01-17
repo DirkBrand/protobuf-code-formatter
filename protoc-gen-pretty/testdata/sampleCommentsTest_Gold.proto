@@ -49,9 +49,9 @@ enum MyEnum {
 
 
 // hello
-//multi-line
-//comment
-//world
+// multi-line
+// comment
+// world
 message Person2 {
   // Already
   //multiline

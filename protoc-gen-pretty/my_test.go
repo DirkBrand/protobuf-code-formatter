@@ -182,6 +182,18 @@ func TestDanglingComments(t *testing.T) {
 	//os.Exit(-1)
 }
 
+func TestCommentedCode(t *testing.T) {
+	fileName := "commentedCode.proto"
+	res, err := parseAndTestFile(fileLocation + fileName)
+	if !res {
+		fmt.Println(err)
+		os.Exit(1)
+	} else {
+		fmt.Println(fileName + " <TEST PASSED>")
+	}
+	//os.Exit(-1)
+}
+
 // Negative Tests
 func TestExtendCommentLimitation(t *testing.T) {
 	fileName := "extendCommentsLimitationTest.proto"

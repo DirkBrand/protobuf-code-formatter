@@ -59,6 +59,10 @@ func main() {
 					fileSet := descriptor.FileDescriptorSet{Request.GetProtoFile(), nil}
 					formattedFiles[fileToGen] = fileSet.Fmt(fileToGen)
 
+					if parser.CheckFloatingComments(fileToGen) {
+						os.Stderr.WriteString("You had unattached comments that got lost.\n")
+					}
+
 					header := parser.ReadFileHeader(fileToGen)
 					if len(header) != 0 {
 						formattedFiles[fileToGen] = header + formattedFiles[fileToGen]

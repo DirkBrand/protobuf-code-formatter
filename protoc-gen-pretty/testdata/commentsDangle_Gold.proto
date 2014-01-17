@@ -14,9 +14,9 @@ message Person {
   optional string age = 2;
 }
 
-// Dangling
-// block
-//comment
+//   Dangling
+//   block
+//  comment
 message Person3 {
   optional string age = 2;
 }

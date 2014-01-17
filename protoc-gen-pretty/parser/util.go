@@ -65,6 +65,77 @@ func Strcmp(a, b string) int {
 	return diff
 }
 
+func CheckFloatingComments(filename string) bool {
+	var file []string
+	changed := false
+
+	f, err := os.Open(filename)
+	if err != nil {
+		panic(err)
+	}
+	defer f.Close()
+
+	r := bufio.NewReader(f)
+
+	// Generate slice of program
+	for {
+		path, err := r.ReadString(10) // 0x0A separator = newline
+		if err == io.EOF {
+			file = append(file, path)
+			break
+		} else if err != nil {
+			panic(err)
+		}
+		file = append(file, path)
+	}
+
+	for i, _ := range file {
+		// Start line comment
+		if strings.HasPrefix(strings.TrimSpace(file[i]), "//") {
+			if (i > 0 && len(strings.TrimSpace(file[i-1])) == 0) || i == 0 {
+
+				for strings.HasPrefix(strings.TrimSpace(file[i]), "//") && i < len(file) {
+					i += 1
+				}
+
+				// Dangling comment found
+				if i < len(file) && len(strings.TrimSpace(file[i])) == 0 {
+					for i < len(file) && len(strings.TrimSpace(file[i])) == 0 {
+						return true
+					}
+				}
+			}
+		}
+
+		// Start block comment
+		if strings.HasPrefix(file[i], "/*") {
+			if (i > 0 && len(strings.TrimSpace(file[i-1])) == 0) || i == 0 {
+				for i < len(file) {
+					if strings.Contains(file[i], "*/") {
+						i += 1
+						break
+					}
+					i += 1
+				}
+				// Dangling comment found
+				if i < len(file) && len(strings.TrimSpace(file[i])) == 0 {
+					for i < len(file) && len(strings.TrimSpace(file[i])) == 0 {
+						return true
+					}
+				}
+			}
+		}
+
+		if i == len(file)-1 {
+			break
+		}
+
+	}
+
+	return changed
+
+}
+
 func FixFloatingComments(filename string) {
 	var file []string
 
@@ -110,11 +181,16 @@ func FixFloatingComments(filename string) {
 		// Start block comment
 		if strings.HasPrefix(file[i], "/*") {
 			if (i > 0 && len(strings.TrimSpace(file[i-1])) == 0) || i == 0 {
+				file[i] = strings.Replace(file[i], "/*", "", -1)
 				for i < len(file) {
-					if strings.HasSuffix(file[i], "*/\n") {
+					if strings.Contains(file[i], "*/") {
+						file[i] = strings.Replace(file[i], "*/", "", -1)
+						file[i] = "// " + file[i]
 						i += 1
 						break
 					}
+					file[i] = "// " + file[i]
+					file[i] = strings.Replace(file[i], "*", "", -1)
 					i += 1
 				}
 				// Dangling comment found

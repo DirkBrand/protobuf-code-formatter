@@ -24,9 +24,9 @@ extend google.protobuf.FileOptions {
 	  optional string option2 = 1000;
 	}
 
-/* Some
-    // nested
-    comments*/
+// Some
+//// nested
+//comments
 option (goproto_stringer_dall) = 4.2;
 /* Different
     comments
@@ -42,10 +42,10 @@ enum MyEnum {
   BAR = 2;
 }
 
-/* hello
-   	multi-line
-   	comment
-   world*/
+// hello
+// multi-line
+// comment
+// world
 message Person2 {
   /* Already
      multiline*/
