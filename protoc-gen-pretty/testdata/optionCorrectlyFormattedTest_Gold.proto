@@ -7,13 +7,13 @@ option go_package = "next/volume2";
 
 option (goproto_enum_prefix_all)=true;
 option (goproto_stringer_all)="aw yeah";
+option (goproto_stringer_dall)=420.20606;
 
 // Comment before option
 option (goproto_stringer_fall)=4;
 // Comment after option
 
 option (goproto_stringer_gall)=4.2;
-option (goproto_stringer_dall)=420.20606;
 
 extend google.protobuf.MethodOptions {
   optional Foo option2 = 1000;

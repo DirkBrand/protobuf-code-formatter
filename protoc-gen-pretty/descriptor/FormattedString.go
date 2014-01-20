@@ -30,6 +30,7 @@ import (
 	proto "code.google.com/p/gogoprotobuf/proto"
 	"encoding/binary"
 	fmt "fmt"
+	regex "regexp"
 	sort "sort"
 	strings "strings"
 )
@@ -281,7 +282,10 @@ func (this *FileDescriptor) Fmt(depth int) string {
 	if options != nil && len(options.ExtensionMap()) > 0 {
 		s = append(s, "\n")
 		theOption := getFormattedOptionsFromExtensionMap(options.ExtensionMap(), -1, false, fmt.Sprintf("%d", optionsPath), optionCount)
-		s = append(s, theOption)
+
+		theOption = sortOptions(theOption)
+
+		s = append(s, strings.Join(theOption, ""))
 
 		counter += 1
 	}
@@ -452,7 +456,9 @@ func (this *Descriptor) Fmt(depth int, isGroup bool, groupField *FieldDescriptor
 		s = append(s, "\n")
 		contentCount += 1
 
-		s = append(s, getFormattedOptionsFromExtensionMap(mesOptions.ExtensionMap(), depth, false, fmt.Sprintf("%d,%d", this.path, messageOptionsPath), 0))
+		opts := getFormattedOptionsFromExtensionMap(mesOptions.ExtensionMap(), depth, false, fmt.Sprintf("%d,%d", this.path, messageOptionsPath), 0)
+		opts = sortOptions(opts)
+		s = append(s, strings.Join(opts, ""))
 	}
 
 	// Fields
@@ -574,15 +580,36 @@ func (this *FieldDescriptor) Fmt(depth int) string {
 			// Maybe in other enums
 			if !found {
 				for _, mes := range this.parent.enum {
-					if mes.GetName() == typeName {
+					if strcmp(mes.GetName(), typeName) == 0 {
 						found = true
 						break
 					}
 				}
 			}
 			// Maybe same package
-			if !found && strcmp(strings.Split(strings.TrimPrefix(this.GetTypeName(), "."), ".")[0], thisFile.GetPackage()) == 0 {
-				found = true
+			if !found {
+				for _, curFile := range allFiles {
+					// Same Package
+					if strcmp(curFile.GetPackage(), currentFile.GetPackage()) == 0 {
+						// Look in messages
+						for _, mes := range curFile.GetMessageType() {
+							if b, str := scanNestedMessages(mes, typeName, ""); b {
+								typeName = str
+								found = true
+								break
+							}
+						}
+						if !found {
+							// Look in enums
+							for _, enum := range curFile.GetEnumType() {
+								if strcmp(enum.GetName(), typeName) == 0 {
+									found = true
+									break
+								}
+							}
+						}
+					}
+				}
 			}
 		}
 		if found {
@@ -625,7 +652,8 @@ func (this *FieldDescriptor) Fmt(depth int) string {
 				} else {
 					i += 1
 				}
-				s = append(s, getFormattedOptionsFromExtensionMap(options.ExtensionMap(), -1, true, "", 0))
+				opts := getFormattedOptionsFromExtensionMap(options.ExtensionMap(), -1, true, "", 0)
+				s = append(s, strings.Join(opts, ""))
 			}
 
 			if options.GetPacked() {
@@ -689,7 +717,9 @@ func (this *EnumDescriptor) Fmt(depth int) string {
 	if options != nil && len(options.ExtensionMap()) > 0 {
 		s = append(s, "\n")
 
-		s = append(s, getFormattedOptionsFromExtensionMap(options.ExtensionMap(), depth, false, fmt.Sprintf("%d,%d", this.path, enumOptionsPath), 0))
+		opts := getFormattedOptionsFromExtensionMap(options.ExtensionMap(), depth, false, fmt.Sprintf("%d,%d", this.path, enumOptionsPath), 0)
+		opts = sortOptions(opts)
+		s = append(s, strings.Join(opts, ""))
 	}
 
 	// enum fields
@@ -718,7 +748,8 @@ func (this *EnumDescriptor) Fmt(depth int) string {
 		valueOptions := enumValue.GetOptions()
 		if valueOptions != nil {
 			s = append(s, ` [`)
-			s = append(s, getFormattedOptionsFromExtensionMap(valueOptions.ExtensionMap(), -1, true, fmt.Sprintf("%d,%d", this.path, enumValueOptionsPath), 0))
+			opts := getFormattedOptionsFromExtensionMap(valueOptions.ExtensionMap(), -1, true, fmt.Sprintf("%d,%d", this.path, enumValueOptionsPath), 0)
+			s = append(s, strings.Join(opts, ""))
 			s = append(s, `]`)
 		}
 
@@ -780,7 +811,9 @@ func (this *ServiceDescriptor) Fmt(depth int) string {
 	// Service Options
 	options := this.GetOptions()
 	if options != nil {
-		s = append(s, getFormattedOptionsFromExtensionMap(options.ExtensionMap(), depth, false, fmt.Sprintf("%s,%d", this.path, serviceOptionsPath), 0))
+		opts := getFormattedOptionsFromExtensionMap(options.ExtensionMap(), depth, false, fmt.Sprintf("%s,%d", this.path, serviceOptionsPath), 0)
+		opts = sortOptions(opts)
+		s = append(s, strings.Join(opts, ""))
 	}
 
 	// Methods
@@ -815,9 +848,8 @@ func (this *ServiceDescriptor) Fmt(depth int) string {
 			s = append(s, tc)
 			s = append(s, "\n")
 		}
-
-		methodOptions := method.GetOptions()
-		s = append(s, getFormattedOptionsFromExtensionMap(methodOptions.ExtensionMap(), depth+1, false, fmt.Sprintf("%s,%d,%d,%d", this.path, methodDescriptorPath, i, methodOptionsPath), 0))
+		opts := getFormattedOptionsFromExtensionMap(method.GetOptions().ExtensionMap(), depth+1, false, fmt.Sprintf("%s,%d,%d,%d", this.path, methodDescriptorPath, i, methodOptionsPath), 0)
+		s = append(s, strings.Join(opts[1:], ""))
 
 		s = append(s, getIndentation(depth+1))
 		s = append(s, "}\n")
@@ -829,11 +861,12 @@ func (this *ServiceDescriptor) Fmt(depth int) string {
 	return strings.Join(s, "")
 }
 
-func getFormattedOptionsFromExtensionMap(extensionMap map[int32]proto.Extension, depth int, fieldOption bool, pathIncludingParent string, startIndex int) string {
+func getFormattedOptionsFromExtensionMap(extensionMap map[int32]proto.Extension, depth int, fieldOption bool, pathIncludingParent string, startIndex int) []string {
 	var s []string
 	counter := 0
 	if len(extensionMap) > 0 {
 		commentsIndex := startIndex
+		// Sort extension map
 		for optInd := range extensionMap {
 			// Loop through all imported files
 			for _, curFile := range allFiles {
@@ -849,6 +882,8 @@ func getFormattedOptionsFromExtensionMap(extensionMap map[int32]proto.Extension,
 						wt := key & 0x7
 
 						var val string
+
+						var singleOption []string
 
 						// Enums are special
 						if ext.GetType() == FieldDescriptorProto_TYPE_ENUM {
@@ -868,39 +903,41 @@ func getFormattedOptionsFromExtensionMap(extensionMap map[int32]proto.Extension,
 							lc := LeadingComments(fmt.Sprintf("%s,%d,%d", pathIncludingParent, 999, commentsIndex), depth+1)
 							if len(lc) > 0 {
 								if ext_i == 0 {
-									s = append(s, strings.TrimPrefix(lc, "\n"))
+									singleOption = append(singleOption, strings.TrimPrefix(lc, "\n"))
 								} else {
-									s = append(s, lc)
+									singleOption = append(singleOption, lc)
 								}
 							}
 							if !fieldOption {
-								s = append(s, getIndentation(depth+1))
-								s = append(s, `option (`)
+								singleOption = append(singleOption, getIndentation(depth+1))
+								singleOption = append(singleOption, `option (`)
 							} else {
 								if counter >= 1 {
-									s = append(s, ", ")
+									singleOption = append(singleOption, ", ")
 								}
-								s = append(s, `(`)
+								singleOption = append(singleOption, `(`)
 							}
 
 							if curFile.GetName() != currentFile.GetName() && len(curFile.GetPackage()) > 0 {
-								s = append(s, curFile.GetPackage())
-								s = append(s, ".")
+
+								singleOption = append(singleOption, curFile.GetPackage())
+								singleOption = append(singleOption, ".")
 							}
-							s = append(s, ext.GetName())
-							s = append(s, ")=")
-							s = append(s, val)
+							singleOption = append(singleOption, ext.GetName())
+							singleOption = append(singleOption, ")=")
+							singleOption = append(singleOption, val)
 
 							if !fieldOption {
-								s = append(s, ";\n")
+								singleOption = append(singleOption, ";\n")
 							}
 							comm := TrailingComments(fmt.Sprintf("%s,%d,%d", pathIncludingParent, 999, commentsIndex), depth+1)
 							if len(comm) > 0 {
-								s = append(s, comm)
+								singleOption = append(singleOption, comm)
 								if counter < len(extensionMap)-1 {
-									s = append(s, "\n")
+									singleOption = append(singleOption, "\n")
 								}
 							}
+							s = append(s, strings.Join(singleOption, ""))
 
 							commentsIndex += 1
 							counter += 1
@@ -948,41 +985,44 @@ func getFormattedOptionsFromExtensionMap(extensionMap map[int32]proto.Extension,
 									for _, field := range myMessage.GetField() {
 										if uint64(field.GetNumber()) == tagNum {
 											val = `.` + field.GetName() + " = " + packVal
+											break
 										}
 									}
 								}
 
-								s = append(s, LeadingComments(fmt.Sprintf("%s,%d,%d", pathIncludingParent, 999, commentsIndex), depth+1))
+								singleOption = append(singleOption, LeadingComments(fmt.Sprintf("%s,%d,%d", pathIncludingParent, 999, commentsIndex), depth+1))
 
 								if !fieldOption {
-									s = append(s, getIndentation(depth+1))
-									s = append(s, `option (`)
+									singleOption = append(singleOption, getIndentation(depth+1))
+									singleOption = append(singleOption, `option (`)
 								} else {
 									if counter >= 1 {
-										s = append(s, ", ")
+										singleOption = append(singleOption, ", ")
 									}
-									s = append(s, `(`)
+									singleOption = append(singleOption, `(`)
 								}
 
 								if curFile.GetName() != currentFile.GetName() && len(curFile.GetPackage()) > 0 {
-									s = append(s, curFile.GetPackage())
-									s = append(s, ".")
+									singleOption = append(singleOption, curFile.GetPackage())
+									singleOption = append(singleOption, ".")
 								}
-								s = append(s, ext.GetName())
-								s = append(s, ")")
-								s = append(s, val)
+								singleOption = append(singleOption, ext.GetName())
+								singleOption = append(singleOption, ")")
+								singleOption = append(singleOption, val)
 								if !fieldOption {
-									s = append(s, ";\n")
+									singleOption = append(singleOption, ";\n")
 								}
 								comm := TrailingComments(fmt.Sprintf("%s,%d,%d", pathIncludingParent, 999, commentsIndex), depth+1)
 								if len(comm) > 0 {
-									s = append(s, comm)
+									singleOption = append(singleOption, comm)
 									if counter < len(extensionMap) {
-										s = append(s, "\n")
+										singleOption = append(singleOption, "\n")
 									}
 								}
 								commentsIndex += 1
 								counter += 1
+
+								s = append(s, strings.Join(singleOption, ""))
 
 							}
 
@@ -990,38 +1030,40 @@ func getFormattedOptionsFromExtensionMap(extensionMap map[int32]proto.Extension,
 							val, b := byteToValueString(bytes, n, ext.GetType())
 							n = b
 
-							s = append(s, LeadingComments(fmt.Sprintf("%s,%d,%d", pathIncludingParent, 999, commentsIndex), depth+1))
+							singleOption = append(singleOption, LeadingComments(fmt.Sprintf("%s,%d,%d", pathIncludingParent, 999, commentsIndex), depth+1))
 
 							if !fieldOption {
-								s = append(s, getIndentation(depth+1))
-								s = append(s, `option (`)
+								singleOption = append(singleOption, getIndentation(depth+1))
+								singleOption = append(singleOption, `option (`)
 							} else {
 								if counter >= 1 {
-									s = append(s, ", ")
+									singleOption = append(singleOption, ", ")
 								}
-								s = append(s, `(`)
+								singleOption = append(singleOption, `(`)
 							}
 
 							if curFile.GetName() != currentFile.GetName() && len(curFile.GetPackage()) > 0 {
-								s = append(s, curFile.GetPackage())
-								s = append(s, ".")
+								singleOption = append(singleOption, curFile.GetPackage())
+								singleOption = append(singleOption, ".")
 							}
-							s = append(s, ext.GetName())
-							s = append(s, ")=")
-							s = append(s, val)
+							singleOption = append(singleOption, ext.GetName())
+							singleOption = append(singleOption, ")=")
+							singleOption = append(singleOption, val)
 
 							if !fieldOption {
-								s = append(s, ";\n")
+								singleOption = append(singleOption, ";\n")
 							}
 							comm := TrailingComments(fmt.Sprintf("%s,%d,%d", pathIncludingParent, 999, commentsIndex), depth+1)
 							if len(comm) > 0 {
-								s = append(s, comm)
+								singleOption = append(singleOption, comm)
 								if counter < len(extensionMap) {
-									s = append(s, "\n")
+									singleOption = append(singleOption, "\n")
 								}
 							}
 							commentsIndex += 1
 							counter += 1
+
+							s = append(s, strings.Join(singleOption, ""))
 						}
 
 					}
@@ -1030,7 +1072,7 @@ func getFormattedOptionsFromExtensionMap(extensionMap map[int32]proto.Extension,
 		}
 	}
 
-	return strings.Join(s, "")
+	return s
 }
 
 // Determines depth of indentation
@@ -1189,4 +1231,29 @@ func strcmp(a, b string) int {
 		diff = len(a) - len(b)
 	}
 	return diff
+}
+
+func sortOptions(opts []string) []string {
+	var vals []string
+
+	var s map[string]string
+	s = make(map[string]string)
+	r1, _ := regex.Compile(`option [(]`)
+	r2, _ := regex.Compile(`[)]([\s]*=[\s]*)`)
+	for _, opt := range opts {
+		b1 := r1.FindStringIndex(opt)
+		b2 := r2.FindStringIndex(opt)
+		s[opt[b1[1]:b2[0]]] = opt
+	}
+
+	var keys []string
+	for k := range s {
+		keys = append(keys, k)
+	}
+	sort.Strings(keys)
+	for _, k := range keys {
+		vals = append(vals, s[k])
+	}
+
+	return vals
 }
