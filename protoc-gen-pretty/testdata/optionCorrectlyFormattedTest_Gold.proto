@@ -1,9 +1,9 @@
 import "testdata/descriptor.proto";
 import "testdata/gogo_small.proto";
 
-option java_package = "com.vastech.storage";
-option java_outer_classname = "StorageProtos";
 option go_package = "next/volume2";
+option java_outer_classname = "StorageProtos";
+option java_package = "com.vastech.storage";
 
 option (goproto_enum_prefix_all)=true;
 option (goproto_stringer_all)="aw yeah";

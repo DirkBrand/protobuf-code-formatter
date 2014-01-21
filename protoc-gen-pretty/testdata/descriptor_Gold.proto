@@ -38,8 +38,8 @@
 //
 package google.protobuf;
 
-option java_package = "com.google.protobuf";
 option java_outer_classname = "DescriptorProtos";
+option java_package = "com.google.protobuf";
 
 // descriptor.proto must be optimized for speed because reflection-based
 // algorithms don't work during bootstrapping.

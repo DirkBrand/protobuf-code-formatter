@@ -117,6 +117,7 @@ func (this *FileDescriptor) Fmt(depth int) string {
 	// Special options
 	options := this.GetOptions()
 	optionCount := 0
+	var optSlice []string
 	if options != nil {
 		if (len(this.GetOptions().GetJavaPackage()) > 0 ||
 			len(this.GetOptions().GetJavaOuterClassname()) != 0 ||
@@ -128,154 +129,178 @@ func (this *FileDescriptor) Fmt(depth int) string {
 
 		// JAVA PACKAGE
 		if len(this.GetOptions().GetJavaPackage()) != 0 {
+			var singOpt []string
 			lc := LeadingComments(fmt.Sprintf("%d,999,%d", optionsPath, optionCount), depth)
 			if len(lc) > 0 {
 				if optionCount == 0 {
-					s = append(s, strings.TrimPrefix(lc, "\n"))
+					singOpt = append(singOpt, strings.TrimPrefix(lc, "\n"))
 				} else {
-					s = append(s, lc)
+					singOpt = append(singOpt, lc)
 				}
 			}
-			s = append(s, "option java_package = ")
-			s = append(s, `"`+this.GetOptions().GetJavaPackage()+`"`)
-			s = append(s, ";\n")
-			s = append(s, TrailingComments(fmt.Sprintf("%d,999,%d", optionsPath, optionCount), depth))
+			singOpt = append(singOpt, "option java_package = ")
+			singOpt = append(singOpt, `"`+this.GetOptions().GetJavaPackage()+`"`)
+			singOpt = append(singOpt, ";\n")
+			singOpt = append(singOpt, TrailingComments(fmt.Sprintf("%d,999,%d", optionsPath, optionCount), depth))
 			optionCount += 1
+
+			optSlice = append(optSlice, strings.Join(singOpt, ""))
 		}
 
 		// JAVA OUTER CLASSNAME
 		if len(this.GetOptions().GetJavaOuterClassname()) != 0 {
+			var singOpt []string
 			lc := LeadingComments(fmt.Sprintf("%d,999,%d", optionsPath, optionCount), depth)
 			if len(lc) > 0 {
 				if optionCount == 0 {
-					s = append(s, strings.TrimPrefix(lc, "\n"))
+					singOpt = append(singOpt, strings.TrimPrefix(lc, "\n"))
 				} else {
-					s = append(s, lc)
+					singOpt = append(singOpt, lc)
 				}
 			}
-			s = append(s, "option java_outer_classname = ")
-			s = append(s, `"`+this.GetOptions().GetJavaOuterClassname()+`"`)
-			s = append(s, ";\n")
-			s = append(s, TrailingComments(fmt.Sprintf("%d,999,%d", optionsPath, optionCount), depth))
+			singOpt = append(singOpt, "option java_outer_classname = ")
+			singOpt = append(singOpt, `"`+this.GetOptions().GetJavaOuterClassname()+`"`)
+			singOpt = append(singOpt, ";\n")
+			singOpt = append(singOpt, TrailingComments(fmt.Sprintf("%d,999,%d", optionsPath, optionCount), depth))
 			optionCount += 1
+			optSlice = append(optSlice, strings.Join(singOpt, ""))
 		}
 
 		// JAVA MULTIPLE FILES
 		if this.GetOptions().GetJavaMultipleFiles() {
+			var singOpt []string
 			lc := LeadingComments(fmt.Sprintf("%d,999,%d", optionsPath, optionCount), depth)
 			if len(lc) > 0 {
 				if optionCount == 0 {
-					s = append(s, strings.TrimPrefix(lc, "\n"))
+					singOpt = append(singOpt, strings.TrimPrefix(lc, "\n"))
 				} else {
-					s = append(s, lc)
+					singOpt = append(singOpt, lc)
 				}
 			}
-			s = append(s, "option java_multiple_files = true")
-			s = append(s, ";\n")
-			s = append(s, TrailingComments(fmt.Sprintf("%d,999,%d", optionsPath, optionCount), depth))
+			singOpt = append(singOpt, "option java_multiple_files = true")
+			singOpt = append(singOpt, ";\n")
+			singOpt = append(singOpt, TrailingComments(fmt.Sprintf("%d,999,%d", optionsPath, optionCount), depth))
 			optionCount += 1
+			optSlice = append(optSlice, strings.Join(singOpt, ""))
 		}
 
 		// JAVA GENERATE EQUALS AND HASH
 		if this.GetOptions().GetJavaGenerateEqualsAndHash() {
+			var singOpt []string
 			lc := LeadingComments(fmt.Sprintf("%d,999,%d", optionsPath, optionCount), depth)
 			if len(lc) > 0 {
 				if optionCount == 0 {
-					s = append(s, strings.TrimPrefix(lc, "\n"))
+					singOpt = append(singOpt, strings.TrimPrefix(lc, "\n"))
 				} else {
-					s = append(s, lc)
+					singOpt = append(singOpt, lc)
 				}
 			}
-			s = append(s, "option java_generate_equals_and_hash = true")
-			s = append(s, ";\n")
-			s = append(s, TrailingComments(fmt.Sprintf("%d,999,%d", optionsPath, optionCount), depth))
+			singOpt = append(singOpt, "option java_generate_equals_and_hash = true")
+			singOpt = append(singOpt, ";\n")
+			singOpt = append(singOpt, TrailingComments(fmt.Sprintf("%d,999,%d", optionsPath, optionCount), depth))
 			optionCount += 1
+			optSlice = append(optSlice, strings.Join(singOpt, ""))
 		}
 
 		// GO PACKAGE
 		if len(this.GetOptions().GetGoPackage()) > 0 {
+			var singOpt []string
 			lc := LeadingComments(fmt.Sprintf("%d,999,%d", optionsPath, optionCount), depth)
 			if len(lc) > 0 {
 				if optionCount == 0 {
-					s = append(s, strings.TrimPrefix(lc, "\n"))
+					singOpt = append(singOpt, strings.TrimPrefix(lc, "\n"))
 				} else {
-					s = append(s, lc)
+					singOpt = append(singOpt, lc)
 				}
 			}
-			s = append(s, `option go_package = "`)
-			s = append(s, this.GetOptions().GetGoPackage())
-			s = append(s, `";`)
-			s = append(s, "\n")
-			s = append(s, TrailingComments(fmt.Sprintf("%d,999,%d", optionsPath, optionCount), depth))
+			singOpt = append(singOpt, `option go_package = "`)
+			singOpt = append(singOpt, this.GetOptions().GetGoPackage())
+			singOpt = append(singOpt, `";`)
+			singOpt = append(singOpt, "\n")
+			singOpt = append(singOpt, TrailingComments(fmt.Sprintf("%d,999,%d", optionsPath, optionCount), depth))
 			optionCount += 1
+			optSlice = append(optSlice, strings.Join(singOpt, ""))
 		}
 
 		//CC GENERIC SERVICE
 		if this.GetOptions().GetCcGenericServices() {
+			var singOpt []string
 			lc := LeadingComments(fmt.Sprintf("%d,999,%d", optionsPath, optionCount), depth)
 			if len(lc) > 0 {
 				if optionCount == 0 {
-					s = append(s, strings.TrimPrefix(lc, "\n"))
+					singOpt = append(singOpt, strings.TrimPrefix(lc, "\n"))
 				} else {
-					s = append(s, lc)
+					singOpt = append(singOpt, lc)
 				}
 			}
-			s = append(s, "option cc_generic_services = true")
-			s = append(s, ";\n")
-			s = append(s, TrailingComments(fmt.Sprintf("%d,999,%d", optionsPath, optionCount), depth))
+			singOpt = append(singOpt, "option cc_generic_services = true")
+			singOpt = append(singOpt, ";\n")
+			singOpt = append(singOpt, TrailingComments(fmt.Sprintf("%d,999,%d", optionsPath, optionCount), depth))
 			optionCount += 1
+			optSlice = append(optSlice, strings.Join(singOpt, ""))
 		}
 
 		//JAVA GENERIC SERVICE
 		if this.GetOptions().GetJavaGenericServices() {
+			var singOpt []string
 			lc := LeadingComments(fmt.Sprintf("%d,999,%d", optionsPath, optionCount), depth)
 			if len(lc) > 0 {
 				if optionCount == 0 {
-					s = append(s, strings.TrimPrefix(lc, "\n"))
+					singOpt = append(singOpt, strings.TrimPrefix(lc, "\n"))
 				} else {
-					s = append(s, lc)
+					singOpt = append(singOpt, lc)
 				}
 			}
-			s = append(s, "option java_generic_services = true")
-			s = append(s, ";\n")
-			s = append(s, TrailingComments(fmt.Sprintf("%d,999,%d", optionsPath, optionCount), depth))
+			singOpt = append(singOpt, "option java_generic_services = true")
+			singOpt = append(singOpt, ";\n")
+			singOpt = append(singOpt, TrailingComments(fmt.Sprintf("%d,999,%d", optionsPath, optionCount), depth))
 			optionCount += 1
+			optSlice = append(optSlice, strings.Join(singOpt, ""))
 		}
 
 		// PY GENERIC SERVICE
 		if this.GetOptions().GetPyGenericServices() {
+			var singOpt []string
 			lc := LeadingComments(fmt.Sprintf("%d,999,%d", optionsPath, optionCount), depth)
 			if len(lc) > 0 {
 				if optionCount == 0 {
-					s = append(s, strings.TrimPrefix(lc, "\n"))
+					singOpt = append(singOpt, strings.TrimPrefix(lc, "\n"))
 				} else {
-					s = append(s, lc)
+					singOpt = append(singOpt, lc)
 				}
 			}
-			s = append(s, "option py_generic_services = true")
-			s = append(s, ";\n")
-			s = append(s, TrailingComments(fmt.Sprintf("%d,999,%d", optionsPath, optionCount), depth))
+			singOpt = append(singOpt, "option py_generic_services = true")
+			singOpt = append(singOpt, ";\n")
+			singOpt = append(singOpt, TrailingComments(fmt.Sprintf("%d,999,%d", optionsPath, optionCount), depth))
 			optionCount += 1
+			optSlice = append(optSlice, strings.Join(singOpt, ""))
 		}
+
 		//OPTIMIZE FOR
 		if this.GetOptions().OptimizeFor != nil {
+			var singOpt []string
 			lc := LeadingComments(fmt.Sprintf("%d,999,%d", optionsPath, optionCount), depth)
 			if len(lc) > 0 {
 				if optionCount == 0 {
-					s = append(s, strings.TrimPrefix(lc, "\n"))
+					singOpt = append(singOpt, strings.TrimPrefix(lc, "\n"))
 				} else {
-					s = append(s, lc)
+					singOpt = append(singOpt, lc)
 				}
 			}
-			s = append(s, "option optimize_for = ")
+			singOpt = append(singOpt, "option optimize_for = ")
 			if int32(*this.GetOptions().GetOptimizeFor().Enum()) > 1 {
-				s = append(s, this.GetOptions().GetOptimizeFor().String())
+				singOpt = append(singOpt, this.GetOptions().GetOptimizeFor().String())
 			} else {
-				s = append(s, "SPEED")
+				singOpt = append(singOpt, "SPEED")
 			}
-			s = append(s, ";\n")
-			s = append(s, TrailingComments(fmt.Sprintf("%d,999,%d", optionsPath, optionCount), depth))
+			singOpt = append(singOpt, ";\n")
+			singOpt = append(singOpt, TrailingComments(fmt.Sprintf("%d,999,%d", optionsPath, optionCount), depth))
+
+			optSlice = append(optSlice, strings.Join(singOpt, ""))
 		}
+	}
+	if len(optSlice) > 0 {
+		s = append(s, strings.Join(sortSpecialOptions(optSlice), ""))
 	}
 
 	// File Options
@@ -1231,6 +1256,31 @@ func strcmp(a, b string) int {
 		diff = len(a) - len(b)
 	}
 	return diff
+}
+
+func sortSpecialOptions(opts []string) []string {
+	var vals []string
+
+	var s map[string]string
+	s = make(map[string]string)
+	r1, _ := regex.Compile(`option `)
+	r2, _ := regex.Compile(`([\s]*=[\s]*)`)
+	for _, opt := range opts {
+		b1 := r1.FindStringIndex(opt)
+		b2 := r2.FindStringIndex(opt)
+		s[opt[b1[1]:b2[0]]] = opt
+	}
+
+	var keys []string
+	for k := range s {
+		keys = append(keys, k)
+	}
+	sort.Strings(keys)
+	for _, k := range keys {
+		vals = append(vals, s[k])
+	}
+
+	return vals
 }
 
 func sortOptions(opts []string) []string {

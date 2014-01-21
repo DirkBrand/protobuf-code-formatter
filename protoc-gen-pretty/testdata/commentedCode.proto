@@ -12,12 +12,11 @@ message Person {
   required string name = 1;
 }
 
-
-//enum MyEnum2 {
-//  FOO = 1;
-//  BAR = 2;
-//}
-//
+// enum MyEnum2 {
+//   FOO = 1;
+//   BAR = 2;
+// }
+// 
 // Message 2 comment
 // second line
 message Person2 {
