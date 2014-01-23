@@ -89,9 +89,9 @@ func CheckFloatingComments(filename string) bool {
 		file = append(file, path)
 	}
 
-	for i, _ := range file {
+	for i, line := range file {
 		// Start line comment
-		if strings.HasPrefix(strings.TrimSpace(file[i]), "//") {
+		if strings.HasPrefix(strings.TrimSpace(line), "//") {
 			if (i > 0 && len(strings.TrimSpace(file[i-1])) == 0) || i == 0 {
 
 				for strings.HasPrefix(strings.TrimSpace(file[i]), "//") && i < len(file) {
@@ -159,9 +159,9 @@ func FixFloatingComments(filename string) {
 		file = append(file, path)
 	}
 
-	for i, _ := range file {
+	for i, line := range file {
 		// Start line comment
-		if strings.HasPrefix(strings.TrimSpace(file[i]), "//") {
+		if strings.HasPrefix(strings.TrimSpace(line), "//") {
 			if (i > 0 && len(strings.TrimSpace(file[i-1])) == 0) || i == 0 {
 
 				for strings.HasPrefix(strings.TrimSpace(file[i]), "//") && i < len(file) {
