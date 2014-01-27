@@ -2,8 +2,8 @@ package parser
 
 import (
 	"bufio"
-	//"fmt"
 	"io"
+	"io/ioutil"
 	"os"
 	"strings"
 )
@@ -209,13 +209,8 @@ func FixFloatingComments(filename string) {
 	}
 
 	// Overwrite file
-
-	fo, err := os.Create(filename)
+	err = ioutil.WriteFile(filename, []byte(strings.Join(file, "")), 0644)
 	if err != nil {
 		panic(err)
 	}
-	fo.WriteString(strings.Join(file, ""))
-	fo.Close()
-
-	//fmt.Println(strings.Join(file, ""))
 }

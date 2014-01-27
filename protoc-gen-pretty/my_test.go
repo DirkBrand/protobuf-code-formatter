@@ -25,7 +25,6 @@ OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package main
 
 import (
-	"errors"
 	"fmt"
 	parser "github.com/DirkBrand/protobuf-code-formatter/protoc-gen-pretty/parser"
 	"io/ioutil"
@@ -38,224 +37,107 @@ var fileLocation string = "testdata/"
 
 func TestAllOptions(t *testing.T) {
 	fileName := "allOptionsTest.proto"
-
-	if res, err := parseAndTestFile(fileLocation + fileName); !res {
-		fmt.Println(err)
-		os.Exit(1)
-	} else {
-		fmt.Println(fileName + " <TEST PASSED>")
-	}
+	parseAndTestFile(t, fileLocation+fileName)
 }
 
 func TestExtendWithComments(t *testing.T) {
 	fileName := "extendWithCommentsTest.proto"
-
-	if res, err := parseAndTestFile(fileLocation + fileName); !res {
-		fmt.Println(err)
-		os.Exit(1)
-	} else {
-		fmt.Println(fileName + " <TEST PASSED>")
-	}
+	parseAndTestFile(t, fileLocation+fileName)
 }
 
 func TestExtend(t *testing.T) {
 	fileName := "extendTest.proto"
-
-	if res, err := parseAndTestFile(fileLocation + fileName); !res {
-		fmt.Println(err)
-		os.Exit(1)
-	} else {
-		fmt.Println(fileName + " <TEST PASSED>")
-	}
+	parseAndTestFile(t, fileLocation+fileName)
 }
 
 func TestFieldOptions(t *testing.T) {
 	fileName := "fieldOptionsTest.proto"
-	res, err := parseAndTestFile(fileLocation + fileName)
-	if !res {
-		fmt.Println(err)
-		os.Exit(1)
-	} else {
-		fmt.Println(fileName + " <TEST PASSED>")
-	}
+	parseAndTestFile(t, fileLocation+fileName)
 }
 
 func TestNestedMessage(t *testing.T) {
 	fileName := "nestedMessageCommentsTest.proto"
-	res, err := parseAndTestFile(fileLocation + fileName)
-	if !res {
-		fmt.Println(err)
-		os.Exit(1)
-	} else {
-		fmt.Println(fileName + " <TEST PASSED>")
-	}
+	parseAndTestFile(t, fileLocation+fileName)
 }
 
 func TestOptionsCorrectlyFormatted(t *testing.T) {
 	fileName := "optionCorrectlyFormattedTest.proto"
-	res, err := parseAndTestFile(fileLocation + fileName)
-	if !res {
-		fmt.Println(err)
-		os.Exit(1)
-	} else {
-		fmt.Println(fileName + " <TEST PASSED>")
-	}
+	parseAndTestFile(t, fileLocation+fileName)
 }
 
 func TestSampleComments(t *testing.T) {
 	fileName := "sampleCommentsTest.proto"
-	res, err := parseAndTestFile(fileLocation + fileName)
-	if !res {
-		fmt.Println(err)
-		os.Exit(1)
-	} else {
-		fmt.Println(fileName + " <TEST PASSED>")
-	}
+	parseAndTestFile(t, fileLocation+fileName)
 }
 
 func TestServicesComments(t *testing.T) {
 	fileName := "servicesCommentsTest.proto"
-	res, err := parseAndTestFile(fileLocation + fileName)
-	if !res {
-		fmt.Println(err)
-		os.Exit(1)
-	} else {
-		fmt.Println(fileName + " <TEST PASSED>")
-	}
+	parseAndTestFile(t, fileLocation+fileName)
 }
 
 func TestWalterTest1(t *testing.T) {
 	fileName := "walterTest1.proto"
-	res, err := parseAndTestFile(fileLocation + fileName)
-	if !res {
-		fmt.Println(err)
-		os.Exit(1)
-	} else {
-		fmt.Println(fileName + " <TEST PASSED>")
-	}
+	parseAndTestFile(t, fileLocation+fileName)
 }
 
 func TestWalterTest2(t *testing.T) {
 	fileName := "walterTest2.proto"
-	res, err := parseAndTestFile(fileLocation + fileName)
-	if !res {
-		fmt.Println(err)
-		os.Exit(1)
-	} else {
-		fmt.Println(fileName + " <TEST PASSED>")
-	}
+	parseAndTestFile(t, fileLocation+fileName)
 }
 
 func TestWalterTest3a(t *testing.T) {
 	fileName := "walterTest3a.proto"
-	res, err := parseAndTestFile(fileLocation + fileName)
-	if !res {
-		fmt.Println(err)
-		os.Exit(1)
-	} else {
-		fmt.Println(fileName + " <TEST PASSED>")
-	}
+	parseAndTestFile(t, fileLocation+fileName)
 }
 
 func TestWalterTest3b(t *testing.T) {
 	fileName := "walterTest3b.proto"
-	res, err := parseAndTestFile(fileLocation + fileName)
-	if !res {
-		fmt.Println(err)
-		os.Exit(1)
-	} else {
-		fmt.Println(fileName + " <TEST PASSED>")
-	}
+	parseAndTestFile(t, fileLocation+fileName)
 }
 
 func TestDescriptor(t *testing.T) {
 	fileName := "descriptor.proto"
-	res, err := parseAndTestFile(fileLocation + fileName)
-	if !res {
-		fmt.Println(err)
-		os.Exit(1)
-	} else {
-		fmt.Println(fileName + " <TEST PASSED>")
-	}
-	//os.Exit(-1)
+	parseAndTestFile(t, fileLocation+fileName)
 }
 
 func TestSample(t *testing.T) {
 	fileName := "sample.proto"
-	res, err := parseAndTestFile(fileLocation + fileName)
-	if !res {
-		fmt.Println(err)
-		os.Exit(1)
-	} else {
-		fmt.Println(fileName + " <TEST PASSED>")
-	}
-	//os.Exit(-1)
+	parseAndTestFile(t, fileLocation+fileName)
 }
 
 func TestDanglingComments(t *testing.T) {
 	fileName := "commentsDangle.proto"
-	res, err := parseAndTestFile(fileLocation + fileName)
-	if !res {
-		fmt.Println(err)
-		os.Exit(1)
-	} else {
-		fmt.Println(fileName + " <TEST PASSED>")
-	}
-	//os.Exit(-1)
+	parseAndTestFile(t, fileLocation+fileName)
 }
 
 func TestCommentedCode(t *testing.T) {
 	fileName := "commentedCode.proto"
-	res, err := parseAndTestFile(fileLocation + fileName)
-	if !res {
-		fmt.Println(err)
-		os.Exit(1)
-	} else {
-		fmt.Println(fileName + " <TEST PASSED>")
-	}
-	//os.Exit(-1)
+	parseAndTestFile(t, fileLocation+fileName)
 }
 
 // Negative Tests
 func TestExtendCommentLimitation(t *testing.T) {
 	fileName := "extendCommentsLimitationTest.proto"
-	res, err := parseAndTestFile(fileLocation + fileName)
-	if !res {
-		fmt.Println(err)
-		os.Exit(1)
-	} else {
-		fmt.Println(fileName + " <TEST PASSED>")
-	}
+	parseAndTestFile(t, fileLocation+fileName)
 }
 
 func TestOrderLostLimitation(t *testing.T) {
 	fileName := "orderLostTest.proto"
-	res, err := parseAndTestFile(fileLocation + fileName)
-	if !res {
-		fmt.Println(err)
-		os.Exit(1)
-	} else {
-		fmt.Println(fileName + " <TEST PASSED>")
-	}
+	parseAndTestFile(t, fileLocation+fileName)
 }
 
 func TestUnattachedCommentsLostLimitation(t *testing.T) {
 	fileName := "commentsStyleLostTest.proto"
-	res, err := parseAndTestFile(fileLocation + fileName)
-	if !res {
-		fmt.Println(err)
-		os.Exit(1)
-	} else {
-		fmt.Println(fileName + " <TEST PASSED>")
-	}
+	parseAndTestFile(t, fileLocation+fileName)
 }
 
-func parseAndTestFile(filename string) (bool, error) {
+func parseAndTestFile(t *testing.T, filename string) {
 	parser.FixFloatingComments(filename)
 
 	d, err := parser.ParseFile(filename, "./")
 	if err != nil {
-		return false, err
+		t.Error(err)
+		os.Exit(1)
 	} else {
 
 		header := parser.ReadFileHeader(filename)
@@ -269,32 +151,29 @@ func parseAndTestFile(filename string) (bool, error) {
 		// Test if formatted file can be parsed
 		fo, err := os.Create("tempOutput.proto")
 		if err != nil {
-			fmt.Println(err)
+			t.Error(err)
 		}
+		defer os.Remove("tempOutput.proto")
 		if len(formattedFile) > 0 {
 			fo.WriteString(formattedFile)
 		}
 		fo.Close()
 
 		_, err2 := parser.ParseFile("tempOutput.proto", "./", "../../../")
-		//defer os.Remove("tempOutput.proto")
 		if err2 != nil {
-			return false, err2
+			t.Error(err2)
 		}
 
 		// Test if formatted string is equal to the Gold standard
 		goldString, err := ioutil.ReadFile(strings.Split(filename, ".")[0] + "_Gold." + strings.Split(filename, ".")[1])
 		if err != nil {
-			panic(err)
+			t.Error(err)
 		}
 
 		if parser.Strcmp(formattedFile, strings.TrimSpace(string(goldString))) != 0 {
-			fmt.Println("FAILED: " + filename)
-			os.Exit(-1)
-			return false, errors.New("Failed the gold standard with: " + fmt.Sprintf("%v", parser.Strcmp(formattedFile, strings.TrimSpace(string(goldString)))))
+			t.Error("Failed the gold standard with: " + fmt.Sprintf("%v", parser.Strcmp(formattedFile, strings.TrimSpace(string(goldString)))))
 		}
 
-		return true, nil
-
+		return
 	}
 }

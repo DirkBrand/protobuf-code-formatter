@@ -313,84 +313,88 @@ func extractComments(file *FileDescriptor) {
 	}
 }
 
-// PrintComments prints any comments from the source .proto file.
+// LeadingComments prints any comments from the source .proto file.
 // The path is a comma-separated list of integers.
 // See descriptor.proto for its format.
 func LeadingComments(path string, depth int) string {
-	if loc, ok := currentFile.comments[path]; ok && loc.LeadingComments != nil {
-		text := strings.TrimSuffix(loc.GetLeadingComments(), "\n")
-		//text = strings.TrimSpace(text)
-		var s []string
-		strCol := strings.Split(text, "\n")
-		s = append(s, "\n")
-		if len(strCol) == 1 {
-			// Single line comments
-			s = append(s, getIndentation(depth))
-			s = append(s, "// ")
-			s = append(s, strings.TrimSpace(strCol[0]))
-			s = append(s, "\n")
-		} else {
-			// Multi-line comments
-			if strings.Contains(text, "/*") || strings.Contains(text, "*/") {
-				// Block comments cannot nest
-				for _, line := range strCol {
-					s = append(s, getIndentation(depth))
-					s = append(s, "// ")
-					s = append(s, strings.TrimSpace(line))
-					s = append(s, "\n")
-				}
-			} else {
-				for i := 0; i < len(strCol); i += 1 {
-					line := strCol[i]
-					s = append(s, getIndentation(depth))
-					s = append(s, "//")
-					s = append(s, line)
-					s = append(s, "\n")
-				}
-			}
+	loc, ok := currentFile.comments[path]
 
-		}
-		return strings.Join(s, "")
+	if !ok || loc.LeadingComments == nil {
+		return ""
 
 	}
 
-	return ""
+	text := strings.TrimSuffix(loc.GetLeadingComments(), "\n")
+	var s []string
+	strCol := strings.Split(text, "\n")
+	s = append(s, "\n")
+	if len(strCol) == 1 {
+		// Single line comments
+		s = append(s, getIndentation(depth))
+		s = append(s, "// ")
+		s = append(s, strings.TrimSpace(strCol[0]))
+		s = append(s, "\n")
+	} else {
+		// Multi-line comments
+		if strings.Contains(text, "/*") || strings.Contains(text, "*/") {
+			// Block comments cannot nest
+			for _, line := range strCol {
+				s = append(s, getIndentation(depth))
+				s = append(s, "// ")
+				s = append(s, strings.TrimSpace(line))
+				s = append(s, "\n")
+			}
+		} else {
+			for i := 0; i < len(strCol); i += 1 {
+				line := strCol[i]
+				s = append(s, getIndentation(depth))
+				s = append(s, "//")
+				s = append(s, line)
+				s = append(s, "\n")
+			}
+		}
+
+	}
+	return strings.Join(s, "")
+
 }
 
 func TrailingComments(path string, depth int) string {
-	if loc, ok := currentFile.comments[path]; ok && loc.TrailingComments != nil {
-		text := strings.TrimSuffix(loc.GetTrailingComments(), "\n")
-		var s []string
-		strCol := strings.Split(text, "\n")
-		if len(strCol) == 1 {
-			s = append(s, getIndentation(depth))
-			s = append(s, "// ")
-			s = append(s, strings.TrimSuffix(strings.TrimPrefix(strCol[0], " "), " "))
-			s = append(s, "\n")
-		} else {
-			// Multi-line comments
-			if strings.Contains(text, "/*") || strings.Contains(text, "*/") {
-				// Block comments cannot nest
-				for _, line := range strCol {
-					s = append(s, getIndentation(depth))
-					s = append(s, "//")
-					s = append(s, line)
-					s = append(s, "\n")
-				}
-			} else {
-				for i := 0; i < len(strCol); i += 1 {
-					line := strCol[i]
-					s = append(s, getIndentation(depth))
-					s = append(s, "//")
-					s = append(s, line)
-					s = append(s, "\n")
-				}
-			}
+	loc, ok := currentFile.comments[path]
 
-		}
-		return strings.Join(s, "")
-
+	if !ok || loc.TrailingComments == nil {
+		return ""
 	}
 
-	return ""
+	text := strings.TrimSuffix(loc.GetTrailingComments(), "\n")
+	var s []string
+	strCol := strings.Split(text, "\n")
+	if len(strCol) == 1 {
+		s = append(s, getIndentation(depth))
+		s = append(s, "// ")
+		s = append(s, strings.TrimSuffix(strings.TrimPrefix(strCol[0], " "), " "))
+		s = append(s, "\n")
+	} else {
+		// Multi-line comments
+		if strings.Contains(text, "/*") || strings.Contains(text, "*/") {
+			// Block comments cannot nest
+			for _, line := range strCol {
+				s = append(s, getIndentation(depth))
+				s = append(s, "//")
+				s = append(s, line)
+				s = append(s, "\n")
+			}
+		} else {
+			for i := 0; i < len(strCol); i += 1 {
+				line := strCol[i]
+				s = append(s, getIndentation(depth))
+				s = append(s, "//")
+				s = append(s, line)
+				s = append(s, "\n")
+			}
+		}
+
+	}
+	return strings.Join(s, "")
+
 }

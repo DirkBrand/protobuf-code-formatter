@@ -82,11 +82,11 @@ func main() {
 			if err != nil {
 				panic(err)
 			}
+			defer os.Remove("tempOutput.proto")
 			fo.WriteString(formatFile)
 			fo.Close()
 
 			_, err2 := parser.ParseFile("tempOutput.proto", "./", "../../../")
-			defer os.Remove("tempOutput.proto")
 			if err2 != nil {
 				Response.Error = proto.String(err2.Error())
 			} else {

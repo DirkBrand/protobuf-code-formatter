@@ -31,19 +31,24 @@ import (
 	"fmt"
 	parser "github.com/DirkBrand/protobuf-code-formatter/protoc-gen-pretty/parser"
 	"os"
+	"path/filepath"
 	"strings"
 )
+
+var recurs *bool
+var imp_path *string
+var excluded []string
 
 func main() {
 
 	// FLAGS
-	r := flag.Bool("r", false, "Indicates whether to recursively format the files in the argument folder.")
-	imp_path := flag.String("proto_path", "./", "The path to find all relative imported .proto files.")
+	recurs = flag.Bool("r", false, "Indicates whether to recursively format the files in the argument folder.")
+	imp_path = flag.String("proto_path", "./", "The path to find all relative imported .proto files.")
 	exclude_dirs := flag.String("exclude_path", "None", "A list of directories that should not be included in the formatting (if done recursively)")
 
 	flag.Parse()
 
-	excluded := strings.Split(*exclude_dirs, ":")
+	excluded = strings.Split(*exclude_dirs, ":")
 
 	if len(os.Args) <= 1 || strings.HasPrefix(os.Args[len(os.Args)-1], "-") {
 		fmt.Println(errors.New("Not enough arguments!"))
@@ -52,76 +57,61 @@ func main() {
 
 	proto_path := os.Args[len(os.Args)-1]
 
-	d, err := os.Open(proto_path)
+	// Visit the directory / .proto file
+	err := filepath.Walk(proto_path, fmtFn())
 	if err != nil {
 		fmt.Println(err)
-		os.Exit(1)
-	}
-	defer d.Close()
-	fi, err := d.Readdir(-1)
-	if err != nil {
-		fmt.Println(err)
-		os.Exit(1)
-	}
-	for _, fi := range fi {
-		// It is not a proper filename
-		if !strings.HasSuffix(proto_path, string(os.PathSeparator)) {
-			proto_path += string(os.PathSeparator)
-		}
-		// Visit the directory / .proto file
-		visit(proto_path, *imp_path, excluded, fi, *r)
+	} else {
+		fmt.Println("DONE")
 	}
 
 }
 
-func visit(pathThusFar string, imp_path string, exclude_paths []string, f os.FileInfo, recurs bool) {
+func fmtFn() filepath.WalkFunc {
 
-	path := pathThusFar + f.Name()
+	return func(pathThusFar string, f os.FileInfo, err error) error {
 
-	if f.IsDir() && !strings.HasSuffix(path, string(os.PathSeparator)) {
-		path += string(os.PathSeparator)
-	}
-
-	if f.IsDir() && recurs && !stringInSlice(path, exclude_paths) {
-		d, err := os.Open(path)
-		if err != nil {
-			fmt.Println(err)
-			os.Exit(1)
+		if strings.HasSuffix(filepath.Dir(pathThusFar), f.Name()) {
+			return nil
 		}
-		defer d.Close()
-		fi, err := d.Readdir(-1)
-		if err != nil {
-			fmt.Println(err)
-			os.Exit(1)
-		}
-		for _, fi := range fi {
-			visit(path, imp_path, exclude_paths, fi, recurs)
-		}
-	} else if f.Mode().IsRegular() && strings.HasSuffix(f.Name(), ".proto") {
-		parser.FixFloatingComments(path)
 
-		d, err := parser.ParseFile(path, pathThusFar, imp_path)
-		if err != nil {
-			fmt.Println("Parsing error! ", err)
-			os.Exit(1)
-		} else {
-			header := parser.ReadFileHeader(path)
-			formattedFile := d.Fmt(f.Name())
-			formattedFile = strings.TrimSpace(formattedFile)
-			if len(header) != 0 {
-				formattedFile = header + "\n" + formattedFile
+		if f.IsDir() && !strings.HasSuffix(pathThusFar, string(os.PathSeparator)) {
+			pathThusFar += string(os.PathSeparator)
+		}
+		if f.IsDir() {
+			if *recurs && !stringInSlice(pathThusFar, excluded) {
+				return nil
+			} else {
+				return filepath.SkipDir
 			}
+		} else if f.Mode().IsRegular() && strings.HasSuffix(f.Name(), ".proto") {
+			parser.FixFloatingComments(pathThusFar)
 
-			fo, _ := os.Create(path)
+			d, err := parser.ParseFile(pathThusFar, filepath.Dir(pathThusFar), *imp_path)
+			if err != nil {
+				fmt.Println("Parsing error in " + pathThusFar + "!")
+				return err
+			} else {
+				header := parser.ReadFileHeader(pathThusFar)
+				formattedFile := d.Fmt(f.Name())
+				formattedFile = strings.TrimSpace(formattedFile)
+				if len(header) != 0 {
+					formattedFile = header + "\n" + formattedFile
+				}
 
-			fo.WriteString(formattedFile)
-			fo.Close()
+				fo, _ := os.Create(pathThusFar)
 
-			fmt.Println("Successfully Formatted " + path)
+				fo.WriteString(formattedFile)
+				fo.Close()
+
+				fmt.Println("Successfully Formatted " + pathThusFar)
+				return nil
+			}
+		} else {
+			return fmt.Errorf("%v", errors.New(f.Name()+" cannot be processed."))
 		}
-	} else {
-		fmt.Errorf("%v", errors.New(f.Name()+" cannot be processed."))
 	}
+
 }
 
 func stringInSlice(a string, list []string) bool {
