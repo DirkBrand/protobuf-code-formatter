@@ -108,7 +108,7 @@ func fmtFn() filepath.WalkFunc {
 				return nil
 			}
 		} else {
-			return fmt.Errorf("%v", errors.New(f.Name()+" cannot be processed."))
+			return errors.New(f.Name() + " cannot be processed.")
 		}
 	}
 
