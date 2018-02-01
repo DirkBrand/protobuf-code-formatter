@@ -1,5 +1,5 @@
 // Copyright (c) 2013, Vastech SA (PTY) LTD. All rights reserved.
-// http://code.google.com/p/gogoprotobuf/gogoproto
+// http://github.com/gogo/protobuf/gogoproto
 //
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are
@@ -81,7 +81,7 @@ message someCompositeFieldOptions {
         repeated sfixed64 Field12 = 12 [(gogoproto.nullable) = false, packed = true];
         repeated bool Field13 = 13 [(gogoproto.nullable) = false, deprecated = true];
         optional bytes Id = 14 [(gogoproto.customtype) = "Uuid", (gogoproto.nullable) = false];
-        optional bytes Value = 15 [(gogoproto.customtype) = "code.google.com/p/gogoprotobuf/test/custom.Uint128", (gogoproto.nullable) = false];
+        optional bytes Value = 15 [(gogoproto.customtype) = "github.com/gogo/protobuf/test/custom.Uint128", (gogoproto.nullable) = false];
 
 
         optional bytes customId = 16 [(gogoproto.customtype) = "Uuid", (gogoproto.nullable) = false, deprecated = true];
@@ -118,7 +118,7 @@ message someStructFields {
 
 message NidOptCustom {
         optional bytes Id = 1 [(gogoproto.customtype) = 		"Uuid", (gogoproto.nullable) = false];
-        optional bytes Value = 2 [(gogoproto.customtype) = "code.google.com/p/gogoprotobuf/test/custom.Uint128", (gogoproto.nullable) = false];
+        optional bytes Value = 2 [(gogoproto.customtype) = "github.com/gogo/protobuf/test/custom.Uint128", (gogoproto.nullable) = false];
 }
 
 

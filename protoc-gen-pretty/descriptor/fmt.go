@@ -27,12 +27,13 @@ package descriptor
 
 import (
 	"bytes"
-	proto "code.google.com/p/gogoprotobuf/proto"
 	"encoding/binary"
 	fmt "fmt"
 	regex "regexp"
 	sort "sort"
 	strings "strings"
+
+	proto "github.com/gogo/protobuf/proto"
 )
 
 const (
@@ -752,7 +753,6 @@ func (this *EnumDescriptor) Fmt(depth int) string {
 		s = append(s, "\n")
 	}
 	for i, enumValue := range this.GetValue() {
-
 		// Comments of the enum fields
 		lc := LeadingComments(fmt.Sprintf("%s,%d,%d", this.path, enumValuePath, i), depth+1)
 		if len(lc) > 0 {

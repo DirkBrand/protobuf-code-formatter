@@ -1,7 +1,7 @@
 // Extensions for Protocol Buffers to create more go like structures.
 //
 // Copyright (c) 2013, Vastech SA (PTY) LTD. All rights reserved.
-// http://code.google.com/p/gogoprotobuf/gogoproto
+// http://github.com/gogo/protobuf/gogoproto
 //
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are
@@ -33,7 +33,7 @@ import (
 	"strings"
 )
 import "github.com/DirkBrand/protobuf-code-formatter/protoc-gen-pretty/descriptor"
-import "code.google.com/p/gogoprotobuf/proto"
+import "github.com/gogo/protobuf/proto"
 
 type errCmd struct {
 	output []byte

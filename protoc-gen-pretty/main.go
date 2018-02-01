@@ -26,12 +26,13 @@ OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package main
 
 import (
-	proto "code.google.com/p/gogoprotobuf/proto"
+	"io/ioutil"
+	"os"
+
 	descriptor "github.com/DirkBrand/protobuf-code-formatter/protoc-gen-pretty/descriptor"
 	parser "github.com/DirkBrand/protobuf-code-formatter/protoc-gen-pretty/parser"
 	plugin "github.com/DirkBrand/protobuf-code-formatter/protoc-gen-pretty/plugin"
-	"io/ioutil"
-	"os"
+	proto "github.com/gogo/protobuf/proto"
 )
 
 func main() {
